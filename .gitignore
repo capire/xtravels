@@ -1,0 +1,5 @@
+.DS_Store
+*.sqlite
+_out
+gen
+node_modules
