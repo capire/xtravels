@@ -10,7 +10,6 @@ annotate my.Travels with {
 annotate my.Bookings with {
   @mandatory Flight;
   @mandatory Travel;
-  @mandatory Status;
 }
 
 annotate my.Supplements with {

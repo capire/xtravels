@@ -1,4 +1,4 @@
-using TravelService from '../../srv/travel-service';
+using { TravelService } from '../../srv/travel-service';
 
 //
 // annotations that control the Fiori layout
@@ -109,14 +109,14 @@ annotate TravelService.Bookings with @UI : {
   SelectionFields : [],
 
   LineItem : [
-    { Value : Flight.airline.icon, Label : '  '},
+    { Value : Flight.icon, Label : '  '},
     { Value : BookingID },
     { Value : BookingDate },
-    { Value : Flight.airline_ID, Label : '{i18n>Airline}' },
+    { Value : Flight.airline, Label : '{i18n>Airline}' },
     { Value : Flight.flightNumber, Label : '{i18n>FlightNumber}' },
     { Value : Flight.flightDate, Label : '{i18n>FlightDate}' },
-    { Value : Flight.departure.name, Label : 'From' },
-    { Value : Flight.destination.name, Label : 'To' },
+    { Value : Flight.departure, Label : 'From' },
+    { Value : Flight.destination, Label : 'To' },
     { Value : FlightPrice, Label : '{i18n>FlightPrice}' },
   ],
 
@@ -150,16 +150,16 @@ annotate TravelService.Bookings with @UI : {
   ]},
 
   FieldGroup #Flight : { Data : [
-    { Value : Flight.connection.airline.ID   },
-    { Value : Flight.connection.ID           },
+    { Value : Flight.airline   },
+    { Value : Flight.flightNumber           },
     { Value : Flight.flightDate             },
     { Value : FlightPrice            }
   ]},
 };
 
-annotate FlightsService.Airlines:icon with @UI.IsImageURL;
+annotate sap.capire.travels.masterdata.federated.Flights:icon with @UI.IsImageURL;
 
-annotate TravelService.Supplements with @UI : {
+annotate TravelService.Bookings.Supplements with @UI : {
   Identification : [
     { Value : ID }
   ],
@@ -180,7 +180,7 @@ annotate TravelService.Supplements with @UI : {
   },
   LineItem : [
     { Value : ID                                       },
-    { Value : Supplement.ID, Label : '{i18n>ProductID}'    },
-    { Value : Price,       Label : '{i18n>ProductPrice}' }
+    { Value : booked.ID, Label : '{i18n>ProductID}'    },
+    { Value : Price,     Label : '{i18n>ProductPrice}' }
   ],
 };

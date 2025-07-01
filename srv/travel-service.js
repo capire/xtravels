@@ -2,7 +2,7 @@ const cds = require('@sap/cds')
 module.exports = class TravelService extends cds.ApplicationService { init() {
 
   // Reflected definitions from the service's CDS model
-  const { Travels, Bookings, Supplements } = this.entities
+  const { Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
   const { Open='O', Accepted='A', Canceled='X' } = {}
 
   // Fill in alternative keys as consecutive numbers for new Travels, Bookings, and Supplements.

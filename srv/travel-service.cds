@@ -1,5 +1,5 @@
-using { FlightsService } from '@capire/sflights';
-using { sap } from '../db/schema';
+using { sap.capire.travels.masterdata.federated } from '../db/master-data';
+using { sap.capire.travels as our } from '../db/schema';
 
 service TravelService {
 
@@ -9,21 +9,15 @@ service TravelService {
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])
-  entity Travels as projection on sap.capire.travels.Travels actions {
+  entity Travels as projection on our.Travels actions {
     action createTravelByTemplate() returns Travels;
     action rejectTravel();
     action acceptTravel();
     action deductDiscount( percent: Percentage not null ) returns Travels;
   }
 
-  entity Flights as projection on FlightsService.Flights { *,
-    connection.airline as airline,
-    connection.code as flightNumber,
-    connection.departure as departure,
-    connection.destination as destination,
-  }
-  entity Airports as projection on FlightsService.Airports;
-  entity Airline as projection on FlightsService.Airlines;
+  // Also expose federated Flights master data
+  entity Flights as projection on federated.Flights;
 }
 
 type Percentage : Integer @assert.range: [1,100];

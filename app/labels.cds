@@ -42,12 +42,11 @@ annotate schema.Bookings with @title: '{i18n>Booking}' {
   FlightPrice   @title: '{i18n>FlightPrice}'    @Measures.ISOCurrency: Currency_code;
 }
 
-annotate schema.Supplements with @title: '{i18n>BookingSupplement}' {
+annotate schema.Bookings.Supplements with @title: '{i18n>BookingSupplement}' {
   ID  @title: '{i18n>BookingSupplementID}';
-  Booking           @UI.Hidden;
-  Supplement        @title: '{i18n>SupplementID}'  @Common.Text: Supplement.descr;
-  Price                @title: '{i18n>Price}'         @Measures.ISOCurrency: Currency_code;
-  Currency         @title: '{i18n>CurrencyCode}';
+  booked        @title: '{i18n>SupplementID}'  @Common.Text: booked.descr;
+  Price             @title: '{i18n>Price}'         @Measures.ISOCurrency: Currency_code;
+  Currency          @title: '{i18n>CurrencyCode}';
 }
 
 annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {

@@ -1,11 +1,14 @@
-using { FlightsService as md } from '@capire/sflights';
-using { managed, sap } from '@sap/cds/common';
-
 namespace sap.capire.travels;
 
-type Currency : Association to md.Currencies;
-type Country : Association to md.Countries;
-type Price : Decimal(16,3);
+using { sap, managed } from '@sap/cds/common';
+using {
+  sap.capire.travels.masterdata.Price,
+  sap.capire.travels.masterdata.Currency,
+  sap.capire.travels.masterdata.Country,
+  sap.capire.travels.masterdata.federated,
+  sap.capire.flights as external,
+} from './master-data';
+
 
 entity Travels : managed {
   key ID           : UUID;
@@ -14,7 +17,8 @@ entity Travels : managed {
       BeginDate    : Date default $now;
       EndDate      : Date default $now;
       BookingFee   : Price default 0;
-      TotalPrice   : Price @readonly; Currency: Currency default 'EUR';
+      TotalPrice   : Price @readonly;
+      Currency     : Currency default 'EUR';
       Status       : Association to TravelStatus @readonly default 'O';
       Agency       : Association to TravelAgencies;
       Customer     : Association to Passengers;
@@ -26,18 +30,15 @@ entity Bookings {
   key Travel      : Association to Travels;
   key BookingID   : Integer @readonly;
       BookingDate : Date default $now;
-      Flight      : Association to md.Flights;
-      // Note: Price and Currency are copied from master data to capture the price at booking time
-      FlightPrice : Price; Currency: Currency;
-      Supplements : Composition of many Supplements on Supplements.Booking = $self;
-}
-
-entity Supplements {
-  key ID         : UUID;
-      Booking    : Association to Bookings;
-      Supplement : Association to md.Supplements;
-      // Note: Price and Currency are copied from master data to capture the price at booking time
-      Price      : Price; Currency: Currency;
+      Flight      : Association to federated.Flights;
+      FlightPrice : Price;
+      Currency    : Currency;
+      Supplements : Composition of many {
+        key ID   : UUID;
+        booked   : Association to external.Supplements;
+        Price    : Price;
+        Currency : Currency;
+      }
 }
 
 entity TravelAgencies {
