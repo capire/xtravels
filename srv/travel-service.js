@@ -1,8 +1,8 @@
 const cds = require('@sap/cds')
-module.exports = class TravelService extends cds.ApplicationService { init() {
+module.exports = class TravelService extends cds.ApplicationService { async init() {
 
   // Reflected definitions from the service's CDS model
-  const { Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
+  const { Flights, Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
   const { Open='O', Accepted='A', Canceled='X' } = {}
 
   // Fill in alternative keys as consecutive numbers for new Travels, Bookings, and Supplements.
@@ -35,6 +35,22 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
   this.before ('SAVE', Travels, req => { // REVISIT: should also work for Travel.drafts instead of Travel, but doesn't (?)
     const { BeginDate, EndDate } = req.data
     if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate') // REVISIT: in/ should go away!
+  })
+
+  const FlightsService = await cds.connect.to ('sap.capire.flights.data') //.then (cds.enqueued)
+
+  this.after ('SAVE', Travels, async req => {
+    for (let { flightNumber, flightDate } of req.data.Bookings)
+      await FlightsService.send ('BookingCreated', {
+        flightNumber,
+        flightDate,
+        seats: [ 0 ] // no seat numbers managed in sample
+      })
+  })
+
+  FlightsService.on ('Flights.Updated', async msg => {
+    const { flightNumber, flightDate, occupiedSeats } = msg.data
+    await UPDATE (Flights, { flightNumber, flightDate }) .with ({ occupiedSeats })
   })
 
 
