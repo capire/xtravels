@@ -50,7 +50,7 @@ annotate schema.Bookings.Supplements with @title: '{i18n>BookingSupplement}' {
 }
 
 annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {
-  AgencyID     @title: '{i18n>AgencyID}'      @Common.Text: Name;
+  ID           @title: '{i18n>AgencyID}'      @Common.Text: Name;
   Name         @title: '{i18n>AgencyName}';
   Street       @title: '{i18n>Street}';
   PostalCode   @title: '{i18n>PostalCode}';
@@ -62,7 +62,7 @@ annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {
 }
 
 annotate schema.Passengers with @title: '{i18n>Passenger}' {
-  CustomerID   @title: '{i18n>CustomerID}'    @Common.Text: LastName;
+  ID           @title: '{i18n>CustomerID}'    @Common.Text: LastName;
   FirstName    @title: '{i18n>FirstName}';
   LastName     @title: '{i18n>LastName}';
   Title        @title: '{i18n>Title}';

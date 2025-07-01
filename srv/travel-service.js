@@ -39,8 +39,8 @@ module.exports = class TravelService extends cds.ApplicationService { async init
 
   const FlightsService = await cds.connect.to ('sap.capire.flights.data') //.then (cds.enqueued)
 
-  this.after ('SAVE', Travels, async req => {
-    for (let { flightNumber, flightDate } of req.data.Bookings)
+  this.after ('SAVE', Travels, async travel => {
+    for (let { flightNumber, flightDate } of travel.Bookings)
       await FlightsService.send ('BookingCreated', {
         flightNumber,
         flightDate,
@@ -66,12 +66,15 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   // Note: Using .on handlers as we need to read a Booking's or Supplement's ID before they are deleted.
   async function update_totals (req, next, ...fields) {
     if (fields.length && !fields.some(f => f in req.data)) return next() //> skip if no relevant data changed
-    const travel = req.target === Travels.drafts ? req.data.ID : ( await SELECT.one `Travel.ID as ID` .from (req.subject) ).ID
     await next() // actually UPDATE or DELETE the subject entity
-    await cds.run(`UPDATE ${Travels.drafts} SET TotalPrice = coalesce (BookingFee,0)
-     + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = ID )
-     + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where Booking_Travel_ID = ID )
-    WHERE ID = ?`, [travel])
+    await cds.run(`UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
+     + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
+     + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
+    WHERE ID = ?`, [
+      req.target === Travels.drafts ? req.data.ID :
+      req.target === Bookings.drafts ? ( await SELECT.one `Travel_ID as ID` .from (req.subject) ).ID :
+      req.target === Supplements.drafts ? ( await SELECT.one `up__Travel_ID as ID` .from (req.subject) ).ID : null
+    ])
   }
 
 

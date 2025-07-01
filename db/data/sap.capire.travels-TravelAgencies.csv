@@ -1,4 +1,4 @@
-AgencyID;Name;Street;PostalCode;City;Country_code;PhoneNumber;EMailAddress;WebAddress
+ID;Name;Street;PostalCode;City;Country_code;PhoneNumber;EMailAddress;WebAddress
 070001;Sunshine Travel;134 West Street;54323;Rochester;US;+1 901-632-5620;info@sunshine-travel.sap;http://www.sunshine-travel.sap
 070002;Fly High;Berliner Allee 11;40880;Duesseldorf;DE;+49 2102 69555;info@flyhigh.sap;http://www.flyhigh.sap
 070003;Happy Hopping;Calvinstr. 36;13467;Berlin;DE;+49 30-8853-0;info@haphop.sap;http://www.haphop.sap

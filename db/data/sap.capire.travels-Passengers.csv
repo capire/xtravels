@@ -1,4 +1,4 @@
-CustomerID;FirstName;LastName;Title;Street;PostalCode;City;Country_code;PhoneNumber;EMailAddress
+ID;FirstName;LastName;Title;Street;PostalCode;City;Country_code;PhoneNumber;EMailAddress
 000001;Theresia;Buchholm;Mrs.;Lerchenstr. 82;71116;Gaertringen;DE;+49-341-184709;theresia.buchholm@flight.example.de
 000002;Johannes;Buchholm;Mr.;Muehltalstr. 14;68723;Schwetzingen;DE;+49-291-299232;johannes.buchholm@flight.example.de
 000003;James;Buchholm;Mr.;Froschstr. 91;90419;Nuernberg;DE;+49-601-130850;james.buchholm@flight.example.de

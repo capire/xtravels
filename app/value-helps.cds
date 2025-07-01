@@ -16,7 +16,7 @@ annotate schema.Travels {
     CollectionPath : 'TravelAgencies',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Agency_AgencyID, ValueListProperty: 'AgencyID'},  // local data property is the foreign key
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Agency_ID, ValueListProperty: 'ID'},  // local data property is the foreign key
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Street'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PostalCode'},
@@ -32,7 +32,7 @@ annotate schema.Travels {
     CollectionPath : 'Passengers',
     Label : 'Customer ID',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_CustomerID, ValueListProperty: 'CustomerID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_ID, ValueListProperty: 'ID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FirstName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
@@ -49,7 +49,7 @@ annotate schema.Travels {
     CollectionPath : 'Currencies',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: CurrencyCode_code, ValueListProperty: 'code'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'descr'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'symbol'},
@@ -68,7 +68,7 @@ annotate schema.Bookings {
     CollectionPath : 'Passenger',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Customer_CustomerID, ValueListProperty: 'CustomerID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_ID, ValueListProperty: 'ID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FirstName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
@@ -87,7 +87,7 @@ annotate schema.Bookings {
     Parameters : [
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID, ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CurrencyCode_code'}
+      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Currency_code'}
     ]
   };
 
@@ -99,7 +99,7 @@ annotate schema.Bookings {
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: ConnectionID, ValueListProperty: 'ConnectionID'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightDate,   ValueListProperty: 'FlightDate'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightPrice,  ValueListProperty: 'Price'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: CurrencyCode_code, ValueListProperty: 'CurrencyCode_code'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'Currency_code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'to_Airline/Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PlaneType'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'MaximumSeats'},
@@ -116,7 +116,7 @@ annotate schema.Bookings {
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: ConnectionID, ValueListProperty: 'ConnectionID'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightDate,   ValueListProperty: 'FlightDate'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightPrice,  ValueListProperty: 'Price'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: CurrencyCode_code, ValueListProperty: 'CurrencyCode_code'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'Currency_code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'to_Airline/Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PlaneType'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'MaximumSeats'},
@@ -128,7 +128,7 @@ annotate schema.Bookings {
     CollectionPath : 'Currencies',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: CurrencyCode_code, ValueListProperty: 'code'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'descr'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'symbol'},
@@ -139,15 +139,15 @@ annotate schema.Bookings {
 }
 
 
-annotate schema.Supplements {
+annotate schema.Bookings.Supplements {
 
-  Supplement @Common.ValueList: {
+  booked @Common.ValueList: {
     CollectionPath : 'Supplement',
     Label : '',
     Parameters : [
-    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Supplement_ID, ValueListProperty: 'SupplementID'},
+    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: booked_ID, ValueListProperty: 'ID'},
     {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Price,        ValueListProperty: 'Price'},
-    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'CurrencyCode_code'},
+    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'Currency_code'},
     {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Description'}
     ]
   };

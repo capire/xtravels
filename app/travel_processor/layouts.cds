@@ -28,8 +28,8 @@ annotate TravelService.Travels with @UI : {
   // REVISIT: We need to refer to generated foreign keys here, for related value helps
   // to work. Should be able to use associations instead.
   SelectionFields : [
-    Agency_AgencyID,
-    Customer_CustomerID,
+    Agency_ID,
+    Customer_ID,
     Status_code,
   ],
 
@@ -41,8 +41,8 @@ annotate TravelService.Travels with @UI : {
 
     { Value : TravelID, @UI.Importance : #High },
     { Value : Description, @UI.Importance : #High },
-    { Value : Agency_AgencyID, @HTML5.CssDefaults: {width:'16em'} },
-    { Value : Customer_CustomerID, @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
+    { Value : Agency_ID, @HTML5.CssDefaults: {width:'16em'} },
+    { Value : Customer_ID, @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
     { Value : BeginDate,  @HTML5.CssDefaults: {width:'9em'} },
     { Value : EndDate,    @HTML5.CssDefaults: {width:'9em'} },
     { Value : BookingFee, @HTML5.CssDefaults: {width:'10em'} },
@@ -68,8 +68,8 @@ annotate TravelService.Travels with @UI : {
   }],
 
   FieldGroup#TravelData : { Data : [
-    { Value : Agency_AgencyID     },
-    { Value : Customer_CustomerID },
+    { Value : Agency_ID     },
+    { Value : Customer_ID },
     { Value : Description            },
     { Value : Status.code, Label : '{i18n>Status}', // label only necessary if differs from title of element
       Criticality : (
@@ -145,7 +145,7 @@ annotate TravelService.Bookings with @UI : {
   FieldGroup #GeneralInformation : { Data : [
     { Value : BookingID              },
     { Value : BookingDate,           },
-    { Value : Travel.Customer.CustomerID },
+    { Value : Travel.Customer.ID },
     { Value : BookingDate,           },
   ]},
 

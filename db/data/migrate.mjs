@@ -32,20 +32,20 @@ csv.end()
 
 let supplements = await SELECT.from `sap.fe.cap.travel.BookingSupplement {
   BookSupplUUID as ID,
-  to_Travel.TravelUUID as Booking_Travel_ID,
-  to_Booking.BookingID as Booking_BookingID,
-  to_Supplement.SupplementID as Supplement_ID,
+  to_Travel.TravelUUID as up__Travel_ID,
+  to_Booking.BookingID as up__BookingID,
+  to_Supplement.SupplementID as booked_ID,
   Price,
   CurrencyCode_code as Currency_code,
 }`
 
 csv = fs.createWriteStream (import.meta.dirname + '/sap.capire.travels-Supplements.csv')
-csv.write('ID,Booking_Travel_ID,Booking_BookingID,Supplement_ID,Price,Currency_code\n')
+csv.write('ID,up__Travel_ID,up__BookingID,booked_ID,Price,Currency_code\n')
 for (let s of supplements) csv.write(
   s.ID +','+
-  s.Booking_Travel_ID +','+
-  s.Booking_BookingID +','+
-  s.Supplement_ID +','+
+  s.up__Travel_ID +','+
+  s.up__BookingID +','+
+  s.booked_ID +','+
   s.Price +','+
   s.Currency_code +'\n'
 )

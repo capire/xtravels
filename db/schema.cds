@@ -42,7 +42,7 @@ entity Bookings {
 }
 
 entity TravelAgencies {
-  key AgencyID     : String(6);
+  key ID           : String(6);
       Name         : String(80);
       Street       : String(60);
       PostalCode   : String(10);
@@ -55,7 +55,7 @@ entity TravelAgencies {
 
 
 entity Passengers : managed {
-  key CustomerID   : String(6);
+  key ID           : String(6);
       FirstName    : String(40);
       LastName     : String(40);
       Title        : String(10);
