@@ -6,7 +6,6 @@ using {
   sap.capire.travels.masterdata.Currency,
   sap.capire.travels.masterdata.Country,
   sap.capire.travels.masterdata.federated,
-  sap.capire.flights as external,
 } from './master-data';
 
 
@@ -35,7 +34,7 @@ entity Bookings {
       Currency    : Currency;
       Supplements : Composition of many {
         key ID   : UUID;
-        booked   : Association to external.Supplements;
+        booked   : Association to federated.Supplements;
         Price    : Price;
         Currency : Currency;
       }
