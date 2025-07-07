@@ -10,7 +10,7 @@ entity federated.Flights as projection on external.Flights {
   airline.icon     as icon,
   airline.name     as airline,
   departure.name   as departure,
-  destination.name as destination
+  destination.name as destination,
 }
 
 entity federated.Supplements as projection on external.Supplements {

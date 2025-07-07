@@ -28,9 +28,9 @@ annotate TravelService.Travels with @UI : {
   // REVISIT: We need to refer to generated foreign keys here, for related value helps
   // to work. Should be able to use associations instead.
   SelectionFields : [
-    Agency_ID,
-    Customer_ID,
-    Status_code,
+    (Agency.ID),
+    (Customer.ID),
+    (Status.code),
   ],
 
   LineItem : [
@@ -39,20 +39,20 @@ annotate TravelService.Travels with @UI : {
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
 
-    { Value : TravelID, @UI.Importance : #High },
+    { Value : TravelID,    @UI.Importance : #High },
     { Value : Description, @UI.Importance : #High },
-    { Value : Agency_ID, @HTML5.CssDefaults: {width:'16em'} },
-    { Value : Customer_ID, @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
-    { Value : BeginDate,  @HTML5.CssDefaults: {width:'9em'} },
-    { Value : EndDate,    @HTML5.CssDefaults: {width:'9em'} },
-    { Value : BookingFee, @HTML5.CssDefaults: {width:'10em'} },
-    { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
+    { Value : Customer.ID, @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
+    { Value : Agency.ID,   @HTML5.CssDefaults: {width:'16em'} },
+    { Value : BeginDate,   @HTML5.CssDefaults: {width:'9em'} },
+    { Value : EndDate,     @HTML5.CssDefaults: {width:'9em'} },
+    { Value : BookingFee,  @HTML5.CssDefaults: {width:'10em'} },
+    { Value : TotalPrice,  @HTML5.CssDefaults: {width:'12em'} },
     { Value : Status.code,
       Criticality : (
-        Status.code == 'A' ? 3 : (
-        Status.code == 'O' ? 2 : (
+        Status.code == 'A' ? 3 :
+        Status.code == 'O' ? 2 :
         Status.code == 'X' ? 1 : 0
-      ))),
+      ),
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
     }
@@ -68,15 +68,15 @@ annotate TravelService.Travels with @UI : {
   }],
 
   FieldGroup#TravelData : { Data : [
-    { Value : Agency_ID     },
-    { Value : Customer_ID },
-    { Value : Description            },
-    { Value : Status.code, Label : '{i18n>Status}', // label only necessary if differs from title of element
+    { Value : Customer.ID },
+    { Value : Agency.ID },
+    { Value : Description },
+    { Value : Status.code,
       Criticality : (
-        Status.code == 'A' ? 3 : (
-        Status.code == 'O' ? 2 : (
+        Status.code == 'A' ? 3 :
+        Status.code == 'O' ? 2 :
         Status.code == 'X' ? 1 : 0
-      ))),
+      ),
     },
     { Value : BeginDate },
     { Value : EndDate },
