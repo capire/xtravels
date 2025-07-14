@@ -49,9 +49,9 @@ annotate TravelService.Travels with @UI : {
     { Value : TotalPrice,  @HTML5.CssDefaults: {width:'12em'} },
     { Value : Status.code,
       Criticality : (
-        Status.code == 'A' ? 3 :
-        Status.code == 'O' ? 2 :
-        Status.code == 'X' ? 1 : 0
+        Status.code == #Accepted ? 3 :
+        Status.code == #Open ? 2 :
+        Status.code == #Canceled ? 1 : 0
       ),
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
@@ -73,9 +73,9 @@ annotate TravelService.Travels with @UI : {
     { Value : Description },
     { Value : Status.code,
       Criticality : (
-        Status.code == 'A' ? 3 :
-        Status.code == 'O' ? 2 :
-        Status.code == 'X' ? 1 : 0
+        Status.code == #Accepted ? 3 :
+        Status.code == #Open ? 2 :
+        Status.code == #Canceled ? 1 : 0
       ),
     },
     { Value : BeginDate },
