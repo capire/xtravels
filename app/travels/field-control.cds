@@ -52,11 +52,8 @@ annotate TravelService.Bookings with @UI.DeleteHidden : Travel.Status.createDele
 
 annotate TravelService.Bookings {
   BookingDate   @Core.Computed;
-  ConnectionID  @Common.FieldControl  : Travel.Status.fieldControl;
-  FlightDate    @Common.FieldControl  : Travel.Status.fieldControl;
+  Flight        @Common.FieldControl  : Travel.Status.fieldControl;
   FlightPrice   @Common.FieldControl  : Travel.Status.fieldControl;
-  to_Carrier    @Common.FieldControl  : Travel.Status.fieldControl;
-  to_Customer   @Common.FieldControl  : Travel.Status.fieldControl;
 };
 
 annotate TravelService.Bookings with @Capabilities.NavigationRestrictions.RestrictedProperties : [
@@ -72,8 +69,7 @@ annotate TravelService.Bookings with @Capabilities.NavigationRestrictions.Restri
 ];
 
 
-annotate TravelService.Supplements {
-  Price         @Common.FieldControl  : Booking.Travel.Status.fieldControl;
-  Supplement @Common.FieldControl  : Booking.Travel.Status.fieldControl;
-  Booking    @Common.FieldControl  : Booking.Travel.Status.fieldControl;
+annotate TravelService.Bookings.Supplements with @UI.CreateHidden : up_.Travel.Status.createDeleteHidden {
+  Price         @Common.FieldControl  : up_.Travel.Status.fieldControl;
+  booked @Common.FieldControl  : up_.Travel.Status.fieldControl;
 };

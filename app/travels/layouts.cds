@@ -16,13 +16,13 @@ annotate TravelService.Travels with @UI : {
     TypeName       : '{i18n>Travel}',
     TypeNamePlural : '{i18n>Travels}',
     Title          : { Value: Description },
-    Description    : { Value: TravelID }
+    Description    : { Value: ID }
   },
 
   PresentationVariant : {
     Text           : 'Default',
     Visualizations : ['@UI.LineItem'],
-    SortOrder      : [{ Property: TravelID, Descending: true }]
+    SortOrder      : [{ Property: ID, Descending: true }]
   },
 
   // REVISIT: We need to refer to generated foreign keys here, for related value helps
@@ -39,7 +39,7 @@ annotate TravelService.Travels with @UI : {
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
 
-    { Value : TravelID,    @UI.Importance : #High },
+    { Value : ID,          @UI.Importance : #High },
     { Value : Description, @UI.Importance : #High },
     { Value : Customer.ID, @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
     { Value : Agency.ID,   @HTML5.CssDefaults: {width:'16em'} },
@@ -87,21 +87,21 @@ annotate TravelService.Travels with @UI : {
 
 annotate TravelService.Bookings with @UI : {
   Identification : [
-    { Value : BookingID },
+    { Value : Pos },
   ],
 
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
     Title          : { Value : Travel.Customer.LastName },
-    Description    : { Value : BookingID }
+    Description    : { Value : Pos }
   },
 
   PresentationVariant : {
     Visualizations : ['@UI.LineItem'],
     SortOrder      : [{
       $Type      : 'Common.SortOrderType',
-      Property   : BookingID,
+      Property   : Pos,
       Descending : false
     }]
   },
@@ -110,13 +110,13 @@ annotate TravelService.Bookings with @UI : {
 
   LineItem : [
     { Value : Flight.icon, Label : '  '},
-    { Value : BookingID },
-    { Value : BookingDate },
-    { Value : Flight.airline, Label : '{i18n>Airline}' },
-    { Value : Flight.flightNumber, Label : '{i18n>FlightNumber}' },
-    { Value : Flight.flightDate, Label : '{i18n>FlightDate}' },
-    { Value : Flight.departure, Label : 'From' },
-    { Value : Flight.destination, Label : 'To' },
+    { Value : Flight.ID, Label : '{i18n>FlightID}' },
+    { Value : Flight.date, Label : '{i18n>FlightDate}', ![@Common.FieldControl]: #ReadOnly },
+    { Value : Flight.departure, Label : '{i18n>Departure}', ![@Common.FieldControl]: #ReadOnly },
+    { Value : Flight.arrival, Label : '{i18n>Arrival}', ![@Common.FieldControl]: #ReadOnly },
+    { Value : Flight.origin, Label : '{i18n>Origin}', ![@Common.FieldControl]: #ReadOnly },
+    { Value : Flight.destination, Label : '{i18n>Destination}', ![@Common.FieldControl]: #ReadOnly },
+    { Value : Flight.airline, Label : '{i18n>Airline}', ![@Common.FieldControl]: #ReadOnly },
     { Value : FlightPrice, Label : '{i18n>FlightPrice}' },
   ],
 
@@ -143,17 +143,16 @@ annotate TravelService.Bookings with @UI : {
   }],
 
   FieldGroup #GeneralInformation : { Data : [
-    { Value : BookingID              },
-    { Value : BookingDate,           },
+    { Value : Pos },
+    { Value : BookingDate },
     { Value : Travel.Customer.ID },
-    { Value : BookingDate,           },
   ]},
 
-  FieldGroup #Flight : { Data : [
-    { Value : Flight.airline   },
-    { Value : Flight.flightNumber           },
-    { Value : Flight.flightDate             },
-    { Value : FlightPrice            }
+  FieldGroup #Flight: {Data: [
+    { Value: Flight.airline },
+    { Value: Flight.ID },
+    { Value: Flight.date },
+    { Value: FlightPrice }
   ]},
 };
 

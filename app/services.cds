@@ -1,3 +1,3 @@
-using from './travel_processor/capabilities';
-using from './travel_processor/field-control';
-using from './travel_processor/layouts';
+using from './travels/capabilities';
+using from './travels/field-control';
+using from './travels/layouts';
