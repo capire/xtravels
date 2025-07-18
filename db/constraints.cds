@@ -12,11 +12,6 @@ annotate my.Bookings with {
   @mandatory Travel;
 }
 
-annotate my.Supplements with {
-  @mandatory Supplement;
-}
-
-
 annotate my.Travels with @Capabilities.FilterRestrictions.FilterExpressionRestrictions: [
   { Property: 'BeginDate', AllowedExpressions : 'SingleRange' },
   { Property: 'EndDate', AllowedExpressions : 'SingleRange' }

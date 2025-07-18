@@ -205,9 +205,9 @@ annotate flights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used
 
 
 
-annotate flights.FlightConnections {
+annotate flights.Connections {
 
-  AirlineID @Common.ValueList: {
+  airline @Common.ValueList: {
     CollectionPath : 'Airline',
     Label : '',
     Parameters : [

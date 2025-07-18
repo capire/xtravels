@@ -11,15 +11,14 @@ annotate schema.TravelAgencies with @cds.autoexpose;
 annotate schema.Passengers with @cds.autoexpose;
 
 annotate schema.Travels with @title: '{i18n>Travel}' {
-  ID   @UI.Hidden;
-  TravelID    @title: '{i18n>TravelID}';
+  ID          @title: '{i18n>Travel}';
   BeginDate   @title: '{i18n>BeginDate}';
   EndDate     @title: '{i18n>EndDate}';
   Description @title: '{i18n>Description}';
   BookingFee  @title: '{i18n>BookingFee}'    @Measures.ISOCurrency: Currency_code;
   TotalPrice  @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: Currency_code;
-  Customer    @title: '{i18n>CustomerID}'    @Common: { Text: Customer.LastName, TextArrangement : #TextOnly };
-  Agency      @title: '{i18n>AgencyID}'      @Common: { Text: Agency.Name, TextArrangement : #TextOnly };
+  Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.LastName, TextArrangement : #TextOnly };
+  Agency      @title: '{i18n>Agency}'        @Common: { Text: Agency.Name, TextArrangement : #TextOnly };
   Status      @title: '{i18n>TravelStatus}'
 }
 
@@ -34,12 +33,12 @@ annotate schema.TravelStatus {
 }
 
 annotate schema.Bookings with @title: '{i18n>Booking}' {
-  Travel     @UI.Hidden;
-  BookingID     @title: '{i18n>BookingID}';
-  BookingDate   @title: '{i18n>BookingDate}';
-  Flight  @title: '{i18n>ConnectionID}';
-  Currency  @title: '{i18n>CurrencyCode}';
-  FlightPrice   @title: '{i18n>FlightPrice}'    @Measures.ISOCurrency: Currency_code;
+  Travel @UI.Hidden;
+  Pos @title: '{i18n>BookingID}';
+  BookingDate @title: '{i18n>BookingDate}';
+  Flight @title: '{i18n>Flight}';
+  Currency @title: '{i18n>CurrencyCode}';
+  FlightPrice  @title: '{i18n>FlightPrice}'  @Measures.ISOCurrency: Currency_code;
 }
 
 annotate schema.Bookings.Supplements with @title: '{i18n>BookingSupplement}' {
@@ -50,8 +49,8 @@ annotate schema.Bookings.Supplements with @title: '{i18n>BookingSupplement}' {
 }
 
 annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {
-  ID           @title: '{i18n>AgencyID}'      @Common.Text: Name;
-  Name         @title: '{i18n>AgencyName}';
+  ID           @title: '{i18n>Agency}'      @Common.Text: Name;
+  Name         @title: '{i18n>Agency}';
   Street       @title: '{i18n>Street}';
   PostalCode   @title: '{i18n>PostalCode}';
   City         @title: '{i18n>City}';
@@ -62,7 +61,7 @@ annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {
 }
 
 annotate schema.Passengers with @title: '{i18n>Passenger}' {
-  ID           @title: '{i18n>CustomerID}'    @Common.Text: LastName;
+  ID           @title: '{i18n>Customer}'    @Common.Text: LastName;
   FirstName    @title: '{i18n>FirstName}';
   LastName     @title: '{i18n>LastName}';
   Title        @title: '{i18n>Title}';
@@ -78,19 +77,19 @@ annotate schema.Passengers with @title: '{i18n>Passenger}' {
 using sap.capire.flights;
 
 annotate flights.Airlines with @title: '{i18n>Airline}' {
-  ID    @title: '{i18n>AirlineID}'     @Common.Text: name;
-  name         @title: '{i18n>Name}';
+  ID  @title: '{i18n>AirlineID}'  @Common.Text: name;
+  name @title: '{i18n>Name}';
   currency @title: '{i18n>CurrencyCode}';
 }
 
 annotate flights.Flights with @title: '{i18n>Flight}' {
-  flightDate    @title: '{i18n>FlightDate}';
-  connection  @title: '{i18n>ConnectionID}';
-  currency  @title: '{i18n>CurrencyCode}';
-  price         @title: '{i18n>Price}'        @Measures.ISOCurrency: currency_code;
-  planeType     @title: '{i18n>PlaneType}';
-  maximumSeats  @title: '{i18n>MaximumSeats}';
-  occupiedSeats @title: '{i18n>OccupiedSeats}';
+  connection      @title: '{i18n>ConnectionID}';
+  aircraft        @title: '{i18n>PlaneType}';
+  date            @title: '{i18n>FlightDate}';
+  price           @title: '{i18n>Price}'        @Measures.ISOCurrency: currency_code;
+  currency        @title: '{i18n>CurrencyCode}';
+  maximum_seats   @title: '{i18n>MaximumSeats}';
+  occupied_seats  @title: '{i18n>OccupiedSeats}';
 }
 
 annotate flights.Supplements with @title: '{i18n>Supplement}' {

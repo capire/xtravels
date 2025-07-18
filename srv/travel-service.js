@@ -9,8 +9,8 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   // Note: For Travels that can't be done at NEW events, that is when drafts are created,
   // but on CREATE only, as multiple users could create new Travels concurrently.
   this.before ('CREATE', Travels, async req => {
-    let { maxID } = await SELECT.one (`max(TravelID) as maxID`) .from (Travels)
-    req.data.TravelID = ++maxID
+    let { maxID } = await SELECT.one (`max(ID) as maxID`) .from (Travels)
+    req.data.ID = ++maxID
   })
 
   // Prevent changing closed travels -> should be automated by Status-Transition Flows
@@ -21,8 +21,8 @@ module.exports = class TravelService extends cds.ApplicationService { async init
 
   // Fill in IDs as sequence numbers -> could be automated by auto-generation
   this.before ('NEW', Bookings.drafts, async req => {
-    let { maxID } = await SELECT.one (`max(BookingID) as maxID`) .from (Bookings.drafts) .where (req.data)
-    req.data.BookingID = ++maxID
+    let { maxID } = await SELECT.one (`max(Pos) as maxID`) .from (Bookings.drafts) .where (req.data)
+    req.data.Pos = ++maxID
   })
 
   // Fill in IDs as sequence numbers -> should be automated by auto-generation
@@ -93,10 +93,10 @@ module.exports = class TravelService extends cds.ApplicationService { async init
       .with `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
 
     if (!succeeded) { //> let's find out why...
-      let travel = await SELECT.one `TravelID as id, Status.code as status, BookingFee` .from (req.subject)
-      if (!travel) throw req.reject (404, `Travel "${travel.id}" does not exist; may have been deleted meanwhile.`)
-      if (travel.status === Accepted) throw req.reject (409, `Travel "${travel.id}" has been approved already.`)
-      if (travel.BookingFee == null) throw req.reject (404, `No discount possible, "${travel.id}" does not yet have a booking fee added.`)
+      let travel = await SELECT.one `ID, Status.code as status, BookingFee` .from (req.subject)
+      if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
+      if (travel.status === Accepted) throw req.reject (409, `Travel "${travel.ID}" has been approved already.`)
+      if (travel.BookingFee == null) throw req.reject (404, `No discount possible, "${travel.ID}" does not yet have a booking fee added.`)
     }
   })
 

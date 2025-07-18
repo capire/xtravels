@@ -1,7 +1,7 @@
 @server = http://localhost:4004
 @alice = Authorization: Basic alice
 
-GET {{server}}/processor/Travel?$filter=TravelID eq 4133
+GET {{server}}/processor/Travel?$filter=ID eq 4133
 {{alice}}
 ###
 

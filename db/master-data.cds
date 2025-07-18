@@ -9,7 +9,7 @@ entity federated.Flights as projection on external.Flights {
   *,
   airline.icon     as icon,
   airline.name     as airline,
-  departure.name   as departure,
+  origin.name      as origin,
   destination.name as destination,
 }
 
@@ -30,4 +30,4 @@ type Country : Association to external.Countries;
 // Common types for Travels application
 //
 
-type Price : Decimal(16, 3);
+type Price : Decimal(9,4);

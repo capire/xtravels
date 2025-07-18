@@ -10,8 +10,7 @@ using {
 
 
 entity Travels : managed {
-  key ID           : UUID;
-      TravelID     : Integer default 0 @readonly;
+      key ID       : Integer default 0 @readonly;
       Description  : String(1024);
       BeginDate    : Date default $now;
       EndDate      : Date default $now;
@@ -27,8 +26,7 @@ entity Travels : managed {
 
 entity Bookings {
   key Travel      : Association to Travels;
-  key BookingID   : Integer @readonly;
-      BookingDate : Date default $now;
+  key Pos         : Integer @readonly;
       Flight      : Association to federated.Flights;
       FlightPrice : Price;
       Currency    : Currency;
@@ -37,7 +35,8 @@ entity Bookings {
         booked   : Association to federated.Supplements;
         Price    : Price;
         Currency : Currency;
-      }
+      };
+      BookingDate : Date default $now;
 }
 
 entity TravelAgencies {
