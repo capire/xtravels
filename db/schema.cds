@@ -10,17 +10,17 @@ using {
 
 
 entity Travels : managed {
-      key ID       : Integer default 0 @readonly;
-      Description  : String(1024);
-      BeginDate    : Date default $now;
-      EndDate      : Date default $now;
-      BookingFee   : Price default 0;
-      TotalPrice   : Price @readonly;
-      Currency     : Currency default 'EUR';
-      Status       : Association to TravelStatus @readonly default 'O';
-      Agency       : Association to TravelAgencies;
-      Customer     : Association to Passengers;
-      Bookings     : Composition of many Bookings on Bookings.Travel = $self;
+  key ID       : Integer default 0 @readonly;
+  Description  : String(1024);
+  BeginDate    : Date default $now;
+  EndDate      : Date default $now;
+  BookingFee   : Price default 0;
+  TotalPrice   : Price @readonly;
+  Currency     : Currency default 'EUR';
+  Status       : Association to TravelStatus @readonly default 'O';
+  Agency       : Association to TravelAgencies;
+  Customer     : Association to Passengers;
+  Bookings     : Composition of many Bookings on Bookings.Travel = $self;
 }
 
 
