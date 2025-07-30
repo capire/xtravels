@@ -9,7 +9,7 @@
     "test": "chest test"
   },
   "dependencies": {
-    "@capire/xflights": "*",
+    "@capire/xflights": "https://github.com/capire/xflights.git",
     "@sap/cds": ">=9",
     "express": "^4"
   },
