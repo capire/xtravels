@@ -1,5 +1,5 @@
 {
-  "name": "@capire/travels",
+  "name": "@capire/xtravels",
   "version": "1.0.0",
   "description": "CAP SFlight travel service demo",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "chest test"
   },
   "dependencies": {
-    "@capire/sflights": "*",
+    "@capire/xflights": "*",
     "@sap/cds": ">=9",
     "express": "^4"
   },

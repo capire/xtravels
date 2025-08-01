@@ -1,5 +1,5 @@
 namespace sap.capire.travels.masterdata;
-using { sap.capire.flights.data as external } from '@capire/sflights';
+using { sap.capire.flights.data as external } from '@capire/xflights';
 
 //
 // Consumption views for 2b federated master data...
