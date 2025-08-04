@@ -3,3 +3,4 @@
 _out
 gen
 node_modules
+default-env.json
