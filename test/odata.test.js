@@ -1,5 +1,6 @@
 const cds = require('@sap/cds')
-const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
+
+const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..', '--with-mocks', '--with-bindings')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
 axios.defaults.auth = { username: 'alice', password: 'admin' }
@@ -7,6 +8,11 @@ axios.defaults.auth = { username: 'alice', password: 'admin' }
 const ID = '1'
 
 describe ("Basic Querying", () => {
+
+  it("should read from federated data", async() => {
+    const flights = await GET `/odata/v4/travel/Flights/$count`
+    expect(flights) .property('data') .to.eql(44)
+  })
 
   it ("should read from row references", async()=>{
     const travel = await SELECT.one `TravelService.Travels` .where ({ ID })
@@ -47,7 +53,7 @@ describe('Basic OData', () => {
     const { data } = await GET `/odata/v4/travel/Travels?$filter=ID eq 175`
     expect(data.value).to.containSubset([{
       BeginDate: '2023-08-02',
-      BookingFee: 60,
+      BookingFee: '60.0000',
       createdAt: expectedValue => /2023-07-16T18:42:07\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       createdBy: 'Hansmann',
       Currency_code: 'SGD',
@@ -60,7 +66,7 @@ describe('Basic OData', () => {
       modifiedBy: 'Deichgraeber',
       Agency_ID: '070029',
       Customer_ID: '000318',
-      TotalPrice: 23439,
+      TotalPrice: '23439.0000',
       ID: 175,
       Status_code: 'A',
     }])
@@ -122,7 +128,7 @@ describe('Basic OData', () => {
     })
 
     const { data: newTravel } = await SAVE (`/odata/v4/travel/Travels(ID='${newDraft.ID}',IsActiveEntity=false)`)
-    expect(newTravel).to.contain({ ID: 4134, TotalPrice: 11 })
+    expect(newTravel).to.contain({ ID: 4134, TotalPrice: '11.0000' })
   })
 
   it ('re-calculates totals after booking fee changed', async ()=>{
@@ -151,7 +157,7 @@ describe('Basic OData', () => {
     //   console.log (TotalPrice,total)
     // }
     expect(draft).to.containSubset({
-      TotalPrice: 7375,
+      TotalPrice: '7375.0000',
       ID: 4133,
     })
 
@@ -193,14 +199,14 @@ describe('Basic OData', () => {
 
   it('deduct discount multiple times does not end up in error', async () => {
     const { data: res1 } = await GET `/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)`
-    expect(res1).to.contain({ TotalPrice: 900, BookingFee: 20 })
+    expect(res1).to.contain({ TotalPrice: '900.0000', BookingFee: '20.0000' })
 
     await POST(
       `/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/TravelService.deductDiscount`,
       { percent: 11 }
     )
     const { data: res2 } = await GET `/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)`
-    expect(res2).to.contain({ TotalPrice: 897.8, BookingFee: 17.8 })
+    expect(res2).to.contain({ TotalPrice: '897.8000', BookingFee: '17.8000' })
 
     await POST(
       `/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/TravelService.deductDiscount`,
@@ -208,7 +214,7 @@ describe('Basic OData', () => {
     )
 
     const { data: res3 } = await GET `/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)`
-    expect(res3).to.contain({ TotalPrice: 895.842, BookingFee: 15.842 })
+    expect(res3).to.contain({ TotalPrice: '895.8420', BookingFee: '15.8420' })
 
     await POST(
       `/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/TravelService.deductDiscount`,
@@ -216,7 +222,7 @@ describe('Basic OData', () => {
     )
     // rounded to 3 decimals
     const { data: res4 } = await GET `/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)`
-    expect(res4).to.contain({ TotalPrice: 894.099, BookingFee: 14.099 })
+    expect(res4).to.contain({ TotalPrice: '894.0990', BookingFee: '14.0990' })
   })
 
   it('allows deducting discounts on drafts as well', async ()=>{
@@ -224,10 +230,10 @@ describe('Basic OData', () => {
     const Draft = `/odata/v4/travel/Travels(ID=66,IsActiveEntity=false)`
 
     const { data:res0 } = await GET (Active)
-    expect(res0).to.contain({ ID:66, TotalPrice: 729, BookingFee: 10 })
+    expect(res0).to.contain({ ID:66, TotalPrice: '729.0000', BookingFee: '10.0000' })
 
     const { data:res1 } = await EDIT (Active)
-    expect(res1).to.contain({ TotalPrice: 729, BookingFee: 10 })
+    expect(res1).to.contain({ TotalPrice: '729.0000', BookingFee: '10.0000' })
 
     // Change the Travel's dates to avoid validation errors
     const today = new Date, tomorrow = new Date; tomorrow.setDate(today.getDate()+1)
@@ -236,15 +242,15 @@ describe('Basic OData', () => {
 
     await POST (`${Draft}/TravelService.deductDiscount`, { percent: 50 })
     const { data:res2 } = await GET `/odata/v4/travel/Travels(ID=66,IsActiveEntity=false)`
-    expect(res2).to.contain({ TotalPrice: 724, BookingFee: 5 })
+    expect(res2).to.contain({ TotalPrice: '724.0000', BookingFee: '5.0000' })
 
     const { data:res3 } = await GET (Draft)
-    expect(res3).to.contain({ TotalPrice: 724, BookingFee: 5 })
+    expect(res3).to.contain({ TotalPrice: '724.0000', BookingFee: '5.0000' })
 
     await SAVE (Draft)
 
     const { data:res4 } = await GET (Active)
-    expect(res4).to.contain({ TotalPrice: 724, BookingFee: 5 })
+    expect(res4).to.contain({ TotalPrice: '724.0000', BookingFee: '5.0000' })
   })
 
 })

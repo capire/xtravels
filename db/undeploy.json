@@ -1,0 +1,6 @@
+[
+  "**/*.hdbvirtualtable",
+  "**/*.hdbsynonym",
+  "**/*.hdbsynonymconfig",
+  "**/*.hdbrole"
+]

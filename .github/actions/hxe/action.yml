@@ -39,7 +39,7 @@ runs:
       shell: bash
       run: |
         echo "${{ inputs.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin;
-        DOCKER_BUILDKIT=1 docker build -t $IMAGE_ID:$TAG ./hana/tools/docker/hxe;
+        DOCKER_BUILDKIT=1 docker build -t $IMAGE_ID:$TAG ${{ github.action_path }}/;
         docker push $IMAGE_ID:$TAG;
       env:
         TAG: ${{ steps.find-hxe.outputs.TAG }}
