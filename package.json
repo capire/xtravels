@@ -6,7 +6,7 @@
     "lint": "npx eslint .",
     "setup": "node ./test/hana.mjs",
     "start": "cds-serve",
-    "remote": "cd ./node_modules/@capire/sflights && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
+    "remote": "cd ./node_modules/@capire/xflights && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
     "jest": "npx jest",
     "test": "chest test",
     "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:vrt && npm run test:syn",
@@ -42,7 +42,7 @@
       "requires": {
         "sap.capire.flights.data": {
           "kind": "odata",
-          "model": "@capire/sflights",
+          "model": "@capire/xflights",
           "credentials": {
             "url": "http://localhost:4005/odata/v4/data/"
           }
@@ -59,7 +59,7 @@
           "kind": "odata",
           "credentials": {
             "remote": "xflights",
-            "schema": "SFLIGHT_XFLIGHTS"
+            "schema": "XFLIGHTS_XFLIGHTS"
           }
         }
       }
@@ -74,7 +74,7 @@
           "kind": "odata",
           "vcap": "xflights",
           "credentials": {
-            "schema": "SFLIGHT_XFLIGHTS"
+            "schema": "XFLIGHTS_XFLIGHTS"
           }
         }
       }

@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import cp from 'node:child_process'
 import cds from '@sap/cds'
 
-const database = 'sflight'
+const database = 'xflights'
 const credentials = {
   "user": "SYSTEM",
   "password": "Manager1",
@@ -21,8 +21,8 @@ const travels = await hdiContainer({ database, tenant: 'travels' })
 const xflights = await hdiContainer({ database, tenant: 'xflights' })
 
 console.log('HDI stored')
-// import.meta.resolve('@capire/sflights') <= requires index.js file to exist
-fs.writeFileSync('node_modules/@capire/sflights/default-env.json', JSON.stringify({
+// import.meta.resolve('@capire/xflights') <= requires index.js file to exist
+fs.writeFileSync('node_modules/@capire/xflights/default-env.json', JSON.stringify({
   VCAP_SERVICES: {
     hana: [xflights]
   },
@@ -48,10 +48,10 @@ await grantRemoteSource(hana2hana, travels.credentials)
 
 console.log('xflights deploy')
 await new Promise((resolve, reject) => {
-  const xflights = cds.utils.path.resolve(import.meta.dirname + '/../node_modules/@capire/sflights')
+  const xflights = cds.utils.path.resolve(import.meta.dirname + '/../node_modules/@capire/xflights')
   const deploy = cp.spawn('cds', ['deploy', '-2', 'hana'], {
     cwd: xflights,
-    stdio: 'pipe', // for debugging switch to 'inherit'
+    stdio: 'inherit', // for debugging switch to 'inherit'
     env: {
       PATH: process.env.PATH,
     },
