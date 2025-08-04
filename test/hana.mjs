@@ -20,15 +20,16 @@ console.log('HDI setup')
 const travels = await hdiContainer({ database, tenant: 'travels' })
 const xflights = await hdiContainer({ database, tenant: 'xflights' })
 
+const xflightsDir = cds.utils.path.dirname(import.meta.resolve('@capire/xflights')).replace('file:', '')
+
 console.log('HDI stored')
-// import.meta.resolve('@capire/xflights') <= requires index.js file to exist
-fs.writeFileSync('node_modules/@capire/xflights/default-env.json', JSON.stringify({
+fs.writeFileSync(cds.utils.path.resolve(xflightsDir, 'default-env.json'), JSON.stringify({
   VCAP_SERVICES: {
     hana: [xflights]
   },
 }, null, 2))
 
-fs.writeFileSync(import.meta.dirname + '/../default-env.json', JSON.stringify({
+fs.writeFileSync(cds.utils.path.resolve(import.meta.dirname, '../default-env.json'), JSON.stringify({
   TARGET_CONTAINER: travels.name,
   VCAP_SERVICES: {
     hana: [travels, xflights]
@@ -48,10 +49,10 @@ await grantRemoteSource(hana2hana, travels.credentials)
 
 console.log('xflights deploy')
 await new Promise((resolve, reject) => {
-  const xflights = cds.utils.path.resolve(import.meta.dirname + '/../node_modules/@capire/xflights')
+  const xflights = cds.utils.path.resolve(xflightsDir)
   const deploy = cp.spawn('cds', ['deploy', '-2', 'hana'], {
     cwd: xflights,
-    stdio: 'inherit', // for debugging switch to 'inherit'
+    stdio: 'pipe', // for debugging switch to 'inherit'
     env: {
       PATH: process.env.PATH,
     },
@@ -64,7 +65,7 @@ await new Promise((resolve, reject) => {
 
 async function hdiContainer(isolate) {
   const connector = await cds.connect.to('db-hdi', { kind: 'hana', credentials })
-  await connector.run(`CREATE ROLE "${(isolate.database + '_' + isolate.tenant).toUpperCase()}::access_role"`).catch(() => {})
+  await connector.run(`CREATE ROLE "${(isolate.database + '_' + isolate.tenant).toUpperCase()}::access_role"`).catch(() => { })
   await connector.database(isolate)
   await connector.tenant(isolate)
   const creds = { ...connector.options.credentials }
