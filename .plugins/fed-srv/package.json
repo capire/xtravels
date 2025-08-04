@@ -1,0 +1,10 @@
+{
+  "name": "@cap-js/service-federation",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "exit 1"
+  },
+  "peerDependencies": {
+    "@sap/cds": ">=9"
+  }
+}
