@@ -24,7 +24,12 @@ const [travels, xflights] = await Promise.all(
   ]
 )
 
+const xtravelsDir = cds.utils.path.resolve(import.meta.dirname + '/../')
 const xflightsDir = cds.utils.path.dirname(import.meta.resolve('@capire/xflights')).replace('file:', '')
+
+// if .cdsrc-private.json files exist they will pollute the services
+try { fs.rmSync(cds.utils.path.resolve(xtravelsDir, '.cdsrc-private.json')) } catch {}
+try { fs.rmSync(cds.utils.path.resolve(xflightsDir, '.cdsrc-private.json')) } catch {}
 
 console.log('HDI stored')
 fs.writeFileSync(cds.utils.path.resolve(xflightsDir, 'default-env.json'), JSON.stringify({
