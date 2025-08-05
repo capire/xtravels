@@ -19,6 +19,8 @@ cds.compiler.to.hdi.migration = function (csn, options, beforeImage) {
     if (!isExternalEntity(csn, def)) {
       // REVISIT: find out when the skip annotation is added
       delete def["@cds.persistence.skip"]
+      // prevent prototype chain for the table annotation
+      def["@cds.persistence.table"] = undefined;
 
       // Create cache views for entities with ttl
       if (def?.query && def['@cds.replicate.ttl'] && !Object.getPrototypeOf(def)['@cds.replicate.ttl']) {

@@ -8,6 +8,7 @@ function getAllRemoteServices(model) {
     const creds = cds.requires[srv]?.credentials
     // RemoteService only functions if the url or destination credentials are provided
     return model.definitions[srv]['@cds.external'] && (creds?.url || creds?.destination)
+      && (!cds.services[srv] || cds.services[srv] instanceof cds.RemoteService)
   });
 }
 

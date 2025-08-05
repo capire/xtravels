@@ -4,15 +4,15 @@
   "description": "CAP SFlight travel service demo",
   "scripts": {
     "lint": "npx eslint .",
-    "setup": "node ./test/hana.mjs",
+    "setup": "node ./test/hana.mjs || node ./test/cf.mjs || exit 0",
     "start": "cds-serve",
     "remote": "cd ./node_modules/@capire/xflights && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
     "jest": "npx jest",
     "test": "chest test",
-    "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:vrt && npm run test:syn",
+    "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt",
     "test:srv": "CDS_ENV=fed-srv npm t",
-    "test:vrt": "echo 'HDI deploy' && CDS_ENV=fed-vrt cds deploy -2 hana >/dev/null && CDS_ENV=fed-vrt npm t",
-    "test:syn": "echo 'HDI deploy' && CDS_ENV=fed-syn cds deploy -2 hana >/dev/null && CDS_ENV=fed-syn npm t"
+    "test:vrt": "echo 'HDI deploy' && cds bind --exec --profile fed-vrt -- cds deploy -2 hana >/dev/null && cds bind --exec --profile fed-vrt -- npm t",
+    "test:syn": "echo 'HDI deploy' && cds bind --exec --profile fed-syn -- cds deploy -2 hana >/dev/null && cds bind --exec --profile fed-syn -- npm t"
   },
   "dependencies": {
     "@cap-js/database-federation": ".plugins/fed-db",

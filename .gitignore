@@ -4,3 +4,7 @@ _out
 gen
 node_modules
 default-env.json
+.cf
+
+# added by cds
+.cdsrc-private.json

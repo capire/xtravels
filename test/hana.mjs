@@ -17,8 +17,12 @@ const credentials = {
 }
 
 console.log('HDI setup')
-const travels = await hdiContainer({ database, tenant: 'travels' })
-const xflights = await hdiContainer({ database, tenant: 'xflights' })
+const [travels, xflights] = await Promise.all(
+  [
+    hdiContainer({ database, tenant: 'travels' }),
+    hdiContainer({ database, tenant: 'xflights' }),
+  ]
+)
 
 const xflightsDir = cds.utils.path.dirname(import.meta.resolve('@capire/xflights')).replace('file:', '')
 
@@ -49,9 +53,8 @@ await grantRemoteSource(hana2hana, travels.credentials)
 
 console.log('xflights deploy')
 await new Promise((resolve, reject) => {
-  const xflights = cds.utils.path.resolve(xflightsDir)
   const deploy = cp.spawn('cds', ['deploy', '-2', 'hana'], {
-    cwd: xflights,
+    cwd: xflightsDir,
     stdio: 'pipe', // for debugging switch to 'inherit'
     env: {
       PATH: process.env.PATH,
