@@ -25,13 +25,16 @@ const [travels, xflights] = await Promise.all(
 )
 
 const xtravelsDir = cds.utils.path.resolve(import.meta.dirname + '/../')
-const xflightsDir = cds.utils.path.dirname(import.meta.resolve('@capire/xflights')).replace('file:', '')
+const xflightsDir = cds.utils.path.dirname(import.meta.resolve('@capire/xflights/package.json')).replace('file:', '')
 
 // if .cdsrc-private.json files exist they will pollute the services
-try { fs.rmSync(cds.utils.path.resolve(xtravelsDir, '.cdsrc-private.json')) } catch {}
-try { fs.rmSync(cds.utils.path.resolve(xflightsDir, '.cdsrc-private.json')) } catch {}
+try { fs.rmSync(cds.utils.path.resolve(xtravelsDir, '.cdsrc-private.json')) } catch { }
+try { fs.rmSync(cds.utils.path.resolve(xflightsDir, '.cdsrc-private.json')) } catch { }
 
-console.log('HDI stored')
+console.log('Data Sphere Setup')
+const xflightsDataSphere = await ensureDataSphere()
+
+console.log('HDI + Data Sphere stored')
 fs.writeFileSync(cds.utils.path.resolve(xflightsDir, 'default-env.json'), JSON.stringify({
   VCAP_SERVICES: {
     hana: [xflights]
@@ -41,7 +44,8 @@ fs.writeFileSync(cds.utils.path.resolve(xflightsDir, 'default-env.json'), JSON.s
 fs.writeFileSync(cds.utils.path.resolve(import.meta.dirname, '../default-env.json'), JSON.stringify({
   TARGET_CONTAINER: travels.name,
   VCAP_SERVICES: {
-    hana: [travels, xflights]
+    hana: [travels, xflights],
+    'user-provided': [xflightsDataSphere]
   },
 }, null, 2))
 
@@ -49,7 +53,7 @@ console.log('remote setup')
 const hana2hana = {
   name: 'xflights',
   adapter: 'hanaodbc',
-  configuration: `Driver=libodbcHDB.so;ServerNode=${xflights.credentials.host}:${xflights.credentials.port.replace('00', '90') /* hxe internal port is 39041 */};trustall=TRUE;encrypt=TRUE;sslValidateCertificate=FALSE`,
+  configuration: `Driver=libodbcHDB.so;ServerNode=${xflights.credentials.host}:${xflights.credentials.port.replace('00', '00') /* hxe internal port is 39041 */};trustall=TRUE;encrypt=TRUE;sslValidateCertificate=FALSE`,
   credential: `user=${xflights.credentials.user};password=${xflights.credentials.password}`,
 }
 
@@ -169,4 +173,42 @@ async function grantRemoteSource(remote, creds) {
   })
 
   await connector.disconnect()
+}
+
+async function ensureDataSphere(space = 'TESTS_SPACE_0') {
+  const res = await fetch(`http://localhost:15002/dwaas-core/space/${space}/databaseusers/reset`, {
+    "method": 'POST',
+    "headers": {
+      "content-type": "application/json",
+      "x-csrf-token": "null",
+    },
+    "body": JSON.stringify({ username: 'TESTS_SPACE_0#CAFE' }),
+  })
+
+  const creds = await res.json()
+
+  return {
+    "binding_guid": cds.utils.uuid(),
+    "binding_name": null,
+    "credentials": {
+      ...credentials,
+      ...creds,
+      user: creds.username,
+      schema: space,
+      type: 'procedure',
+      procedure_schema: `${space}$TEC`,
+      procedure: 'HDI_GRANTOR_FOR_CUPS',
+    },
+    "instance_guid": cds.utils.uuid(),
+    "instance_name": "xflights-datasphere",
+    "label": "user-provided",
+    "name": "xflights-datasphere",
+    "plan": "hdi-shared",
+    "provider": null,
+    "syslog_drain_url": null,
+    "tags": [
+      "hana",
+    ],
+    "volume_mounts": []
+  }
 }

@@ -17,7 +17,7 @@ function time2Cron(time) {
         return time;
     }
 
-    const match = time.match(/^([0-9]+)(w|d|h|hrs|min|s)$/);
+    const match = time.match(/^([0-9]+)(w|d|h|hrs|m|min|s)$/);
     if (!match) return;
 
     let cronParts = ['*', '*', '*', '*', '*', '*', '*'];
@@ -26,16 +26,28 @@ function time2Cron(time) {
     switch (t) {
         case 'w':
             cronParts[2] = `*/${val * 7}`;
+            cronParts[3] = '0';
+            cronParts[4] = '0';
+            cronParts[5] = '0';
+            cronParts[6] = '0';
             break;
         case 'd':
             cronParts[2] = `*/${val}`;
+            cronParts[3] = '0';
+            cronParts[4] = '0';
+            cronParts[5] = '0';
+            cronParts[6] = '0';
             break;
         case 'h':
         case 'hrs':
             cronParts[4] = `*/${val}`;
+            cronParts[5] = '0';
+            cronParts[6] = '0';
             break;
+        case 'm':
         case 'min':
             cronParts[5] = `*/${val}`;
+            cronParts[6] = '0';
             break;
         case 's':
             cronParts[6] = `*/${val}`;

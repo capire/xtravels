@@ -55,15 +55,39 @@ cds.compiler.to.hdi.migration = function (csn, options, beforeImage) {
     // Use quoted mode names when in quoted mode
     const localQuoted = cds.env?.sql?.names === 'quoted'
     const remoteQuoted = creds.sql?.names === 'quoted'
-    const removeService = creds.service === false || remoteQuoted
+    const removeService = creds.service === false
 
     const database = creds.database || '<NULL>';
     const schema = creds.schema || '<NULL>';
     const reduceName = removeService ? name.replace(srvName + '.', '') : name
     const remoteEntityName = remoteQuoted ? reduceName : reduceName.replace(/\./g, '_').toUpperCase()
-    const localEntityName = localQuoted ? `"${name}"` : name.replace(/\./g, '_')
+    const localEntityName = localQuoted ? `"${name}"` : name.replace(/\./g, '_').toUpperCase()
 
-    let virtualTableName = "";
+    let srcEntityName = localEntityName;
+
+    if (remoteQuoted && !localQuoted) {
+      srcEntityName = `${localEntityName}_SRC`
+      additions.push({
+        name,
+        suffix: '.hdbview',
+        sql: `VIEW ${localEntityName} AS SELECT
+  ${Object.keys(def.elements)
+            .filter(e => !def.elements[e]?.virtual && !(def.elements[e]?.isAssociation && !def.elements[e].keys) && !def.elements[e]?.elements)
+            .map(e => {
+              if (def.elements[e]?.isAssociation) {
+                return def.elements[e].keys.map(k => {
+                  e = `${e}_${k.ref[0]}`
+                  return `"${e}" AS ${e}`
+                })
+              }
+              return `"${e}" AS ${e}`
+            })
+            .flat()
+            .join(',\n  ')
+          }
+FROM ${srcEntityName}`,
+      })
+    }
 
     // Use synonyms when no remote is specified
     if (!creds.remote) {
@@ -72,7 +96,7 @@ cds.compiler.to.hdi.migration = function (csn, options, beforeImage) {
         name,
         suffix: '.hdbsynonym',
         sql: JSON.stringify({
-          [remoteEntityName]: {
+          [srcEntityName]: {
             target: {
               object: remoteEntityName,
               schema: creds.schema,
@@ -95,80 +119,78 @@ cds.compiler.to.hdi.migration = function (csn, options, beforeImage) {
       // });
 
       // Only OO grant role is required as it can grant SELECT to the application user
-      grants[service] ??= {
-        object_owner: { schema_roles: ['PUBLIC#'] },
-        // application_user: { schema_roles: ['PUBLIC'] }, // REVISIT: keep the application user role or rely on #OO grants ?
+      if (creds.type === 'procedure') { // Indicates procedure based granting object level privileges based
+        grants[service] ??= {
+          object_owner: {
+            roles: [],
+            container_roles: [],
+            object_privileges: [],
+          }
+        }
+        grants[service].object_owner.object_privileges.push({
+          type: 'VIEW',
+          name: remoteEntityName,
+          privileges_with_grant_option: [
+            "SELECT"
+          ]
+        })
+      } else { // Default is HDI binding granting which only allows roles
+        grants[service] ??= {
+          object_owner: { schema_roles: ['PUBLIC#'] },
+          // application_user: { schema_roles: ['PUBLIC'] }, // REVISIT: keep the application user role or rely on #OO grants ?
+        }
       }
     }
     // Use hana virtual tables
     else if (creds.remote) {
-      if (remoteQuoted && !localQuoted) {
-        const virtualEntityName = `"${name}_virtual"`
+      additions.push({
+        name,
+        suffix: '.hdbvirtualtable',
+        sql: `VIRTUAL TABLE ${localEntityName} AT "${creds.remote}"."${database}"."${schema}"."${remoteEntityName}"`,
+      })
+
+      // Entity names provided in the role are case sensitive even when the definition is not quoted
+      remoteEntities.push(localEntityName.toUpperCase());
+
+      if (typeof def['@cds.replicate.ttl'] === 'string') {
+        const time = time2Cron(def['@cds.replicate.ttl']);
+
+        if (!time) continue
+
+        // Create snapshot replica with manual refresh
         additions.push({
           name,
-          suffix: '.hdbview',
-          sql: `VIEW ${localEntityName} AS SELECT 
-                    ${Object.keys(def.elements)
-              .filter(e => !def.elements[e]?.virtual && !def.elements[e]?.isAssociation && !def.elements[e]?.elements)
-              .map(e => `"${e}" AS ${e}`).join(',\n  ')}
-                    FROM ${virtualEntityName}`,
-        })
+          sql: `SHARED SNAPSHOT REPLICA ON ${virtualTableName}`,
+          suffix: '.hdbfabricvirtualtable'
+        });
 
-        additions.push({
-          name: entry.name + '_virtual',
-          sql: `VIRTUAL TABLE ${virtualEntityName} AT "${creds.remote}"."${database}"."${schema}"."${remoteEntityName}"`,
-          suffix: '.hdbvirtualtable',
-        })
-        virtualTableName = virtualEntityName;
-      } else {
+        // Create procedure and job schedular to refresh snapshot
+        const procedureName = localEntityName + '_procedure';
         additions.push({
           name,
-          suffix: '.hdbvirtualtable',
-          sql: `VIRTUAL TABLE ${localEntityName} AT "${creds.remote}"."${database}"."${schema}"."${remoteEntityName}"`,
-        })
+          sql:
+            `PROCEDURE ${procedureName}
+LANGUAGE SQLSCRIPT 
+SQL SECURITY DEFINER
+AUTOCOMMIT DDL ON
+AS BEGIN
+  EXEC 'ALTER VIRTUAL TABLE ${srcEntityName} REFRESH SNAPSHOT REPLICA ASYNC';
+END`,
+          suffix: '.hdbprocedure'
+        });
 
-        // Entity names provided in the role are case sensitive even when the definition is not quoted
-        remoteEntities.push(localEntityName.toUpperCase());
-      }
-
-      if (def['@cds.replicate']) {
-        if (creds.supportRealTimeCDC) {
-          additions.push({
-            name,
-            sql: `SHARED REPLICA PAGE LOADABLE ON "${virtualTableName}"`,
-            suffix: '.hdbfabricvirtualtable'
-          });
-          continue;
-        }
-
-        if (def['@cds.replicate.ttl'] && typeof def['@cds.replicate.ttl'] === 'string') {
-          const time = time2Cron(def['@cds.replicate.ttl']);
-
-          // Create snapshot replica with manual refresh
-          additions.push({
-            name,
-            sql: `SHARED SNAPSHOT REPLICA PAGE LOADABLE ON "${virtualTableName}"`,
-            suffix: '.hdbfabricvirtualtable'
-          });
-
-          // Create procedure and job schedular to refresh snapshot
-          const procedureName = localEntityName + '_procedure';
-          additions.push({
-            name,
-            sql: `PROCEDURE "${procedureName}"
-                            LANGUAGE SQLSCRIPT SQL SECURITY INVOKER
-                            AS BEGIN
-                            ALTER VIRTUAL TABLE "${virtualTableName}" CANCEL REFRESH SNAPSHOT REPLICA ASYNC; 
-                            END`,
-            suffix: '.hdbprocedure'
-          });
-
-          additions.push({
-            name,
-            sql: `SCHEDULER JOB "${remoteEntityName + "SCHEDULAR_JOB"}" CRON '${time}' ENABLE PROCEDURE "${procedureName}"`,
-            suffix: '.hdbschedulerjob'
-          });
-        }
+        additions.push({
+          name,
+          sql: `SCHEDULER JOB ${remoteEntityName + 'SCHEDULAR_JOB'} CRON '${time}' ENABLE PROCEDURE ${procedureName}`,
+          suffix: '.hdbschedulerjob'
+        });
+      } else if (creds.supportRealTimeCDC && def['@cds.replicate'] && !def.query) {
+        additions.push({
+          name,
+          sql: `SHARED REPLICA ON ${srcEntityName}`,
+          suffix: '.hdbfabricvirtualtable'
+        });
+        continue;
       }
     }
   }

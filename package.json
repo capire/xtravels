@@ -6,13 +6,17 @@
     "lint": "npx eslint .",
     "setup": "node ./test/hana.mjs || node ./test/cf.mjs || exit 0",
     "start": "cds-serve",
-    "remote": "cd ./node_modules/@capire/xflights && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
+    "remote": "cd $(node -e \"console.log(require('node:path').dirname(require.resolve('@capire/xflights/package.json')))\") && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
     "jest": "npx jest",
     "test": "chest test",
-    "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt",
+    "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt && npm run test:ds",
     "test:srv": "CDS_ENV=fed-srv npm t",
-    "test:vrt": "echo 'HDI deploy' && cds bind --exec --profile fed-vrt -- cds deploy -2 hana >/dev/null && cds bind --exec --profile fed-vrt -- npm t",
-    "test:syn": "echo 'HDI deploy' && cds bind --exec --profile fed-syn -- cds deploy -2 hana >/dev/null && cds bind --exec --profile fed-syn -- npm t"
+    "test:vrt": "echo 'HDI deploy' && npm run deploy:vrt >/dev/null && cds bind --exec --profile fed-vrt -- npm t",
+    "test:syn": "echo 'HDI deploy' && npm run deploy:syn >/dev/null && cds bind --exec --profile fed-syn -- npm t",
+    "test:ds": "echo 'HDI deploy' && npm run deploy:ds >/dev/null && cds bind --exec --profile fed-ds -- npm t",
+    "deploy:vrt": "cds bind --exec --profile fed-vrt -- cds deploy -2 hana",
+    "deploy:syn": "cds bind --exec --profile fed-syn -- cds deploy -2 hana",
+    "deploy:ds": "cds bind --exec --profile fed-ds -- cds deploy -2 hana"
   },
   "dependencies": {
     "@cap-js/database-federation": ".plugins/fed-db",
@@ -59,7 +63,8 @@
           "kind": "odata",
           "credentials": {
             "remote": "xflights",
-            "schema": "XFLIGHTS_XFLIGHTS"
+            "schema": "XFLIGHTS_XFLIGHTS",
+            "supportRealTimeCDC": true
           }
         }
       }
@@ -75,6 +80,25 @@
           "vcap": "xflights",
           "credentials": {
             "schema": "XFLIGHTS_XFLIGHTS"
+          }
+        }
+      }
+    },
+    "[fed-ds]": {
+      "features": {
+        "with_mocks": false
+      },
+      "requires": {
+        "db": "hana",
+        "sap.capire.flights.data": {
+          "kind": "odata",
+          "vcap": {
+            "name": "xflights-datasphere"
+          },
+          "credentials": {
+            "sql": {
+              "names": "quoted"
+            }
           }
         }
       }

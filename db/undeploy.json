@@ -1,5 +1,8 @@
 [
   "**/*.hdbvirtualtable",
+  "**/*.hdbfabricvirtualtable",
+  "**/*.hdbprocedure",
+  "**/*.hdbschedulerjob",
   "**/*.hdbsynonym",
   "**/*.hdbsynonymconfig",
   "**/*.hdbrole",

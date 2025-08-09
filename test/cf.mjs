@@ -4,7 +4,7 @@ import path from 'node:path'
 
 
 const xtravelsDir = path.resolve(import.meta.dirname + '/../')
-const xflightsDir = path.dirname(import.meta.resolve('@capire/xflights')).replace('file:', '')
+const xflightsDir = path.dirname(import.meta.resolve('@capire/xflights/package.json')).replace('file:', '')
 
 // if default-env.json files exist they will prevent binding generation
 try { fs.rmSync(path.resolve(xtravelsDir, 'default-env.json')) } catch {}
