@@ -39,15 +39,15 @@ annotate TravelService.Travels with @UI : {
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
 
-    { Value : ID,          @UI.Importance : #High },
-    { Value : Description, @UI.Importance : #High },
-    { Value : Customer.ID, @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
-    { Value : Agency.ID,   @HTML5.CssDefaults: {width:'16em'} },
-    { Value : BeginDate,   @HTML5.CssDefaults: {width:'9em'} },
-    { Value : EndDate,     @HTML5.CssDefaults: {width:'9em'} },
-    { Value : BookingFee,  @HTML5.CssDefaults: {width:'10em'} },
-    { Value : TotalPrice,  @HTML5.CssDefaults: {width:'12em'} },
-    { Value : Status.code,
+    { Value : ID,            @UI.Importance : #High },
+    { Value : Description,   @UI.Importance : #High },
+    { Value : (Customer.ID), @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
+    { Value : (Agency.ID),   @HTML5.CssDefaults: {width:'16em'} },
+    { Value : BeginDate,     @HTML5.CssDefaults: {width:'9em'} },
+    { Value : EndDate,       @HTML5.CssDefaults: {width:'9em'} },
+    { Value : BookingFee,    @HTML5.CssDefaults: {width:'10em'} },
+    { Value : TotalPrice,    @HTML5.CssDefaults: {width:'12em'} },
+    { Value : (Status.code),
       Criticality : (
         Status.code == #Accepted ? 3 :
         Status.code == #Open ? 2 :
@@ -68,10 +68,10 @@ annotate TravelService.Travels with @UI : {
   }],
 
   FieldGroup#TravelData : { Data : [
-    { Value : Customer.ID },
-    { Value : Agency.ID },
+    { Value : (Customer.ID) },
+    { Value : (Agency.ID) },
     { Value : Description },
-    { Value : Status.code,
+    { Value : (Status.code),
       Criticality : (
         Status.code == #Accepted ? 3 :
         Status.code == #Open ? 2 :
@@ -110,14 +110,15 @@ annotate TravelService.Bookings with @UI : {
 
   LineItem : [
     { Value : Flight.icon, Label : '  '},
-    { Value : Flight.ID, Label : '{i18n>FlightID}' },
-    { Value : Flight.date, Label : '{i18n>FlightDate}', ![@Common.FieldControl]: #ReadOnly },
+    { Value : (Flight.ID), Label : '{i18n>FlightID}' },
+    { Value : (Flight.date), Label : '{i18n>FlightDate}' },
+    { Value : BookingDate, Label : 'datum' },
+    { Value : FlightPrice, Label : '{i18n>FlightPrice}' },
     { Value : Flight.departure, Label : '{i18n>Departure}', ![@Common.FieldControl]: #ReadOnly },
     { Value : Flight.arrival, Label : '{i18n>Arrival}', ![@Common.FieldControl]: #ReadOnly },
     { Value : Flight.origin, Label : '{i18n>Origin}', ![@Common.FieldControl]: #ReadOnly },
     { Value : Flight.destination, Label : '{i18n>Destination}', ![@Common.FieldControl]: #ReadOnly },
     { Value : Flight.airline, Label : '{i18n>Airline}', ![@Common.FieldControl]: #ReadOnly },
-    { Value : FlightPrice, Label : '{i18n>FlightPrice}' },
   ],
 
   Facets : [{

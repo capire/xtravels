@@ -62,66 +62,33 @@ annotate schema.Travels {
 
 annotate schema.Bookings {
 
-  Status @Common.ValueListWithFixedValues;
-
-  Customer @Common.ValueList: {
-    CollectionPath : 'Passenger',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_ID, ValueListProperty: 'ID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FirstName'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Street'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PostalCode'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode_code'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PhoneNumber'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'EMailAddress'}
-    ]
-  };
-
-  Carrier @Common.ValueList: {
-    CollectionPath : 'Airline',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID, ValueListProperty: 'AirlineID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Currency_code'}
-    ]
-  };
-
-  Connection @Common.ValueList: {
-    CollectionPath : 'Flight',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID,    ValueListProperty: 'AirlineID'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: ConnectionID, ValueListProperty: 'ConnectionID'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightDate,   ValueListProperty: 'FlightDate'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightPrice,  ValueListProperty: 'Price'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'Currency_code'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'to_Airline/Name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PlaneType'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'MaximumSeats'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'OccupiedSeats'}
-    ],
-    PresentationVariantQualifier: 'SortOrderPV'  // use presentation variant to sort by FlightDate desc
-  };
-
-  FlightDate @Common.ValueList: {
-    CollectionPath : 'Flight',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID,    ValueListProperty: 'AirlineID'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: ConnectionID, ValueListProperty: 'ConnectionID'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightDate,   ValueListProperty: 'FlightDate'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightPrice,  ValueListProperty: 'Price'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Currency_code, ValueListProperty: 'Currency_code'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'to_Airline/Name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PlaneType'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'MaximumSeats'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'OccupiedSeats'}
-    ]
+  Flight {
+    @Common.ValueList: {
+      CollectionPath : 'Flights',
+      Label : '',
+      Parameters : [
+        {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Flight_ID,   ValueListProperty: 'ID'},
+        {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Flight_date, ValueListProperty: 'date'},
+        {$Type: 'Common.ValueListParameterOut',   LocalDataProperty: FlightPrice, ValueListProperty: 'price'},
+        {$Type: 'Common.ValueListParameterOut',   LocalDataProperty: Currency_code, ValueListProperty: 'currency_code'},
+        {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'airline'},
+        {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'destination'}
+      ]
+    }
+    ID;
+    @Common.ValueList: {
+      CollectionPath : 'Flights',
+      Label : '',
+      Parameters : [
+        {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Flight_ID,   ValueListProperty: 'ID'},
+        {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Flight_date, ValueListProperty: 'date'},
+        {$Type: 'Common.ValueListParameterOut',   LocalDataProperty: FlightPrice, ValueListProperty: 'price'},
+        {$Type: 'Common.ValueListParameterOut',   LocalDataProperty: Currency_code, ValueListProperty: 'currency_code'},
+        {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'airline'},
+        {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'destination'}
+      ]
+    }
+    date;
   };
 
   Currency @Common.ValueList: {
