@@ -4,8 +4,12 @@ using { TravelService, sap.capire.travels.TravelStatus } from '../../srv/travel-
 //
 
 extend entity TravelStatus with {
-  fieldControl: Int16 @odata.Type:'Edm.Byte' enum {Inapplicable = 0; ReadOnly = 1; Optional = 3; Mandatory = 7;}
-    = (code = #Accepted ? #ReadOnly : #Mandatory );
+  fieldControl: Int16 @odata.Type:'Edm.Byte' enum {
+    Inapplicable = 0;
+    ReadOnly = 1;
+    Optional = 3;
+    Mandatory = 7;
+  } = ( code = #Accepted ? #ReadOnly : #Mandatory );
 }
 
 

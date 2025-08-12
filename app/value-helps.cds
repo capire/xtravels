@@ -62,9 +62,6 @@ annotate schema.Travels {
 
 annotate schema.Bookings {
 
-  Status @Common.ValueListWithFixedValues;
-
-
   Flight {
     @Common.ValueList: {
       CollectionPath : 'Flights',
