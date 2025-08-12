@@ -9,18 +9,21 @@
     "remote": "cd $(node -e \"console.log(require('node:path').dirname(require.resolve('@capire/xflights/package.json')))\") && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
     "jest": "npx jest",
     "test": "chest test",
-    "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt && npm run test:ds",
+    "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt && npm run test:ds && npm run test:rap",
     "test:srv": "CDS_ENV=fed-srv npm t",
     "test:vrt": "echo 'HDI deploy' && npm run deploy:vrt >/dev/null && cds bind --exec --profile fed-vrt -- npm t",
     "test:syn": "echo 'HDI deploy' && npm run deploy:syn >/dev/null && cds bind --exec --profile fed-syn -- npm t",
     "test:ds": "echo 'HDI deploy' && npm run deploy:ds >/dev/null && cds bind --exec --profile fed-ds -- npm t",
+    "test:rap": "echo 'HDI deploy' && npm run deploy:rap >/dev/null && cds bind --exec --profile fed-rap -- npm t",
     "deploy:vrt": "cds bind --exec --profile fed-vrt -- cds deploy -2 hana",
     "deploy:syn": "cds bind --exec --profile fed-syn -- cds deploy -2 hana",
-    "deploy:ds": "cds bind --exec --profile fed-ds -- cds deploy -2 hana"
+    "deploy:ds": "cds bind --exec --profile fed-ds -- cds deploy -2 hana",
+    "deploy:rap": "cds bind --exec --profile fed-rap -- cds deploy -2 hana"
   },
   "dependencies": {
     "@cap-js/database-federation": ".plugins/fed-db",
     "@cap-js/service-federation": ".plugins/fed-srv",
+    "@capire/xflights-abap-api": ".plugins/abap",
     "@cap-js/hana": "^2.1.2",
     "@capire/xflights": "https://github.com/capire/xflights.git",
     "@sap/cds": ">=9",
@@ -99,6 +102,26 @@
             "sql": {
               "names": "quoted"
             }
+          }
+        }
+      }
+    },
+    "[fed-rap]": {
+      "features": {
+        "with_mocks": false
+      },
+      "requires": {
+        "db": "hana",
+        "rap_v2": {
+          "kind": "odata",
+          "model": "db/abap",
+          "credentials": {
+            "remote": "sflight-rap",
+            "sql": {
+              "names": "quoted"
+            },
+            "service": false,
+            "supportRealTimeCDC": false
           }
         }
       }

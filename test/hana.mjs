@@ -57,8 +57,37 @@ const hana2hana = {
   credential: `user=${xflights.credentials.user};password=${xflights.credentials.password}`,
 }
 
+const hana2rap = {
+  name: 'sflight-rap',
+  adapter: 'ODataAdapter',
+  configuration: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ConnectionProperties name="connection_properties">
+  <PropertyEntry name="URL" displayName="URL">https://abap:50001/sap/opu/odata/DMO/UI_TRAVEL_A_D_O2/</PropertyEntry>
+</ConnectionProperties>`,
+  credential: `<CredentialEntry name="password"><user>DEVELOPER</user><password>ABAPtr2022#01</password></CredentialEntry>`,
+  cert: `-----BEGIN CERTIFICATE-----
+MIICWDCCAcECCAogFwQEBlMBMA0GCSqGSIb3DQEBCwUAMHExCzAJBgNVBAYTAkRF
+MRwwGgYDVQQKExNTQVAgVHJ1c3QgQ29tbXVuaXR5MRMwEQYDVQQLEwpTQVAgV2Vi
+IEFTMRQwEgYDVQQLEwtJREVNT1NZU1RFTTEZMBcGA1UEAwwQKi5kdW1teS5ub2Rv
+bWFpbjAeFw0xNzA0MDQwNjUzMDFaFw0zODAxMDEwMDAwMDFaMHExCzAJBgNVBAYT
+AkRFMRwwGgYDVQQKExNTQVAgVHJ1c3QgQ29tbXVuaXR5MRMwEQYDVQQLEwpTQVAg
+V2ViIEFTMRQwEgYDVQQLEwtJREVNT1NZU1RFTTEZMBcGA1UEAwwQKi5kdW1teS5u
+b2RvbWFpbjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAsnkwjakB2kFfTD1/
+uce4jSxs/0ufkXuHZhPNQ5No4vysqslhOcgIJBtYfEGtCzzFWPcY3PdzwK0pMPYF
+nZDlAwrU8W1YqIqtlarFS1QsUMXqUpISgihUf9QOY8FEuivgZfk6qVwdauSY9SMr
+5gRaJiI0ZjcabRtokZgD/P3H5usCAwEAATANBgkqhkiG9w0BAQsFAAOBgQBECAqq
+UGP21ujdaoPxls7D0hyycPO4ZUkJ6OzDpv1gul6IhM559LFWdJigHaKJDeK4GOo4
+Koj8UqYCYLKr/iUkzn4T1cQSUUPAFknn+HNE4hho2Qk/pmUCkT8jV6NLHg0phtjS
+Jjp0ztLH/VlXfiveTZvizl/FqA4k2RpnSVtQgQ==
+-----END CERTIFICATE-----
+`
+}
+
 await ensureRemoteSource(hana2hana)
 await grantRemoteSource(hana2hana, travels.credentials)
+
+await ensureRemoteSource(hana2rap)
+await grantRemoteSource(hana2rap, travels.credentials)
 
 console.log('xflights deploy')
 await new Promise((resolve, reject) => {
@@ -148,7 +177,7 @@ async function ensureRemoteSource(remote) {
     }
 
     if (remote.cert) {
-      const certName = `${name}_CERT`
+      const certName = `"${name}_CERT"`
       await tx.run(`CREATE PSE REMOTE_SOURCES`).catch(err => err)
       await tx.run(`CREATE CERTIFICATE ${certName} FROM '${remote.cert}'`).catch(err => err)
       await tx.run(`ALTER PSE REMOTE_SOURCES ADD CERTIFICATE ${certName};`).catch(err => err)

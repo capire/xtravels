@@ -146,11 +146,11 @@ FROM ${srcEntityName}`,
       additions.push({
         name,
         suffix: '.hdbvirtualtable',
-        sql: `VIRTUAL TABLE ${localEntityName} AT "${creds.remote}"."${database}"."${schema}"."${remoteEntityName}"`,
+        sql: `VIRTUAL TABLE ${srcEntityName} AT "${creds.remote}"."${database}"."${schema}"."${remoteEntityName}"`,
       })
 
       // Entity names provided in the role are case sensitive even when the definition is not quoted
-      remoteEntities.push(localEntityName.toUpperCase());
+      remoteEntities.push(localQuoted ? name : localEntityName.toUpperCase());
 
       if (typeof def['@cds.replicate.ttl'] === 'string') {
         const time = time2Cron(def['@cds.replicate.ttl']);
@@ -160,7 +160,7 @@ FROM ${srcEntityName}`,
         // Create snapshot replica with manual refresh
         additions.push({
           name,
-          sql: `SHARED SNAPSHOT REPLICA ON ${virtualTableName}`,
+          sql: `SHARED SNAPSHOT REPLICA ON ${srcEntityName}`,
           suffix: '.hdbfabricvirtualtable'
         });
 
