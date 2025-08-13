@@ -35,19 +35,14 @@ console.log('Data Sphere Setup')
 const xflightsDataSphere = await ensureDataSphere()
 
 console.log('HDI + Data Sphere stored')
-fs.writeFileSync(cds.utils.path.resolve(xflightsDir, 'default-env.json'), JSON.stringify({
-  VCAP_SERVICES: {
-    hana: [xflights]
-  },
-}, null, 2))
+fs.writeFileSync(cds.utils.path.resolve(xflightsDir, '.env'), `
+VCAP_SERVICES=${JSON.stringify({ hana: [xflights] })}
+`)
 
-fs.writeFileSync(cds.utils.path.resolve(import.meta.dirname, '../default-env.json'), JSON.stringify({
-  TARGET_CONTAINER: travels.name,
-  VCAP_SERVICES: {
-    hana: [travels, xflights],
-    'user-provided': [xflightsDataSphere]
-  },
-}, null, 2))
+fs.writeFileSync(cds.utils.path.resolve(import.meta.dirname, '../.env'), `
+TARGET_CONTAINER=${travels.name}
+VCAP_SERVICES=${JSON.stringify({ hana: [travels, xflights], 'user-provided': [xflightsDataSphere] })}
+`)
 
 console.log('remote setup')
 const hana2hana = {
