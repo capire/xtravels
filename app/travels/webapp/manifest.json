@@ -68,7 +68,7 @@
           "target": "TravelObjectPage"
         },
         {
-          "pattern": "Travels({key})/to_Booking({key2}):?query:",
+          "pattern": "Travels({key})/Bookings({key2}):?query:",
           "name": "BookingObjectPage",
           "target": "BookingObjectPage"
         }

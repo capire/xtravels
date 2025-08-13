@@ -74,16 +74,15 @@ annotate schema.Passengers with @title: '{i18n>Passenger}' {
 }
 
 
-using sap.capire.flights;
+using sap.capire.flights.data;
 
-annotate flights.Airlines with @title: '{i18n>Airline}' {
+annotate data.Airlines with @title: '{i18n>Airline}' {
   ID  @title: '{i18n>AirlineID}'  @Common.Text: name;
   name @title: '{i18n>Name}';
   currency @title: '{i18n>CurrencyCode}';
 }
 
-annotate flights.Flights with @title: '{i18n>Flight}' {
-  connection      @title: '{i18n>ConnectionID}';
+annotate data.Flights with @title: '{i18n>Flight}' {
   aircraft        @title: '{i18n>PlaneType}';
   date            @title: '{i18n>FlightDate}';
   price           @title: '{i18n>Price}'        @Measures.ISOCurrency: currency_code;
@@ -92,7 +91,7 @@ annotate flights.Flights with @title: '{i18n>Flight}' {
   occupied_seats  @title: '{i18n>OccupiedSeats}';
 }
 
-annotate flights.Supplements with @title: '{i18n>Supplement}' {
+annotate data.Supplements with @title: '{i18n>Supplement}' {
   ID @title: '{i18n>SupplementID}'  @Common.Text: descr;
   price        @title: '{i18n>Price}'         @Measures.ISOCurrency: currency_code;
   currency @title: '{i18n>CurrencyCode}';
