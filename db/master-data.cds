@@ -1,8 +1,5 @@
 namespace sap.capire.travels.masterdata;
-using { sap.capire.flights.data as external } from '@capire/xflights';
-
-// Simulate cds-export/import
-annotate external with @cds.external;
+using { sap.capire.flights.data as external } from '@capire/xflights-api';
 
 //
 // Consumption views for 2b federated master data...
