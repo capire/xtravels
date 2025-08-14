@@ -1,6 +1,7 @@
 {
   "name": "@cap-js/service-federation",
   "version": "0.0.1",
+  "main": "./cds-plugin.js",
   "scripts": {
     "test": "exit 1"
   },

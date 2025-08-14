@@ -9,6 +9,16 @@ features:
       model: "@capire/xflights"
       credentials:
         url: http://localhost:4005/odata/v4/data/
+"[rep-srv]":
+  features:
+    with_mocks: false
+  requires:
+    sap.capire.flights.data:
+      kind: odata
+      model: "db/rep-srv"
+      credentials:
+        url: http://localhost:4005/odata/v4/data/
+        loadOnDemand: true
 "[fed-vrt]":
   features:
     with_mocks: false

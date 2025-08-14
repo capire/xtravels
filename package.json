@@ -11,6 +11,7 @@
     "test": "chest test",
     "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt && npm run test:ds && npm run test:rap",
     "test:srv": "CDS_ENV=fed-srv npm t",
+    "test:srv-rep": "CDS_ENV=rep-srv npm t",
     "test:vrt": "echo 'HDI deploy' && npm run deploy:vrt >/dev/null && cds bind --exec --profile fed-vrt -- npm t",
     "test:syn": "echo 'HDI deploy' && npm run deploy:syn >/dev/null && cds bind --exec --profile fed-syn -- npm t",
     "test:ds": "echo 'HDI deploy' && npm run deploy:ds >/dev/null && cds bind --exec --profile fed-ds -- npm t",

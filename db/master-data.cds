@@ -4,7 +4,6 @@ using { sap.capire.flights.data as external } from '@capire/xflights';
 //
 // Consumption views for 2b federated master data...
 //
-annotate external.Flights with @cds.replicate.ttl: '1m';
 
 entity federated.Flights as projection on external.Flights {
   *,
