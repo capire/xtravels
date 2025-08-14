@@ -25,7 +25,7 @@
     "@cap-js/service-federation": ".plugins/fed-srv",
     "@capire/xflights-abap-api": ".plugins/abap",
     "@cap-js/hana": "^2.1.2",
-    "@capire/xflights": "https://github.com/capire/xflights.git",
+    "@capire/xflights": "*",
     "@sap/cds": ">=9",
     "express": "^4"
   },
@@ -34,97 +34,5 @@
     "@cap-js/sqlite": ">=2",
     "@sap/cds-dk": "^9.2.0"
   },
-  "license": "Apache-2.0",
-  "workspaces": [
-    ".plugins/*"
-  ],
-  "cds": {
-    "features": {
-      "ieee754compatible": true
-    },
-    "[fed-srv]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "model": "@capire/xflights",
-          "credentials": {
-            "url": "http://localhost:4005/odata/v4/data/"
-          }
-        }
-      }
-    },
-    "[fed-vrt]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "credentials": {
-            "remote": "xflights",
-            "schema": "XFLIGHTS_XFLIGHTS",
-            "supportRealTimeCDC": true
-          }
-        }
-      }
-    },
-    "[fed-syn]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "vcap": "xflights",
-          "credentials": {
-            "schema": "XFLIGHTS_XFLIGHTS"
-          }
-        }
-      }
-    },
-    "[fed-ds]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "vcap": {
-            "name": "xflights-datasphere"
-          },
-          "credentials": {
-            "sql": {
-              "names": "quoted"
-            }
-          }
-        }
-      }
-    },
-    "[fed-rap]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "rap_v2": {
-          "kind": "odata",
-          "model": "db/abap",
-          "credentials": {
-            "remote": "sflight-rap",
-            "sql": {
-              "names": "quoted"
-            },
-            "service": false,
-            "supportRealTimeCDC": false
-          }
-        }
-      }
-    }
-  }
+  "license": "Apache-2.0"
 }
