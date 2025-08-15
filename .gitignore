@@ -3,3 +3,8 @@
 _out
 gen
 node_modules
+.env
+.cf
+
+# added by cds
+.cdsrc-private.json
