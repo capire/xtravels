@@ -6,7 +6,7 @@ features:
   requires:
     sap.capire.flights.data:
       kind: odata
-      model: "@capire/xflights"
+      model: "@capire/xflights-api"
       credentials:
         url: http://localhost:4005/odata/v4/data/
 "[rep-srv]":
