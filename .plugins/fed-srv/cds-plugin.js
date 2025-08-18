@@ -7,20 +7,32 @@ const utils = require('./lib/utils');
 let replicationSetups = {};
 
 cds.on('loaded', model => {
-    const remoteServices = utils.getAllRemoteServices(model);
 
-    for (const name in model.definitions) {
-        const def = model.definitions[name];
-
-        if (def.kind === 'entity') {
-            const target = def.projection?.from?.ref?.[0];
-            if (!target) continue;
-
-            const isTargetRemote = remoteServices.some(srv => target.indexOf(srv) === 0);
-            if (isTargetRemote) def['@cds.persistence.table'] = true;
-        }
+    const remotes = []
+    for (let each in cds.requires) {
+        if (cds.requires[each]?.credentials) remotes.push (each)
     }
-});
+
+    const federations = []
+    for (let entity in model.definitions) {
+        const d = model.definitions[entity]; if (!d['@federated']) continue
+        const target = d.projection?.from?.ref?.[0]; if (!target) continue
+        const srv = remotes.find (r => target.startsWith(r)); if (!srv) continue
+        federations.push ({ remote:srv, entity })
+        d['@cds.persistence.table'] = true
+        d['@cds.persistence.skip'] = false // REVISIT: workaround for a glitch in cqn4sql: @cds.persistence.table has precedence over @cds.persistence.skip
+    }
+
+    if (federations.length > 0) cds.once('served', async ()=> {
+        for (let { remote, entity } of federations) {
+            const srv = await cds.connect.to (remote)
+            const initial = await srv.read (entity) // @Bob: can we stream this?
+            await INSERT.into (entity) .entries (initial)
+        }
+    })
+
+})
+
 
 cds.on('serving', srv => {
     const model = cds.model.definitions;

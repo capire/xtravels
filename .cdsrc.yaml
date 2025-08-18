@@ -5,10 +5,9 @@ features:
     with_mocks: false
   requires:
     sap.capire.flights.data:
-      kind: odata
       model: "@capire/xflights-api"
       credentials:
-        url: http://localhost:4005/odata/v4/data/
+        url: http://localhost:4005/hcql/data/
 "[rep-srv]":
   features:
     with_mocks: false
