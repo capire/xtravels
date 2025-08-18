@@ -157,7 +157,7 @@ annotate TravelService.Bookings with @UI : {
   ]},
 };
 
-annotate sap.capire.travels.masterdata.federated.Flights:icon with @UI.IsImageURL;
+annotate sap.capire.travels.masterdata.Flights:icon with @UI.IsImageURL;
 
 annotate TravelService.Bookings.Supplements with @UI : {
   Identification : [
