@@ -10,15 +10,15 @@ module.exports = class DataFederationService extends cds.Service {
 
   static bootstrap() { return this.bootstrapped ??= cds.on ('loaded', csn => {
 
-    const federated_entity = e => e.is_entity && e['@federated']
-    const todos = cds.linked(csn).collect (federated_entity, e => {
-      let source = e.__proto__            // the external source entity
-      let srv = source._service           // the external service
+    const federated = e => e.is_entity && e['@federated']
+    const todos = cds.linked(csn).collect (federated, entity => {
+      let source = entity.source          // the external source entity
+      let srv = source.service            // the external service
       let conf = cds.requires[srv?.name]  // the service's binding point
       if (!conf?.credentials) return      // not bound to remote, skipping
-      e['@cds.persistence.table'] = true
-      e['@cds.persistence.skip'] = false
-      return { entity: e.name, from: srv.name }
+      entity['@cds.persistence.table'] = true
+      entity['@cds.persistence.skip'] = false
+      return { entity: entity.name, from: srv.name }
     })
     if (!todos.length) return
 
@@ -40,6 +40,28 @@ module.exports = class DataFederationService extends cds.Service {
   }
 
   replicate ({ entity, from: remote }) {
-    return this.schedule ('initial-load', { entity, from: remote }) .after ('666ms')
+    return this.schedule ('initial-load', { entity, from: remote })
+      .after ('11ms')
   }
 }
+
+
+
+//
+// Temporary monkey patches till upcoming cds release
+//
+
+cds.extend (cds.linked.LinkedCSN) .with (class {
+  collect (picker, collector) {
+    if (!collector) collector = picker, picker = () => true
+    let d, x, collected = []
+    for (d of this.definitions)
+    if (picker(d) && (x = collector(d)) !== undefined) collected.push (x)
+    return collected
+  }
+})
+
+cds.extend (cds.entity) .with (class {
+  get service(){ return this._service }
+  get source(){ return this.query && this.__proto__ }
+})
