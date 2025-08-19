@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@cap-js/database-federation": ".plugins/fed-db",
-    "@cap-js/service-federation": ".plugins/fed-srv",
+    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@capire/xflights-abap-api": ".plugins/abap",
     "@capire/xflights-api": "*",
     "@cap-js/hana": "^2.1.2",
