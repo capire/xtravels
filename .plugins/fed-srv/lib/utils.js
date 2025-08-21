@@ -55,7 +55,7 @@ function searchRemoteTargetEntity(target) {
 }
 
 function getRemoteTargetEntity(def) {
-  const targetDBTable = cds.ql.resolve.table(def);
+  const targetDBTable = cds.db.resolve.table(def);
   const remoteTargetEntity = !targetDBTable['@cds.external'] ? targetDBTable.query._target : searchRemoteTargetEntity(def.query._target);
 
   return remoteTargetEntity;

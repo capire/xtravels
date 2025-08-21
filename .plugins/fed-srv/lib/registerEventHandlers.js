@@ -30,7 +30,7 @@ function conditionalReadDelegation(service, entities) {
 
         if (shouldDelegate) return next();
         else return localResults;
-        
+
       } catch (error) {
         cds.log('srv-fed').error(`Error accessing local replica for ${req.target.name}:`, error);
       }
@@ -39,6 +39,47 @@ function conditionalReadDelegation(service, entities) {
       return next();
     });
   });
+}
+
+function getProjectionFieldMapping(target) {
+  const targetDef = cds.model.definitions[target];
+  if (!targetDef?.projection) return {};
+
+  const projection = targetDef.projection;
+  const projectionTraget = cds.model.definitions[projection.from.ref[0]];
+
+  if (projectionTraget?._service) {
+    return getProjectionFieldMapping(projectionTraget.name)
+  }
+
+  const projectionCols = projectionTraget.projection.columns;
+  const mapping = projectionCols.reduce((acc, col) => {
+    if (col === '*' || !col.ref || col.ref.length < 2) return acc;
+
+    acc[col.as] = col.ref.join('_');
+    return acc;
+  }, {});
+
+  return mapping;
+}
+
+function mapFlattenAssoc(expandedData, mapping) {
+  if (Array.isArray(expandedData)) {
+    return expandedData.map(item => mapFlattenAssoc(item, mapping));
+  }
+
+  const result = { ...expandedData };
+
+  for (const [col, value] of Object.entries(expandedData)) {
+    const targetField = Object.keys(mapping).find(target => mapping[target] === col);
+
+    if (targetField && targetField !== col) {
+      result[targetField] = value;
+      delete result[col]; // remove old field
+    }
+  }
+
+  return result;
 }
 
 function expand(service, baseEntity, expandTargets) {
@@ -59,43 +100,66 @@ function expand(service, baseEntity, expandTargets) {
 
       if (expandOps.length === 0) return next();
 
+      let fKeys = [];
       // remove all expands from query
       for (const op of expandOps) {
         req.query.SELECT.columns.splice(op.index, 1);
         const assoc = expandableAssocs[op.ref[0]];
-        const foreignKey = assoc.keys ? assoc.keys[0].$generatedFieldName : assoc.on[2].ref[0];
-        if (foreignKey) ensureForeignKeySelected(req.query.SELECT, foreignKey);
+        fKeys = assoc.keys
+          ? assoc.keys.map(key => key.$generatedFieldName)
+          : [assoc.on[2].ref[0]]; // unmanaged association
+
+        fKeys.forEach(fk => {
+          if (fk) ensureForeignKeySelected(req.query.SELECT, fk);
+        });
       }
 
       // execute the base query
-      const entity = await next();
-      if (Array.isArray(entity) && entity.length > 0) {
-        throw new Error(`Expand only allowed when requesting one ${baseEntity.split('.').pop()}.`);
-      }
+      const baseEntityResult = await next();
+      if (!baseEntityResult) return;
 
-      const result = Array.isArray(entity) ? entity[0] : entity;
-      if (!result) return entity;
+      // Handle both single result and array of results
+      const results = Array.isArray(baseEntityResult) ? baseEntityResult : [baseEntityResult];
 
       // process each expand operation
       await Promise.all(expandOps.map(async (op) => {
         const assoc = expandableAssocs[op.ref[0]];
-        const foreignKey = assoc.keys ? assoc.keys[0].$generatedFieldName : assoc.on[2].ref[0];
-        const targetKey = assoc.keys ? foreignKey.split('_').pop() : assoc.on[0].ref[1];
+        const fKeys = assoc.keys
+          ? assoc.keys.map(key => key.$generatedFieldName)
+          : [assoc.on[2].ref[0]];
+        const targetKeys = assoc.keys ? fKeys.map(k => k.split('_').pop()) : assoc.on[0].ref[1];
 
-        if (result[foreignKey] != null) {
-          // query the expanded target entity
-          const expandedData = await service.run(
-            SELECT(op.expand).from(assoc.target).where(targetKey, '=', result[foreignKey])
-          );
+        const whereClause = results.map(r => {
+          const where = {};
+          fKeys.forEach((fKey, index) => {
+            const targetKey = targetKeys[index];
+            where[targetKey] = r[fKey];
+          });
+          return where;
+        });
 
-          // attach expanded data to the base entity
-          result[op.ref[0]] = isToOneAssociation(assoc) && expandedData.length === 1
-            ? expandedData[0]
-            : expandedData;
-        }
+        const allExpandedData = await Promise.all(
+          whereClause.map(async (where) => {
+            return await service.run(
+              SELECT(op.expand).from(assoc.target).where(where)
+            );
+          })
+        );
+
+
+        const flatAssocMap = getProjectionFieldMapping(assoc.target)
+
+        // map expanded data fields to projection fields
+        results.forEach((result, index) => {
+          const expand = allExpandedData[index];
+          const mappedExpand = mapFlattenAssoc(expand, flatAssocMap);
+          result[op.ref[0]] = isToOneAssociation(assoc) && mappedExpand.length === 1
+            ? mappedExpand[0]
+            : mappedExpand;
+        });
       }));
 
-      return result;
+      return Array.isArray(results) ? results : results[0];
     });
   });
 }
