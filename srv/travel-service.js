@@ -100,6 +100,49 @@ module.exports = class TravelService extends cds.ApplicationService { async init
     }
   })
 
+
+  this.on("exportCSV", async (req) => {
+    async function* csv_rows() {
+      yield "ID;Agency;Customer;BeginDate;EndDate;TotalPrice;Currency;Status;Description\n"
+      for await (const row of SELECT.localized
+        .from(Travels)
+        .columns(
+          "ID",
+          "Agency.Name as Agency",
+          `concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName)  as Customer`,
+          "BeginDate",
+          "EndDate",
+          "TotalPrice",
+          "Currency.code as Currency",
+          "Status.name as Status",
+          "Description"
+        )) {
+        yield `${row.ID};${row.Agency};${row.Customer};${row.BeginDate};${row.EndDate};${row.TotalPrice};${row.Currency};${row.Status};${row.Description}\n`
+      }
+    }
+    const { Readable } = require("stream")
+    req.reply(Readable.from(csv_rows(), { objectMode: false }))
+  })
+
+  this.on("exportJSON", async (req) => {
+    req.reply(
+      await SELECT.localized
+        .from(Travels)
+        .columns(
+          "ID",
+          "Agency.Name as Agency",
+          `concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName)  as Customer`,
+          "BeginDate",
+          "EndDate",
+          "TotalPrice",
+          "Currency.code as Currency",
+          "Status.name as Status",
+          "Description"
+        )
+        .pipeline()
+    )
+  })
+
   // Add base class's handlers. Handlers registered above go first.
   return super.init()
 
