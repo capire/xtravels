@@ -112,7 +112,7 @@ annotate TravelService.Bookings with @UI : {
     { Value : Flight.icon, Label : '  '},
     { Value : (Flight.ID), Label : '{i18n>FlightID}' },
     { Value : (Flight.date), Label : '{i18n>FlightDate}' },
-    { Value : BookingDate, Label : 'datum' },
+    { Value : BookingDate, Label : '{i18n>BookingDate}' },
     { Value : FlightPrice, Label : '{i18n>FlightPrice}' },
     { Value : Flight.departure, Label : '{i18n>Departure}', ![@Common.FieldControl]: #ReadOnly },
     { Value : Flight.arrival, Label : '{i18n>Arrival}', ![@Common.FieldControl]: #ReadOnly },
