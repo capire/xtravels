@@ -1,11 +1,21 @@
 const cds = require('@sap/cds');
-const { mapAndFilterKeysToEntityModel } = require('./utils');
+const { mapAndFilterKeysToEntityModel, getProjectionFieldMapping, mapFlattenAssoc } = require('./utils');
 
 function readDelegation(service, remoteSrvName, entities) {
   const remoteSrvProm = cds.connect.to(remoteSrvName);
   // REVISIT: This prevents other event handlers from being registered
   service.prepend(() => {
+    // REVISIT: Handle where clause in projection for remote service
+
+    // Read delegation to remote service
     service.on('READ', entities, async req => (await remoteSrvProm).run(req.query));
+
+    // Flatten association fields in results
+    service.after('READ', entities, async (results, req) => {
+      const flatAssocMap = getProjectionFieldMapping(req.target.name);
+      if (!flatAssocMap) return;
+      for (let result of results) result = mapFlattenAssoc(result, flatAssocMap);
+    });
   });
 }
 
@@ -39,47 +49,6 @@ function conditionalReadDelegation(service, entities) {
       return next();
     });
   });
-}
-
-function getProjectionFieldMapping(target) {
-  const targetDef = cds.model.definitions[target];
-  if (!targetDef?.projection) return {};
-
-  const projection = targetDef.projection;
-  const projectionTraget = cds.model.definitions[projection.from.ref[0]];
-
-  if (projectionTraget?._service) {
-    return getProjectionFieldMapping(projectionTraget.name)
-  }
-
-  const projectionCols = projectionTraget.projection.columns;
-  const mapping = projectionCols.reduce((acc, col) => {
-    if (col === '*' || !col.ref || col.ref.length < 2) return acc;
-
-    acc[col.as] = col.ref.join('_');
-    return acc;
-  }, {});
-
-  return mapping;
-}
-
-function mapFlattenAssoc(expandedData, mapping) {
-  if (Array.isArray(expandedData)) {
-    return expandedData.map(item => mapFlattenAssoc(item, mapping));
-  }
-
-  const result = { ...expandedData };
-
-  for (const [col, value] of Object.entries(expandedData)) {
-    const targetField = Object.keys(mapping).find(target => mapping[target] === col);
-
-    if (targetField && targetField !== col) {
-      result[targetField] = value;
-      delete result[col]; // remove old field
-    }
-  }
-
-  return result;
 }
 
 function expand(service, baseEntity, expandTargets) {
@@ -147,15 +116,11 @@ function expand(service, baseEntity, expandTargets) {
         );
 
 
-        const flatAssocMap = getProjectionFieldMapping(assoc.target)
-
-        // map expanded data fields to projection fields
         results.forEach((result, index) => {
           const expand = allExpandedData[index];
-          const mappedExpand = mapFlattenAssoc(expand, flatAssocMap);
-          result[op.ref[0]] = isToOneAssociation(assoc) && mappedExpand.length === 1
-            ? mappedExpand[0]
-            : mappedExpand;
+          result[op.ref[0]] = isToOneAssociation(assoc) && expand.length === 1
+            ? expand[0]
+            : expand;
         });
       }));
 

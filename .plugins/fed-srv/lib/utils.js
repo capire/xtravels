@@ -94,6 +94,46 @@ function addToMap(map, key, value) {
   map.get(key).add(value);
 }
 
+function getProjectionFieldMapping(target) {
+  const targetDef = cds.model.definitions[target];
+  if (!targetDef?.projection) return {};
+
+  const projection = targetDef.projection;
+  const projectionTraget = cds.model.definitions[projection.from.ref[0]];
+
+  if (projectionTraget?._service) {
+    return getProjectionFieldMapping(projectionTraget.name)
+  }
+
+  const projectionCols = projectionTraget.projection.columns;
+  const mapping = projectionCols.reduce((acc, col) => {
+    if (col === '*' || !col.ref || col.ref.length < 2) return acc;
+
+    acc[col.as] = col.ref.join('_');
+    return acc;
+  }, {});
+
+  return mapping;
+}
+
+function mapFlattenAssoc(data, map) {
+  if (Array.isArray(data)) {
+    return data.map(item => mapFlattenAssoc(item, map));
+  }
+
+  for (const [col, value] of Object.entries(data)) {
+    const targetField = Object.keys(map).find(target => map[target] === col);
+
+    if (targetField && targetField !== col) {
+      data[targetField] = value;
+      delete data[col]; // remove old field
+    }
+  }
+
+  return data;
+}
+
+
 module.exports = {
   getAllRemoteServices,
   mapAndFilterKeysToEntityModel,
@@ -101,5 +141,7 @@ module.exports = {
   getServiceNameFromEntity,
   isTargetRemote,
   getRemoteDBTable,
-  addToMap
+  addToMap,
+  getProjectionFieldMapping,
+  mapFlattenAssoc
 };
