@@ -70,7 +70,7 @@ function getRemoteDBTable(def) {
 }
 
 function isTargetRemote(def) {
-  if (def.hasOwnProperty('@cds.external')) return true;
+  if (def.hasOwnProperty('@federated')) return true;
   if (def.query && def.query._target) {
     return isTargetRemote(def.query._target);
   }

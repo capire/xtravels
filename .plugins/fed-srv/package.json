@@ -1,5 +1,5 @@
 {
-  "name": "@cap-js/service-federation",
+  "name": "@cap-js/srv-federation",
   "version": "0.0.1",
   "main": "./cds-plugin.js",
   "scripts": {
