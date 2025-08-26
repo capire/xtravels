@@ -9,7 +9,7 @@ if (cds.env.profiles.includes('fed-rap')) {
     const ret = _makeModuleResolver.apply(this, arguments)
     return {
       resolveModule: async function (dep) {
-        if (dep.module === '@capire/xflights') {
+        if (dep.module in { '@capire/xflights': 1, '@capire/xflights-api': 1 }) {
           return __dirname + '/index.cds'
         }
         return ret.resolveModule(dep)
@@ -22,7 +22,7 @@ if (cds.env.profiles.includes('fed-rap')) {
     const ret = _makeModuleResolverSync.apply(this, arguments)
     return {
       resolveModule: function (dep) {
-        if (dep.module === '@capire/xflights') {
+        if (dep.module in { '@capire/xflights': 1, '@capire/xflights-api': 1 }) {
           return __dirname + '/index.cds'
         }
         return ret.resolveModule(dep)
