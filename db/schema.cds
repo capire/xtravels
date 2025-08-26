@@ -1,11 +1,10 @@
 namespace sap.capire.travels;
 
-using { sap, managed } from '@sap/cds/common';
+using { sap, managed, Currency, Country } from '@sap/cds/common';
 using {
   sap.capire.travels.masterdata.Price,
-  sap.capire.travels.masterdata.Currency,
-  sap.capire.travels.masterdata.Country,
-  sap.capire.travels.masterdata.federated,
+  sap.capire.travels.masterdata.Flights,
+  sap.capire.travels.masterdata.Supplements
 } from './master-data';
 
 
@@ -27,12 +26,12 @@ entity Travels : managed {
 entity Bookings {
   key Travel      : Association to Travels;
   key Pos         : Integer @readonly;
-      Flight      : Association to federated.Flights;
+      Flight      : Association to Flights;
       FlightPrice : Price;
       Currency    : Currency;
       Supplements : Composition of many {
         key ID   : UUID;
-        booked   : Association to federated.Supplements;
+        booked   : Association to Supplements;
         Price    : Price;
         Currency : Currency;
       };

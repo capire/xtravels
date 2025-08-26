@@ -1,4 +1,4 @@
-using { sap.capire.travels.masterdata.federated } from '../db/master-data';
+using { sap.capire.travels.masterdata } from '../db/master-data';
 using { sap.capire.travels as our } from '../db/schema';
 
 service TravelService {
@@ -17,7 +17,7 @@ service TravelService {
   }
 
   // Also expose federated Flights master data
-  entity Flights as projection on federated.Flights;
+  entity Flights as projection on masterdata.Flights;
 }
 
 type Percentage : Integer @assert.range: [1,100];

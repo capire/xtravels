@@ -1,29 +1,202 @@
 const cds = require('@sap/cds');
-const { mapAndFilterKeysToEntityModel } = require('./utils');
+const { mapAndFilterKeysToEntityModel, getProjectionFieldMapping, mapFlattenAssoc } = require('./utils');
 
 function readDelegation(service, remoteSrvName, entities) {
   const remoteSrvProm = cds.connect.to(remoteSrvName);
   // REVISIT: This prevents other event handlers from being registered
   service.prepend(() => {
+    // REVISIT: Handle where clause in projection for remote service
+
+    // Read delegation to remote service
     service.on('READ', entities, async req => (await remoteSrvProm).run(req.query));
+
+    // Flatten association fields in results
+    service.after('READ', entities, async (results, req) => {
+      const flatAssocMap = getProjectionFieldMapping(req.target.name);
+      if (!flatAssocMap) return;
+      for (let result of results) result = mapFlattenAssoc(result, flatAssocMap);
+    });
   });
 }
 
-function demandReplication(service, remoteSrvName, associationTarget, entities) {
+function conditionalReadDelegation(service, entities) {
+  const dbProm = cds.connect.to('db');
+
+  service.prepend(() => {
+    service.on('READ', entities, async (req, next) => {
+      // try to access local replica first
+      try {
+        const db = await dbProm;
+        const localResults = await db.run(req.query);
+
+        const shouldDelegate = (() => {
+          if (!localResults || localResults.length === 0) return true;
+
+          // Handle $count queries
+          if (localResults.length === 1 && localResults[0].$count === 0) return true;
+
+          return false;
+        })();
+
+        if (shouldDelegate) return next();
+        else return localResults;
+
+      } catch (error) {
+        cds.log('srv-fed').error(`Error accessing local replica for ${req.target.name}:`, error);
+      }
+
+      // If not found locally, delegate to remote
+      return next();
+    });
+  });
+}
+
+function expand(service, baseEntity, expandTargets) {
+  service.prepend(() => {
+    service.on('READ', baseEntity, async (req, next) => {
+      const select = req.query.SELECT;
+      if (!select.columns) return next();
+
+      const baseEntityDef = cds.model.definitions[baseEntity];
+      const expandableAssocs = Object.values(baseEntityDef.elements)
+        .filter(e => e.type === 'cds.Association' && expandTargets.includes(e.target))
+        .reduce((acc, e) => ({ ...acc, [e.name]: e }), {});
+
+      const expandOps = select.columns
+        .map((col, index) => ({ ...col, index }))
+        .filter(({ expand, ref }) => expand && expandableAssocs[ref?.[0]])
+        .reverse(); // necessary to maintain order of indices
+
+      if (expandOps.length === 0) return next();
+
+      let fKeys = [];
+      // remove all expands from query
+      for (const op of expandOps) {
+        req.query.SELECT.columns.splice(op.index, 1);
+        const assoc = expandableAssocs[op.ref[0]];
+        fKeys = assoc.keys
+          ? assoc.keys.map(key => key.$generatedFieldName)
+          : [assoc.on[2].ref[0]]; // unmanaged association
+
+        fKeys.forEach(fk => {
+          if (fk) ensureForeignKeySelected(req.query.SELECT, fk);
+        });
+      }
+
+      // execute the base query
+      const baseEntityResult = await next();
+      if (!baseEntityResult) return;
+
+      // Handle both single result and array of results
+      const results = Array.isArray(baseEntityResult) ? baseEntityResult : [baseEntityResult];
+
+      // process each expand operation
+      await Promise.all(expandOps.map(async (op) => {
+        const assoc = expandableAssocs[op.ref[0]];
+        const fKeys = assoc.keys
+          ? assoc.keys.map(key => key.$generatedFieldName)
+          : [assoc.on[2].ref[0]];
+        const targetKeys = assoc.keys ? fKeys.map(k => k.split('_').pop()) : assoc.on[0].ref[1];
+
+        const whereClause = results.map(r => {
+          const where = {};
+          fKeys.forEach((fKey, index) => {
+            const targetKey = targetKeys[index];
+            where[targetKey] = r[fKey];
+          });
+          return where;
+        });
+
+        const allExpandedData = await Promise.all(
+          whereClause.map(async (where) => {
+            return await service.run(
+              SELECT(op.expand).from(assoc.target).where(where)
+            );
+          })
+        );
+
+
+        results.forEach((result, index) => {
+          const expand = allExpandedData[index];
+          result[op.ref[0]] = isToOneAssociation(assoc) && expand.length === 1
+            ? expand[0]
+            : expand;
+        });
+      }));
+
+      return Array.isArray(results) ? results : results[0];
+    });
+  });
+}
+
+function ensureForeignKeySelected(selectQuery, foreignKey) {
+  const hasFK = selectQuery.columns.some(col =>
+    col.ref?.[0] === foreignKey ||
+    (col.ref?.[0] === '*')
+  );
+
+  if (!hasFK) {
+    selectQuery.columns.push({ ref: [foreignKey] });
+  }
+}
+
+function isToOneAssociation(association) {
+  return association.is2one && !association.is2many;
+}
+
+function navigation(service, navTarget) {
+  service.prepend(() => {
+    service.on('READ', navTarget, async (req, next) => {
+      const select = req.query.SELECT;
+      if (select.from.ref.length !== 2) return next();
+
+      const [baseEntityName, assocName] = req.path.split('/');
+      const baseEntityRef = req.subject.ref[0];
+
+      // get association
+      const baseEntityDef = cds.model.definitions[baseEntityName];
+      const assoc = baseEntityDef.elements[assocName];
+
+      if (!assoc || assoc.type !== 'cds.Association' || assoc.target !== navTarget) next();
+
+      // extract foreign and target keys
+      const foreignKey = assoc.keys ? assoc.keys[0].$generatedFieldName : assoc.on[2].ref[0];
+      const targetKey = assoc.keys ? foreignKey.split('_').pop() : assoc.on[0].ref[1];
+
+      // get foreign key value from base entity
+      const baseEntity = await service.run(
+        SELECT.one(foreignKey).from(baseEntityRef.id).where(baseEntityRef.where)
+      );
+
+      if (!baseEntity || baseEntity[foreignKey] == null) {
+        return [];
+      }
+
+      // query the target entity
+      const result = await service.run(
+        SELECT(select.columns).from(navTarget).where(targetKey, '=', baseEntity[foreignKey])
+          .limit(select.limit?.rows?.val, select.limit?.offset?.val));
+
+      return result;
+    })
+  });
+}
+
+function demandReplication(service, remoteSrvName, localEntity, assocTarget) {
 
   service.prepend(() => {
     const dbProm = cds.connect.to('db');
     const remoteSrvProm = cds.connect.to(remoteSrvName);
 
-    service.on(['CREATE', 'UPDATE', 'UPSERT'], entities, async (req, next) => {
+    service.on(['CREATE', 'UPDATE', 'UPSERT'], localEntity, async (req, next) => {
       const db = await dbProm;
       const remoteService = await remoteSrvProm;
 
-      const targetEntity = cds.model.definitions[associationTarget];
+      const targetEntity = cds.model.definitions[assocTarget];
 
       const elements = req.target.elements;
       const associationName = Object.entries(elements)
-        .filter(([key, def]) => def.target === associationTarget)
+        .filter(([key, def]) => def.target === assocTarget)
         .map(([key]) => key);
 
       // req.target.elements[aName].foreignKeys
@@ -35,7 +208,7 @@ function demandReplication(service, remoteSrvName, associationTarget, entities) 
       let replica = await db.exists(targetEntity, keys);
       if (!replica) {
         replica = await remoteService.read(targetEntity, keys);
-        await INSERT.into(targetEntity).entries(replica);
+        await UPSERT.into(targetEntity).entries(replica);
       }
       return next();
     });
@@ -68,8 +241,36 @@ async function updateReplicationOnEvent(remoteSrvName, eventDef, entity) {
   });
 }
 
+function eventListenerForReplication(service, remoteSrvName, entity) {
+  const eventName = `replicate_${entity}`;
+
+  service.on(eventName, async (msg) => {
+    try {
+      const db = await cds.connect.to('db');
+      const remoteService = await cds.connect.to(remoteSrvName);
+
+      // Fetch all data from remote
+      const remoteData = await remoteService.read(entity);
+
+      if (remoteData && remoteData.length > 0) {
+        // Clear existing data and insert new data
+        await db.run(DELETE.from(entity));
+        await db.run(INSERT.into(entity).entries(remoteData));
+
+        console.log(`Replicated ${remoteData.length} records for ${entity}`);
+      }
+    } catch (error) {
+      console.error(`Replication failed for ${entity}:`, error);
+    }
+  });
+}
+
 module.exports = {
   readDelegation,
+  conditionalReadDelegation,
   demandReplication,
-  updateReplicationOnEvent
+  updateReplicationOnEvent,
+  navigation,
+  expand,
+  eventListenerForReplication
 };

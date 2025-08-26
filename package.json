@@ -11,6 +11,7 @@
     "test": "chest test",
     "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt && npm run test:ds && npm run test:rap",
     "test:srv": "CDS_ENV=fed-srv npm t",
+    "test:srv-rep": "CDS_ENV=rep-srv npm t",
     "test:vrt": "echo 'HDI deploy' && npm run deploy:vrt >/dev/null && cds bind --exec --profile fed-vrt -- npm t",
     "test:syn": "echo 'HDI deploy' && npm run deploy:syn >/dev/null && cds bind --exec --profile fed-syn -- npm t",
     "test:ds": "echo 'HDI deploy' && npm run deploy:ds >/dev/null && cds bind --exec --profile fed-ds -- npm t",
@@ -22,10 +23,10 @@
   },
   "dependencies": {
     "@cap-js/database-federation": ".plugins/fed-db",
-    "@cap-js/service-federation": ".plugins/fed-srv",
+    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@capire/xflights-abap-api": ".plugins/abap",
+    "@capire/xflights-api": "*",
     "@cap-js/hana": "^2.1.2",
-    "@capire/xflights": "https://github.com/capire/xflights.git",
     "@sap/cds": ">=9",
     "express": "^4"
   },
@@ -34,97 +35,5 @@
     "@cap-js/sqlite": ">=2",
     "@sap/cds-dk": "^9.2.0"
   },
-  "license": "Apache-2.0",
-  "workspaces": [
-    ".plugins/*"
-  ],
-  "cds": {
-    "features": {
-      "ieee754compatible": true
-    },
-    "[fed-srv]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "model": "@capire/xflights",
-          "credentials": {
-            "url": "http://localhost:4005/odata/v4/data/"
-          }
-        }
-      }
-    },
-    "[fed-vrt]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "credentials": {
-            "remote": "xflights",
-            "schema": "XFLIGHTS_XFLIGHTS",
-            "supportRealTimeCDC": true
-          }
-        }
-      }
-    },
-    "[fed-syn]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "vcap": "xflights",
-          "credentials": {
-            "schema": "XFLIGHTS_XFLIGHTS"
-          }
-        }
-      }
-    },
-    "[fed-ds]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "sap.capire.flights.data": {
-          "kind": "odata",
-          "vcap": {
-            "name": "xflights-datasphere"
-          },
-          "credentials": {
-            "sql": {
-              "names": "quoted"
-            }
-          }
-        }
-      }
-    },
-    "[fed-rap]": {
-      "features": {
-        "with_mocks": false
-      },
-      "requires": {
-        "db": "hana",
-        "rap_v2": {
-          "kind": "odata",
-          "model": "db/abap",
-          "credentials": {
-            "remote": "sflight-rap",
-            "sql": {
-              "names": "quoted"
-            },
-            "service": false,
-            "supportRealTimeCDC": false
-          }
-        }
-      }
-    }
-  }
+  "license": "Apache-2.0"
 }

@@ -1,12 +1,11 @@
 namespace sap.capire.travels.masterdata;
-using { sap.capire.flights.data as external } from '@capire/xflights';
+using { sap.capire.flights.data as external } from '@capire/xflights-api';
 
 //
 // Consumption views for 2b federated master data...
 //
-annotate external.Flights with @cds.replicate.ttl: '1m';
 
-entity federated.Flights as projection on external.Flights {
+@federated entity Flights as projection on external.Flights {
   *,
   airline.icon     as icon,
   airline.name     as airline,
@@ -14,7 +13,7 @@ entity federated.Flights as projection on external.Flights {
   destination.name as destination,
 }
 
-entity federated.Supplements as projection on external.Supplements {
+@federated entity Supplements as projection on external.Supplements {
   ID, type, descr, price, currency
 }
 
