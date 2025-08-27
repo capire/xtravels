@@ -18,6 +18,10 @@ service TravelService {
 
   // Also expose federated Flights master data
   entity Flights as projection on masterdata.Flights;
+
+  // Export functions to export download travel data
+  function exportCSV() returns LargeBinary @Core.MediaType: 'text/csv' @Core.ContentDisposition.Filename: 'Travels.csv' @Core.ContentDisposition.Type: 'attachment';
+  function exportJSON() returns LargeBinary @Core.MediaType: 'application/json' @Core.ContentDisposition.Filename: 'Travels.json' @Core.ContentDisposition.Type: 'attachment';
 }
 
 type Percentage : Integer @assert.range: [1,100];

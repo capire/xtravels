@@ -1,10 +1,11 @@
 namespace sap.capire.travels;
 
-using { sap, managed, Currency, Country } from '@sap/cds/common';
+using { sap, managed, Country } from '@sap/cds/common';
 using {
   sap.capire.travels.masterdata.Price,
   sap.capire.travels.masterdata.Flights,
-  sap.capire.travels.masterdata.Supplements
+  sap.capire.travels.masterdata.Supplements,
+  sap.capire.travels.masterdata.Currency
 } from './master-data';
 
 
