@@ -44,6 +44,18 @@
   },
   "sap.ui5": {
     "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sap.capire.travels.i18n.i18n",
+          "supportedLocales": [
+            "en",
+            "de",
+            "fr"
+          ],
+          "fallbackLocale": "en"
+        }
+      },
       "": {
         "dataSource": "mainService",
         "preload": true,
@@ -84,6 +96,29 @@
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.SelectionFields": {
                   "useSemanticDateRange": true
+                },
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "actions": {
+                    "MenuActions": {
+                      "text": "{i18n>export}",
+                      "menu": [
+                        "exportJSON",
+                        "exportCSV"
+                      ]
+                    },
+                    "exportJSON": {
+                      "press": "sap.capire.travels.ext.CustomActions.exportJSON",
+                      "enabled": true,
+                      "visible": true,
+                      "text": "{i18n>json}"
+                    },
+                    "exportCSV": {
+                      "press": "sap.capire.travels.ext.CustomActions.exportCSV",
+                      "enabled": true,
+                      "visible": true,
+                      "text": "{i18n>csv}"
+                    }
+                  }
                 }
               },
               "variantManagement": "Page",
