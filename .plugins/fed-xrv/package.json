@@ -1,0 +1,7 @@
+{
+  "name": "@cap-js/xsrv-federation",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@sap/cds": ">=9"
+  }
+}

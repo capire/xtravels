@@ -19,7 +19,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "odata/v4/travel/",
+        "uri": "/odata/v4/travel/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"

@@ -1,0 +1,19 @@
+services:
+  abap:
+    # username: SAP* / DEVELOPER
+    # password: ABAPtr2022#01
+    image: sapse/abap-cloud-developer-trial:ABAPTRIAL_2022_SP01
+    restart: always
+    hostname: vhcala4hci
+    command:
+      - -agree-to-sap-license
+      - -skip-limits-check
+    ports:
+      - 3200:3200
+      - 3300:3300
+      - 8443:8443
+      - 30213:30213
+      - 50000:50000
+      - 50001:50001
+    # volumes:
+    #   - "./A4H_Multiple.txt:/opt/sap/ASABAP_license"
