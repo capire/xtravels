@@ -25,7 +25,7 @@
     "@cap-js/database-federation": ".plugins/fed-db",
     "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@capire/xflights-abap-api": ".plugins/abap",
-    "@capire/xflights-api": "*",
+    "@capire/xflights-data": "*",
     "@cap-js/hana": "^2.1.2",
     "@sap/cds": ">=9",
     "express": "^4"
