@@ -1,11 +1,9 @@
 namespace sap.capire.travels;
 
-using { sap, managed, Country } from '@sap/cds/common';
+using { sap, managed, Country, Currency } from '@sap/cds/common';
 using {
-  sap.capire.travels.masterdata.Price,
   sap.capire.travels.masterdata.Flights,
   sap.capire.travels.masterdata.Supplements,
-  sap.capire.travels.masterdata.Currency
 } from './master-data';
 
 
@@ -73,3 +71,5 @@ entity TravelStatus : sap.common.CodeList {
     Canceled = 'X';
   }
 }
+
+type Price : Decimal(9,4);
