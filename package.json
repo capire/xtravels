@@ -17,8 +17,5 @@
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
   },
-  "workspaces": [
-    "../-xflights-data"
-  ],
   "license": "Apache-2.0"
 }
