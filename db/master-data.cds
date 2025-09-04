@@ -1,9 +1,9 @@
-namespace sap.capire.travels.masterdata;
-using { sap.capire.flights.data as external } from '@capire/xflights';
-
 //
 // Consumption views for master data imported from xflights...
 //
+
+using { sap.capire.flights.data as external } from '@capire/xflights';
+namespace sap.capire.travels.masterdata;
 
 @federated entity Flights as projection on external.Flights {
   *,
