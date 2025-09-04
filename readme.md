@@ -10,12 +10,80 @@ cd xtravels
 npm install
 ```
 
-### Run
+> [!note]
+> The package has an npm dependency to `@capire/xflights` that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as described below.
+
+
+
+### Run it
 
 ```sh
 cds watch
 ```
 
-## License
+
+
+### Using GitHub Packages
+
+Reuse packages among the *[capire samples](https://github.com/capire)* are published to the [GitHub Packages](https://docs.github.com/packages) registry, which requires you to `npm login` once like that:
+
+  ```sh
+npm login --scope=@capire --registry=https://npm.pkg.github.com
+  ```
+
+As password you're using a Personal Access Token (classic) with `read:packages` scope.
+Read more about it in [Authenticating to GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages).
+
+This adds entries like that to your local `~/.npmrc` file, which allow you to npm install @capire packages subsequently using `npm add` or `npm install` as usual:
+
+```properties
+@capire:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=<generated token>
+```
+
+
+
+### Using Workspaces
+
+Alternatively you can work with related packages in local workspace setups like so:
+
+1. Create a workspace root, e.g. at `cap/samples`:
+   ```sh
+   mkdir -p cap/samples && cd cap/samples
+   echo '{"workspaces":["*"]}' > package.json
+   ```
+
+2. Add related projects:
+   ```sh
+   git clone https://github.com/capire/xflights
+   git clone https://github.com/capire/xtravels
+   ```
+
+3. Install dependencies:
+   ```sh
+   npm inatall
+   ```
+
+This will install all dependencies of all cloned projects, with cross dependencies being symlinked, which we can inspect using `npm list`:
+
+```sh
+npm ls @capire/xflights
+```
+
+This should display something like this:
+
+```sh
+samples@ ~/cap/samples
+├── @capire/xflights@0.1.3 -> ./xflights
+└─┬ @capire/xtravels@1.0.0 -> ./xtravels
+  └── @capire/xflights@0.1.3 deduped -> ./xflights
+```
+
+
+
+
+
+
+### License
 
 Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved. This file is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
