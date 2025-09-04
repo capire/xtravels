@@ -61,7 +61,7 @@ Alternatively you can work with related packages in local workspace setups like 
 
 3. Install dependencies:
    ```sh
-   npm inatall
+   npm install
    ```
 
 This will install all dependencies of all cloned projects, with cross dependencies being symlinked, which we can inspect using `npm list`:
