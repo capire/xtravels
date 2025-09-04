@@ -11,7 +11,7 @@ npm install
 ```
 
 > [!note]
-> The package has an npm dependency to `@capire/xflights` that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as described below.
+> The package has an npm dependency to [_`@capire/xflights`_](https://github.com/capire/xflights) that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as described below.
 
 
 
