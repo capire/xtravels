@@ -64,13 +64,13 @@ Alternatively you can work with related packages in local workspace setups like 
    npm install
    ```
 
-This will install all dependencies of all cloned projects, with cross dependencies being symlinked, which we can inspect using `npm list`:
+This will install all dependencies of all cloned projects, with cross dependencies between them being *symlinked* automatically by `npm install`. We can inspect this using `npm list`:
 
 ```sh
 npm ls @capire/xflights
 ```
 
-This should display something like this:
+... which should display something like this:
 
 ```sh
 samples@ ~/cap/samples
