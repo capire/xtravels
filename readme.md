@@ -2,7 +2,7 @@
 
 Travel and booking management that builds on top of [capire/xflights](https://github.com/capire/xflights).
 
-### Get it
+## Get it
 
 ```sh
 git clone https://github.com/capire/xtravels
@@ -15,7 +15,7 @@ npm install
 
 
 
-### Run it
+## Run it
 
 ```sh
 cds watch
@@ -34,7 +34,7 @@ Which should print something like that:
 
 
 
-### Using GitHub Packages
+## Using GitHub Packages
 
 Reuse packages among the *[capire samples](https://github.com/capire)* are published to the [GitHub Packages](https://docs.github.com/packages) registry, which requires you to `npm login` once like that:
 
@@ -54,7 +54,7 @@ A successfull `npm login` adds entries like that to your local `~/.npmrc` file, 
 
 
 
-### Using Workspaces
+## Using Workspaces
 
 Alternatively you can work with related packages in local workspace setups like so:
 
