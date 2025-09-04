@@ -21,6 +21,17 @@ npm install
 cds watch
 ```
 
+Which should print something like that:
+
+```sh
+...
+[cds] - server listening on { url: 'http://localhost:4004' }
+[cds] - server v9.4.0 launched in 444 ms
+[cds] - [ terminate with ^C ]
+```
+
+`Cmd-click` the url link printed to the terminal to open the app in a browser.
+
 
 
 ### Using GitHub Packages
