@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "npx eslint .",
     "start": "cds-serve",
-    "jest": "npx jest",
-    "test": "chest test"
+    "test": "chest test",
+    "jest": "npx jest"
   },
   "dependencies": {
     "@capire/xflights": "*",
