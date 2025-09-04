@@ -2,7 +2,7 @@ namespace sap.capire.travels.masterdata;
 using { sap.capire.flights.data as external } from '@capire/xflights';
 
 //
-// Consumption views for 2b federated master data...
+// Consumption views for master data imported from xflights...
 //
 
 @federated entity Flights as projection on external.Flights {
@@ -16,9 +16,3 @@ using { sap.capire.flights.data as external } from '@capire/xflights';
 @federated entity Supplements as projection on external.Supplements {
   ID, type, descr, price, currency
 }
-
-//
-// Common types for Travels application
-//
-
-type Price : Decimal(9,4);
