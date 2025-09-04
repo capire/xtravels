@@ -66,11 +66,10 @@ npm ls @capire/xflights-data
 
 ```sh
 samples@ ~/cap/samples
-├── @capire/xflights@0.1.3 -> ./xflights
+├── @capire/xflights-data@0.1.5 -> ./xflights/apis/data-service
 └─┬ @capire/xtravels@1.0.0 -> ./xtravels
-  └── @capire/xflights@0.1.3 deduped -> ./xflights
+  └── @capire/xflights-data@0.1.5 deduped -> ./xflights/apis/data-service
 ```
-
 
 
 ## Run it
