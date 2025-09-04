@@ -17,15 +17,6 @@ using { sap.capire.flights.data as external } from '@capire/xflights';
   ID, type, descr, price, currency
 }
 
-
-//
-// Direct references to external master data
-//
-
-type Currency : Association to external.Currencies;
-type Country : Association to external.Countries;
-
-
 //
 // Common types for Travels application
 //
