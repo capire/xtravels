@@ -1,6 +1,7 @@
 # @capire/xtravels
 
-Travel and booking management that builds on top of [capire/xflights](https://github.com/capire/xflights).
+A travel booking application using master data provided by [capire/xflights](https://github.com/capire/xflights).
+
 
 ## Get it
 
@@ -10,7 +11,7 @@ cd xtravels
 npm install
 ```
 
-The package has an npm dependency to [_`@capire/xflights`_](https://github.com/capire/xflights) that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as follows...
+The package has an npm dependency to [_`@capire/xflights-data`_](https://github.com/capire/xflights/pkgs/npm/xflights-data) that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as follows...
 
 
 
@@ -41,7 +42,7 @@ Alternatively you can work with related packages in local workspace setups like 
 1. Create a workspace root, e.g. at `cap/samples`:
    ```sh
    mkdir -p cap/samples && cd cap/samples
-   echo '{"workspaces":["*"]}' > package.json
+   echo '{"workspaces":["*","*/apis/*"]}' > package.json
    ```
 
 2. Add related projects:
@@ -58,18 +59,17 @@ Alternatively you can work with related packages in local workspace setups like 
 This will install all dependencies of all cloned projects, with cross dependencies between them being *symlinked* automatically by `npm install`. We can inspect this using `npm list`:
 
 ```sh
-npm ls @capire/xflights
+npm ls @capire/xflights-data
 ```
 
 ... which should display something like this:
 
 ```sh
 samples@ ~/cap/samples
-├── @capire/xflights@0.1.3 -> ./xflights
+├── @capire/xflights-data@0.1.5 -> ./xflights/apis/data-service
 └─┬ @capire/xtravels@1.0.0 -> ./xtravels
-  └── @capire/xflights@0.1.3 deduped -> ./xflights
+  └── @capire/xflights-data@0.1.5 deduped -> ./xflights/apis/data-service
 ```
-
 
 
 ## Run it

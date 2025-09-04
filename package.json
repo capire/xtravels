@@ -22,6 +22,7 @@
     "jest": "npx jest"
   },
   "dependencies": {
+    "@sap-cloud-sdk/http-client": "^4",
     "@capire/xflights-data": "*",
     "@capire/xflights-abap-api": ".plugins/abap",
     "@cap-js/database-federation": ".plugins/fed-db",
