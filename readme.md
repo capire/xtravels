@@ -30,7 +30,7 @@ Which should print something like that:
 [cds] - [ terminate with ^C ]
 ```
 
-`Cmd-click` the url link printed to the terminal to open the app in a browser.
+`Cmd-click` the http://localhost:4004 link in the terminal to open the app in a browser.
 
 
 
