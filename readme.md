@@ -10,31 +10,11 @@ cd xtravels
 npm install
 ```
 
-> [!note]
-> The package has an npm dependency to [_`@capire/xflights`_](https://github.com/capire/xflights) that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as described below.
+The package has an npm dependency to [_`@capire/xflights`_](https://github.com/capire/xflights) that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as follows...
 
 
 
-## Run it
-
-```sh
-cds watch
-```
-
-Which should print something like that:
-
-```sh
-...
-[cds] - server listening on { url: 'http://localhost:4004' }
-[cds] - server v9.4.0 launched in 444 ms
-[cds] - [ terminate with ^C ]
-```
-
-`Cmd-click` the http://localhost:4004 link in the terminal to open the app in a browser.
-
-
-
-## Using GitHub Packages
+### Using GitHub Packages
 
 Reuse packages among the *[capire samples](https://github.com/capire)* are published to the [GitHub Packages](https://docs.github.com/packages) registry, which requires you to `npm login` once like that:
 
@@ -54,7 +34,7 @@ A successfull `npm login` adds entries like that to your local `~/.npmrc` file, 
 
 
 
-## Using Workspaces
+### Using Workspaces
 
 Alternatively you can work with related packages in local workspace setups like so:
 
@@ -92,9 +72,26 @@ samples@ ~/cap/samples
 
 
 
+## Run it
+
+```sh
+cds watch
+```
+
+Which should print something like that:
+
+```sh
+...
+[cds] - server listening on { url: 'http://localhost:4004' }
+[cds] - server v9.4.0 launched in 444 ms
+[cds] - [ terminate with ^C ]
+```
+
+`Cmd-click` the http://localhost:4004 link in the terminal to open the app in a browser.
 
 
 
-### License
+
+## License
 
 Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved. This file is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
