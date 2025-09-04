@@ -46,20 +46,9 @@ module.exports = class DataFederationService extends cds.Service {
 }
 
 
-
 //
 // Temporary monkey patches till upcoming cds release
 //
-
-cds.extend (cds.linked.LinkedCSN) .with (class {
-  collect (picker, collector) {
-    if (!collector) collector = picker, picker = () => true
-    let d, x, collected = []
-    for (d of this.definitions)
-    if (picker(d) && (x = collector(d)) !== undefined) collected.push (x)
-    return collected
-  }
-})
 
 cds.extend (cds.entity) .with (class {
   get service(){ return this._service }
