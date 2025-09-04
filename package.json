@@ -4,11 +4,10 @@
   "description": "CAP SFlight travel service demo",
   "scripts": {
     "lint": "npx eslint .",
-    "setup": "node ./test/hana.mjs || node ./test/cf.mjs || exit 0",
     "start": "cds-serve",
-    "remote": "cd $(node -e \"console.log(require('node:path').dirname(require.resolve('@capire/xflights/package.json')))\") && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
-    "jest": "npx jest",
     "test": "chest test",
+    "setup": "node ./test/hana.mjs || node ./test/cf.mjs || exit 0",
+    "remote": "cd $(node -e \"console.log(require('node:path').dirname(require.resolve('@capire/xflights/package.json')))\") && ( fuser 4005/tcp -k || true ) && cds w --port 4005",
     "test:all": "npm run setup && { npm run remote & } && npm run test && npm run test:srv && npm run test:syn && npm run test:vrt && npm run test:ds && npm run test:rap",
     "test:srv": "CDS_ENV=fed-srv npm t",
     "test:srv-rep": "CDS_ENV=rep-srv npm t",
@@ -19,21 +18,22 @@
     "deploy:vrt": "cds bind --exec --profile fed-vrt -- cds deploy -2 hana",
     "deploy:syn": "cds bind --exec --profile fed-syn -- cds deploy -2 hana",
     "deploy:ds": "cds bind --exec --profile fed-ds -- cds deploy -2 hana",
-    "deploy:rap": "cds bind --exec --profile fed-rap -- cds deploy -2 hana"
+    "deploy:rap": "cds bind --exec --profile fed-rap -- cds deploy -2 hana",
+    "jest": "npx jest"
   },
   "dependencies": {
+    "@capire/xflights-data": "*",
+    "@capire/xflights-abap-api": ".plugins/abap",
     "@cap-js/database-federation": ".plugins/fed-db",
     "@cap-js/xsrv-federation": ".plugins/fed-xrv",
-    "@capire/xflights-abap-api": ".plugins/abap",
-    "@capire/xflights-data": "*",
     "@cap-js/hana": "^2.1.2",
     "@sap/cds": ">=9",
     "express": "^4"
   },
   "devDependencies": {
+    "@sap/cds-dk": "^9.2.0",
     "@cap-js/cds-test": "*",
-    "@cap-js/sqlite": ">=2",
-    "@sap/cds-dk": "^9.2.0"
+    "@cap-js/sqlite": ">=2"
   },
   "license": "Apache-2.0"
 }
