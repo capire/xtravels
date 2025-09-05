@@ -103,22 +103,16 @@ module.exports = class TravelService extends cds.ApplicationService { async init
 
   this.on("exportCSV", async (req) => {
     async function* csv_rows() {
-      yield "ID;Agency;Customer;BeginDate;EndDate;TotalPrice;Currency;Status;Description\n"
-      for await (const row of SELECT.localized
-        .from(Travels)
-        .columns(
-          "ID",
-          "Agency.Name as Agency",
-          `concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName)  as Customer`,
-          "BeginDate",
-          "EndDate",
-          "TotalPrice",
-          "Currency.code as Currency",
-          "Status.name as Status",
-          "Description"
-        )) {
-        yield `${row.ID};${row.Agency};${row.Customer};${row.BeginDate};${row.EndDate};${row.TotalPrice};${row.Currency};${row.Status};${row.Description}\n`
-      }
+      let sep = ';'
+      yield `ID${sep}Agency${sep}Customer${sep}BeginDate${sep}EndDate${sep}TotalPrice${sep}Currency${sep}Status${sep}Description\n`
+      yield* (await cds.ql.SELECT
+        .one
+        .localized(Travels)
+        .columns`cast(string_agg(
+          concat(ID,${sep},Agency.Name,${sep},Customer.Title,' ',Customer.FirstName,' ',Customer.LastName,${sep},BeginDate,${sep},EndDate,${sep},TotalPrice,${sep},Currency.code,${sep},Status.name,${sep},Description),
+          ${'\n'}
+        ) as cds.LargeBinary) as csv`
+      ).csv
     }
     const { Readable } = require("stream")
     req.reply(Readable.from(csv_rows(), { objectMode: false }))
