@@ -5,11 +5,13 @@
   "scripts": {
     "lint": "npx eslint .",
     "start": "cds-serve",
-    "jest": "npx jest",
-    "test": "chest test"
+    "test": "chest test",
+    "jest": "npx jest"
   },
   "dependencies": {
-    "@capire/xflights": "*",
+    "@capire/xflights-data": "*",
+    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
+    "@sap-cloud-sdk/http-client": "^4",
     "@sap/cds": ">=9",
     "express": "^4"
   },

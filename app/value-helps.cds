@@ -133,7 +133,7 @@ annotate schema.Bookings.Supplements {
 }
 
 
-using sap.capire.flights;
+using sap.capire.travels.masterdata as flights;
 
 
 annotate flights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
@@ -143,73 +143,16 @@ annotate flights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used
     }]
   }
 {
-  AirlineID @Common.ValueList: {
-    CollectionPath : 'Airline',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: AirlineID, ValueListProperty: 'AirlineID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Currency'}
-    ]
-  };
-
-  connection @Common.ValueList: {
-    CollectionPath : 'FlightConnection',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: AirlineID, ValueListProperty: 'AirlineID'},
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: ConnectionID, ValueListProperty: 'ConnectionID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'AirlineID_Text'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'DepartureAirport'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'DestinationAirport'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'DepartureTime'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'ArrivalTime'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Distance'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'DistanceUnit'}
-    ]
-  };
-};
-
-
-
-annotate flights.Connections {
-
   airline @Common.ValueList: {
     CollectionPath : 'Airline',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: AirlineID, ValueListProperty: 'CarrierID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'AirlineID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: AirlineID, ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Currency'}
     ]
   };
-
-  DepartureAirport @Common.ValueList: {
-    CollectionPath : 'Airport',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: DepartureAirport_AirportID, ValueListProperty: 'Airport_ID'},  // here FK is required
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'AirportID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Country'}
-    ]
-  };
-
-  DestinationAirport @Common.ValueList: {
-    CollectionPath : 'Airport',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut',       LocalDataProperty: DestinationAirport_AirportID, ValueListProperty: 'Airport_ID'},  // here FK is required
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'AirportID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Country'}
-    ]
-  };
-
-}
+};
 
 
 annotate schema.Passengers {
