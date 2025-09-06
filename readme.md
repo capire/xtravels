@@ -11,7 +11,7 @@ cd xtravels
 npm install
 ```
 
-The package has an npm dependency to [_`@capire/xflights-data`_](https://github.com/capire/xflights/pkgs/npm/xflights-data) that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as follows...
+The package has dependencies to other `@capire` packages, including [_`@capire/xflights-data`_](https://github.com/capire/xflights/pkgs/npm/xflights-data), that can be pulled from [GitHub Packages](#using-github-packages) or from a [local workspace setup](#using-workspaces) as follows...
 
 
 
@@ -47,8 +47,9 @@ Alternatively you can work with related packages in local workspace setups like 
 
 2. Add related projects:
    ```sh
-   git clone https://github.com/capire/xflights
    git clone https://github.com/capire/xtravels
+   git clone https://github.com/capire/xflights
+   git clone https://github.com/capire/common
    ```
 
 3. Install dependencies:

@@ -9,6 +9,7 @@
     "jest": "npx jest"
   },
   "dependencies": {
+    "@capire/common": "*",
     "@capire/xflights-data": "*",
     "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@sap-cloud-sdk/http-client": "^4",
