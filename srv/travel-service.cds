@@ -20,8 +20,24 @@ service TravelService {
   @readonly entity Currencies as projection on sap.common.Currencies;
 
   // Export functions to export download travel data
-  function exportCSV() returns LargeBinary @Core.MediaType: 'text/csv' @Core.ContentDisposition.Filename: 'Travels.csv' @Core.ContentDisposition.Type: 'attachment';
-  function exportJSON() returns LargeBinary @Core.MediaType: 'application/json' @Core.ContentDisposition.Filename: 'Travels.json' @Core.ContentDisposition.Type: 'attachment';
+  function exportJSON() returns LargeBinary @Core.MediaType:'application/json';
+  function exportCSV() returns LargeBinary @Core.MediaType:'text/csv';
+}
+
+
+/**
+ * Edit this view to control which data to include in CSV/JSON exports
+ */
+entity TravelsExport @cds.persistence.skip as projection on sap.capire.travels.Travels {
+  ID,
+  Agency.Name as Agency,
+  concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName) as Customer,
+  BeginDate,
+  EndDate,
+  TotalPrice,
+  Currency.code as Currency,
+  Status.name as Status,
+  Description
 }
 
 type Percentage : Integer @assert.range: [1,100];

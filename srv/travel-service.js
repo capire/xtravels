@@ -101,49 +101,30 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
 
-  this.on("exportCSV", async (req) => {
-    async function* csv_rows() {
-      yield "ID;Agency;Customer;BeginDate;EndDate;TotalPrice;Currency;Status;Description\n"
-      for await (const row of SELECT.localized
-        .from(Travels)
-        .columns(
-          "ID",
-          "Agency.Name as Agency",
-          `concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName)  as Customer`,
-          "BeginDate",
-          "EndDate",
-          "TotalPrice",
-          "Currency.code as Currency",
-          "Status.name as Status",
-          "Description"
-        )) {
-        yield `${row.ID};${row.Agency};${row.Customer};${row.BeginDate};${row.EndDate};${row.TotalPrice};${row.Currency};${row.Status};${row.Description}\n`
-      }
-    }
-    const { Readable } = require("stream")
-    req.reply(Readable.from(csv_rows(), { objectMode: false }))
+  const { TravelsExport } = this.model.definitions
+  const { Readable } = require ('stream')
+
+  this.on ('exportCSV', req => {
+    let query = cds.ql (TravelsExport.query)
+    let stream = Readable.from (async function*() {
+      yield Object.keys(query.elements).join(';') + '\n'
+      for await (const row of query.localized)
+        yield Object.values(row).join(';') + '\n'
+    }())
+    return req.reply (stream, { filename: 'Travels.csv' })
   })
 
-  this.on("exportJSON", async (req) => {
-    req.reply(
-      await SELECT.localized
-        .from(Travels)
-        .columns(
-          "ID",
-          "Agency.Name as Agency",
-          `concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName)  as Customer`,
-          "BeginDate",
-          "EndDate",
-          "TotalPrice",
-          "Currency.code as Currency",
-          "Status.name as Status",
-          "Description"
-        )
-        .pipeline()
-    )
+  this.on ('exportJSON', async req => {
+    let query = cds.ql (TravelsExport.query)
+    let stream = await query.localized.stream()
+    return req.reply (stream, { filename: 'Travels.json' })
   })
 
   // Add base class's handlers. Handlers registered above go first.
   return super.init()
 
 }}
+
+
+// Temporary monkey patch until upcoming release of @sap/cds...
+SELECT.class.prototype.stream ??= SELECT.class.prototype.pipeline
