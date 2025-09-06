@@ -1,0 +1,11 @@
+[
+  "**/*.hdbview",
+  "**/*.hdbvirtualtable",
+  "**/*.hdbfabricvirtualtable",
+  "**/*.hdbprocedure",
+  "**/*.hdbschedulerjob",
+  "**/*.hdbsynonym",
+  "**/*.hdbsynonymconfig",
+  "**/*.hdbrole",
+  "**/sap.capire.flights.data.*.hdbtable"
+]

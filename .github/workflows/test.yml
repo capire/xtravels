@@ -1,0 +1,44 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, auto_merge_enabled]
+
+permissions:
+  contents: read
+
+# Allow parallel jobs on `main`, so that each commit is tested. For PRs, run only the latest commit.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    name: Tests
+    permissions:
+      packages: write
+
+    strategy:
+      fail-fast: true
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm ci
+      - id: hxe
+        uses: ./.github/actions/hxe
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # testing
+      - run: npm test
+        env:
+          FORCE_COLOR: true
+          TAG: ${{ steps.hxe.outputs.TAG }}
+          IMAGE_ID: ${{ steps.hxe.outputs.IMAGE_ID }}

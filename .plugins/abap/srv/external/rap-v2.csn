@@ -1,0 +1,2678 @@
+{
+  "meta": {
+    "creator": "cds-dk 9.0.6"
+  },
+  "$version": "2.0",
+  "definitions": {
+    "rap_v2": {
+      "kind": "service",
+      "@cds.external": true,
+      "@m.IsDefaultEntityContainer": "true",
+      "@sap.message.scope.supported": "true",
+      "@sap.supported.formats": "atom json xlsx pdf"
+    },
+    "rap_v2.BookingSupplement": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.deletable.path": "Delete_mc",
+      "@sap.updatable.path": "Update_mc",
+      "@sap.label": "BookingSuppl Proj View for Draft RefScen",
+      "elements": {
+        "BookSupplUUID": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.quickinfo": "16 Byte UUID in 16 Bytes (Raw Format)",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "Delete_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Update_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "TravelUUID": {
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.quickinfo": "16 Byte UUID in 16 Bytes (Raw Format)",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "BookingUUID": {
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.quickinfo": "16 Byte UUID in 16 Bytes (Raw Format)",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "BookingSupplementID": {
+          "type": "cds.String",
+          "length": 2,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Book. Supp. Number",
+          "@sap.quickinfo": "Flight Reference Scenario: Booking Supplement ID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "SupplementID": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "SupplementDescription",
+          "@sap.label": "Product ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement ID",
+          "@sap.value.list": "standard"
+        },
+        "SupplementDescription": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Product Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement Description",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "BookSupplPrice": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Product Price",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement Price"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.value.list": "standard",
+          "@sap.semantics": "currency-code"
+        },
+        "LocalLastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Local Instance Last Change Date Time",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "to_Product": {
+          "type": "cds.Association",
+          "target": "rap_v2.Supplement",
+          "keys": []
+        },
+        "to_SupplementText": {
+          "type": "cds.Association",
+          "target": "rap_v2.SupplementText",
+          "cardinality": {
+            "max": "*"
+          },
+          "on": [{"ref":["SupplementID"]}, "=", {"ref":["to_SupplementText","SupplementID"]}]
+        },
+        "to_Travel": {
+          "type": "cds.Association",
+          "target": "rap_v2.Travel",
+          "keys": []
+        },
+        "to_Booking": {
+          "type": "cds.Association",
+          "target": "rap_v2.Booking",
+          "keys": []
+        }
+      }
+    },
+    "rap_v2.Booking": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.deletable.path": "Delete_mc",
+      "@sap.updatable.path": "Update_mc",
+      "@sap.label": "Booking Proj View for Draft RefScen",
+      "elements": {
+        "BookingUUID": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.quickinfo": "16 Byte UUID in 16 Bytes (Raw Format)",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "Delete_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Update_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "to_BookingSupplement_oc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dynamic CbA-Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "TravelUUID": {
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.quickinfo": "16 Byte UUID in 16 Bytes (Raw Format)",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "BookingID": {
+          "type": "cds.String",
+          "length": 4,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Booking Number",
+          "@sap.quickinfo": "Flight Reference Scenario: Booking ID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "BookingDate": {
+          "type": "cds.Date",
+          "@sap.display.format": "Date",
+          "@sap.label": "Booking Date",
+          "@sap.quickinfo": "Flight Reference Scenario: Booking Date",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "CustomerID": {
+          "type": "cds.String",
+          "length": 6,
+          "@sap.display.format": "NonNegative",
+          "@sap.text": "CustomerName",
+          "@sap.label": "Customer ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Customer ID",
+          "@sap.value.list": "standard"
+        },
+        "CustomerName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Last Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Last Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "AirlineID": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "CarrierName",
+          "@sap.label": "Airline ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier ID",
+          "@sap.value.list": "standard"
+        },
+        "CarrierName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airline Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "ConnectionID": {
+          "type": "cds.String",
+          "length": 4,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Flight Number",
+          "@sap.quickinfo": "Flight Reference Scenario: Connection ID",
+          "@sap.value.list": "standard"
+        },
+        "FlightDate": {
+          "type": "cds.Date",
+          "@sap.display.format": "Date",
+          "@sap.label": "Flight Date",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Date",
+          "@sap.value.list": "standard"
+        },
+        "FlightPrice": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Flight Price",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Price",
+          "@sap.value.list": "standard"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.value.list": "standard",
+          "@sap.semantics": "currency-code"
+        },
+        "BookingStatus": {
+          "type": "cds.String",
+          "length": 1,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "BookingStatusText",
+          "@sap.label": "Booking Status",
+          "@sap.quickinfo": "Flight Reference Scenario: Travel Status",
+          "@sap.value.list": "fixed-values"
+        },
+        "BookingStatusText": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Booking Status",
+          "@sap.quickinfo": "Overall Status Text",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "LocalLastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Local Instance Last Change Date Time",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "to_BookingStatus": {
+          "type": "cds.Association",
+          "target": "rap_v2.BookingStatusVH",
+          "keys": []
+        },
+        "to_BookingSupplement": {
+          "type": "cds.Composition",
+          "target": "rap_v2.BookingSupplement",
+          "cardinality": {
+            "max": "*"
+          },
+          "keys": []
+        },
+        "to_Carrier": {
+          "type": "cds.Association",
+          "target": "rap_v2.Airline",
+          "keys": []
+        },
+        "to_Connection": {
+          "type": "cds.Association",
+          "target": "rap_v2.FlightConnection",
+          "keys": []
+        },
+        "to_Customer": {
+          "type": "cds.Association",
+          "target": "rap_v2.Passenger",
+          "keys": []
+        },
+        "to_Travel": {
+          "type": "cds.Association",
+          "target": "rap_v2.Travel",
+          "keys": []
+        }
+      }
+    },
+    "rap_v2.Travel": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.deletable.path": "Delete_mc",
+      "@sap.updatable.path": "Update_mc",
+      "@sap.label": "Travel Projection View for Draft RefScen",
+      "elements": {
+        "TravelUUID": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.quickinfo": "16 Byte UUID in 16 Bytes (Raw Format)",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "acceptTravel_ac": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Action Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "deductDiscount_ac": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Action Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "rejectTravel_ac": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Action Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "BookingFee_fc": {
+          "type": "cds.Integer",
+          "@odata.Type": "Edm.Byte",
+          "@sap.label": "Dyn. Field Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Delete_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Update_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "to_Booking_oc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dynamic CbA-Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "TravelID": {
+          "type": "cds.String",
+          "length": 8,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Travel ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Travel ID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "AgencyID": {
+          "type": "cds.String",
+          "length": 6,
+          "@sap.display.format": "NonNegative",
+          "@sap.text": "AgencyName",
+          "@sap.label": "Agency ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Agency ID",
+          "@sap.value.list": "standard"
+        },
+        "AgencyName": {
+          "type": "cds.String",
+          "length": 80,
+          "@sap.label": "Agency Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Agency Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "CustomerID": {
+          "type": "cds.String",
+          "length": 6,
+          "@sap.display.format": "NonNegative",
+          "@sap.text": "CustomerName",
+          "@sap.label": "Customer ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Customer ID",
+          "@sap.value.list": "standard"
+        },
+        "CustomerName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Last Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Last Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "BeginDate": {
+          "type": "cds.Date",
+          "@sap.display.format": "Date",
+          "@sap.label": "Starting Date",
+          "@sap.quickinfo": "Flight Reference Scenario: Start Date"
+        },
+        "EndDate": {
+          "type": "cds.Date",
+          "@sap.display.format": "Date",
+          "@sap.label": "End Date",
+          "@sap.quickinfo": "Flight Reference Scenario: End Date"
+        },
+        "BookingFee": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.field.control": "BookingFee_fc",
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Booking Fee",
+          "@sap.quickinfo": "Flight Reference Scenario: Booking Fee"
+        },
+        "TotalPrice": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Total Price",
+          "@sap.quickinfo": "Flight Reference Scenario: Total Price",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.value.list": "standard",
+          "@sap.semantics": "currency-code"
+        },
+        "Description": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Description",
+          "@sap.quickinfo": "Flight Reference Scenario: Description"
+        },
+        "OverallStatus": {
+          "type": "cds.String",
+          "length": 1,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "OverallStatusText",
+          "@sap.label": "Overall Status",
+          "@sap.quickinfo": "Flight Reference Scenario: Travel Status",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.value.list": "fixed-values"
+        },
+        "OverallStatusText": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Overall Status",
+          "@sap.quickinfo": "Overall Status Text",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "LocalLastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Local Instance Last Change Date Time",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "to_Agency": {
+          "type": "cds.Association",
+          "target": "rap_v2.TravelAgency",
+          "keys": []
+        },
+        "to_Booking": {
+          "type": "cds.Composition",
+          "target": "rap_v2.Booking",
+          "cardinality": {
+            "max": "*"
+          },
+          "keys": []
+        },
+        "to_Currency": {
+          "type": "cds.Association",
+          "target": "rap_v2.Currency",
+          "keys": []
+        },
+        "to_Customer": {
+          "type": "cds.Association",
+          "target": "rap_v2.Passenger",
+          "keys": []
+        },
+        "to_OverallStatus": {
+          "type": "cds.Association",
+          "target": "rap_v2.OverallStatusVH",
+          "keys": []
+        }
+      },
+      "actions": {
+        "acceptTravel": {
+          "kind": "action",
+          "returns": {
+            "type": "rap_v2.Travel"
+          }
+        },
+        "deductDiscount": {
+          "kind": "action",
+          "params": {
+            "discount_percent": {
+              "type": "cds.Integer",
+              "@odata.Type": "Edm.Byte"
+            }
+          },
+          "returns": {
+            "type": "rap_v2.Travel"
+          }
+        },
+        "rejectTravel": {
+          "kind": "action",
+          "returns": {
+            "type": "rap_v2.Travel"
+          }
+        }
+      }
+    },
+    "rap_v2.TravelAgency": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Agency View - CDS Data Model",
+      "elements": {
+        "AgencyID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 6,
+          "@sap.display.format": "NonNegative",
+          "@sap.text": "Name",
+          "@sap.label": "Agency ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Agency ID",
+          "notNull": true
+        },
+        "Name": {
+          "type": "cds.String",
+          "length": 80,
+          "@sap.label": "Agency Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Agency Name"
+        },
+        "Street": {
+          "type": "cds.String",
+          "length": 60,
+          "@sap.label": "Street",
+          "@sap.quickinfo": "Flight Reference Scenario: Street"
+        },
+        "PostalCode": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Postal Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Postal Code"
+        },
+        "City": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "City",
+          "@sap.quickinfo": "Flight Reference Scenario: City"
+        },
+        "CountryCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Country/Region Key",
+          "@sap.value.list": "standard"
+        },
+        "PhoneNumber": {
+          "type": "cds.String",
+          "length": 30,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Phone No.",
+          "@sap.quickinfo": "Flight Reference Scenario: Phone Number",
+          "@sap.semantics": "tel"
+        },
+        "EMailAddress": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.label": "E-Mail Address",
+          "@sap.quickinfo": "Flight Reference Scenario: Email Address",
+          "@sap.semantics": "email"
+        },
+        "WebAddress": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.label": "Web Address",
+          "@sap.quickinfo": "Flight Reference Scenario: Web Address"
+        },
+        "MimeType": {
+          "type": "cds.String",
+          "length": 128,
+          "@sap.label": "Mime Type",
+          "@sap.quickinfo": "MimeType"
+        },
+        "Filename": {
+          "type": "cds.String",
+          "length": 128,
+          "@sap.label": "Filename"
+        },
+        "LocalCreatedBy": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Created By",
+          "@sap.quickinfo": "Created By User"
+        },
+        "LocalCreatedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Created On",
+          "@sap.quickinfo": "Creation Date Time"
+        },
+        "LocalLastChangedBy": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Changed By",
+          "@sap.quickinfo": "Local Instance Last Changed By User"
+        },
+        "LocalLastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Local Instance Last Change Date Time"
+        },
+        "LastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Last Change Date Time"
+        },
+        "to_Country": {
+          "type": "cds.Association",
+          "target": "rap_v2.Country",
+          "keys": []
+        }
+      }
+    },
+    "rap_v2.xDMOxI_Agency_StdVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Agency ValueHelp",
+      "@sap.value.list": "true",
+      "elements": {
+        "AgencyID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 6,
+          "@sap.display.format": "NonNegative",
+          "@sap.text": "Name",
+          "@sap.label": "Agency ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Agency ID",
+          "notNull": true
+        },
+        "Name": {
+          "type": "cds.String",
+          "length": 80,
+          "@sap.label": "Agency Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Agency Name"
+        },
+        "Street": {
+          "type": "cds.String",
+          "length": 60,
+          "@sap.label": "Street",
+          "@sap.quickinfo": "Flight Reference Scenario: Street"
+        },
+        "PostalCode": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Postal Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Postal Code"
+        },
+        "City": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "City",
+          "@sap.quickinfo": "Flight Reference Scenario: City"
+        },
+        "CountryCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "CountryCodeText",
+          "@sap.label": "Country/Region Key",
+          "@sap.value.list": "standard"
+        },
+        "CountryCodeText": {
+          "type": "cds.String",
+          "length": 50,
+          "@sap.label": "Country/Region Name"
+        },
+        "PhoneNumber": {
+          "type": "cds.String",
+          "length": 30,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Phone No.",
+          "@sap.quickinfo": "Flight Reference Scenario: Phone Number",
+          "@sap.semantics": "tel"
+        },
+        "EMailAddress": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.label": "E-Mail Address",
+          "@sap.quickinfo": "Flight Reference Scenario: Email Address",
+          "@sap.semantics": "email"
+        },
+        "WebAddress": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.label": "Web Address",
+          "@sap.quickinfo": "Flight Reference Scenario: Web Address"
+        }
+      }
+    },
+    "rap_v2.Airport": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Airport View - CDS Data Model",
+      "elements": {
+        "AirportID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "Name",
+          "@sap.label": "Airport ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Airport ID",
+          "notNull": true
+        },
+        "Name": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airport Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Airport Name"
+        },
+        "City": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "City",
+          "@sap.quickinfo": "Flight Reference Scenario: City"
+        },
+        "CountryCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Country/Region Key",
+          "@sap.value.list": "standard"
+        },
+        "to_Country": {
+          "type": "cds.Association",
+          "target": "rap_v2.Country",
+          "keys": []
+        }
+      }
+    },
+    "rap_v2.BookingStatusVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.content.version": "1",
+      "@sap.label": "Booking Status Value Help",
+      "elements": {
+        "BookingStatus": {
+          "key": true,
+          "type": "cds.String",
+          "length": 1,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "BookingStatus_Text",
+          "@sap.label": "Booking Status",
+          "@sap.quickinfo": "Flight Reference Scenario: Travel Status",
+          "notNull": true
+        },
+        "BookingStatus_Text": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Booking Status",
+          "@sap.quickinfo": "Overall Status Text",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        }
+      }
+    },
+    "rap_v2.Airline": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Carrier View - CDS Data Model",
+      "elements": {
+        "AirlineID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "Name",
+          "@sap.label": "Airline ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier ID",
+          "notNull": true
+        },
+        "Name": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airline Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier Name"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.semantics": "currency-code"
+        },
+        "LastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Last Change Date Time"
+        },
+        "LocalCreatedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Created On",
+          "@sap.quickinfo": "Creation Date Time"
+        },
+        "LocalCreatedBy": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Created By",
+          "@sap.quickinfo": "Created By User"
+        },
+        "LocalLastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Local Instance Last Change Date Time"
+        },
+        "LocalLastChangedBy": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Changed By",
+          "@sap.quickinfo": "Local Instance Last Changed By User"
+        },
+        "to_Currency": {
+          "type": "cds.Association",
+          "target": "rap_v2.Currency",
+          "keys": []
+        }
+      }
+    },
+    "rap_v2.xDMOxI_Carrier_StdVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Carrier ValueHelp",
+      "@sap.value.list": "true",
+      "elements": {
+        "AirlineID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "Name",
+          "@sap.label": "Airline ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier ID",
+          "notNull": true
+        },
+        "Name": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airline Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier Name"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.text": "CurrencyName",
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.semantics": "currency-code"
+        },
+        "CurrencyName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Description"
+        }
+      }
+    },
+    "rap_v2.FlightConnection": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Connection View - CDS Data Model",
+      "elements": {
+        "AirlineID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "AirlineID_Text",
+          "@sap.label": "Airline ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier ID",
+          "@sap.value.list": "standard",
+          "notNull": true
+        },
+        "ConnectionID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 4,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Flight Number",
+          "@sap.quickinfo": "Flight Reference Scenario: Connection ID",
+          "notNull": true
+        },
+        "AirlineID_Text": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airline Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "DepartureAirport": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Departure Airport",
+          "@sap.quickinfo": "Flight Reference Scenario: From Airport",
+          "@sap.value.list": "standard"
+        },
+        "DestinationAirport": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Destination Airport",
+          "@sap.quickinfo": "Flight Reference Scenario: To Airport",
+          "@sap.value.list": "standard"
+        },
+        "DepartureTime": {
+          "type": "cds.Time",
+          "@sap.label": "Departure",
+          "@sap.quickinfo": "Flight Reference Scenario: Departure Time"
+        },
+        "ArrivalTime": {
+          "type": "cds.Time",
+          "@sap.label": "Arrival",
+          "@sap.quickinfo": "Flight Reference Scenario: Arrival Time"
+        },
+        "Distance": {
+          "type": "cds.Integer",
+          "@sap.label": "Flight Distance",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Distance"
+        },
+        "DistanceUnit": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.label": "Internal UoM",
+          "@sap.quickinfo": "Unit of Measurement",
+          "@sap.semantics": "unit-of-measure"
+        },
+        "to_Airline": {
+          "type": "cds.Association",
+          "target": "rap_v2.Airline",
+          "on": [{"ref":["AirlineID"]},"=",{"ref":["to_Airline","AirlineID"]}]
+        },
+        "to_DepartureAirport": {
+          "type": "cds.Association",
+          "target": "rap_v2.Airport",
+          "on": [{"ref":["DepartureAirport"]},"=",{"ref":["to_DepartureAirport","AirportID"]}]
+        },
+        "to_DestinationAirport": {
+          "type": "cds.Association",
+          "target": "rap_v2.Airport",
+          "on": [{"ref":["DestinationAirport"]},"=",{"ref":["to_DestinationAirport","AirportID"]}]
+        }
+      }
+    },
+    "rap_v2.xDMOxI_Connection_StdVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Connection ValueHelp",
+      "@sap.value.list": "true",
+      "elements": {
+        "AirlineID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "AirlineName",
+          "@sap.label": "Airline ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier ID",
+          "@sap.value.list": "standard",
+          "notNull": true
+        },
+        "ConnectionID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 4,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Flight Number",
+          "@sap.quickinfo": "Flight Reference Scenario: Connection ID",
+          "notNull": true
+        },
+        "AirlineName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airline Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier Name"
+        },
+        "DepartureAirport": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "DepartureAirportName",
+          "@sap.label": "Departure Airport",
+          "@sap.quickinfo": "Flight Reference Scenario: From Airport"
+        },
+        "DepartureAirportName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airport Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Airport Name"
+        },
+        "DestinationAirport": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "DestinationAirportName",
+          "@sap.label": "Destination Airport",
+          "@sap.quickinfo": "Flight Reference Scenario: To Airport"
+        },
+        "DestinationAirportName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airport Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Airport Name"
+        },
+        "DepartureTime": {
+          "type": "cds.Time",
+          "@sap.label": "Departure",
+          "@sap.quickinfo": "Flight Reference Scenario: Departure Time"
+        },
+        "ArrivalTime": {
+          "type": "cds.Time",
+          "@sap.label": "Arrival",
+          "@sap.quickinfo": "Flight Reference Scenario: Arrival Time"
+        },
+        "Distance": {
+          "type": "cds.Integer",
+          "@sap.label": "Flight Distance",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Distance"
+        },
+        "DistanceUnit": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.label": "Internal UoM",
+          "@sap.quickinfo": "Unit of Measurement",
+          "@sap.semantics": "unit-of-measure"
+        }
+      }
+    },
+    "rap_v2.Passenger": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Customer View - CDS Data Model",
+      "elements": {
+        "CustomerID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 6,
+          "@sap.display.format": "NonNegative",
+          "@sap.text": "LastName",
+          "@sap.label": "Customer ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Customer ID",
+          "notNull": true
+        },
+        "FirstName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "First Name",
+          "@sap.quickinfo": "Flight Reference Scenario: First Name"
+        },
+        "LastName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Last Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Last Name"
+        },
+        "Title": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.label": "Title",
+          "@sap.quickinfo": "Flight Reference Scenario: Title"
+        },
+        "Street": {
+          "type": "cds.String",
+          "length": 60,
+          "@sap.label": "Street",
+          "@sap.quickinfo": "Flight Reference Scenario: Street"
+        },
+        "PostalCode": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Postal Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Postal Code"
+        },
+        "City": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "City",
+          "@sap.quickinfo": "Flight Reference Scenario: City"
+        },
+        "CountryCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Country/Region Key",
+          "@sap.value.list": "standard"
+        },
+        "PhoneNumber": {
+          "type": "cds.String",
+          "length": 30,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Phone No.",
+          "@sap.quickinfo": "Flight Reference Scenario: Phone Number",
+          "@sap.semantics": "tel"
+        },
+        "EMailAddress": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.label": "E-Mail Address",
+          "@sap.quickinfo": "Flight Reference Scenario: Email Address",
+          "@sap.semantics": "email"
+        },
+        "to_Country": {
+          "type": "cds.Association",
+          "target": "rap_v2.Country",
+          "keys": []
+        }
+      }
+    },
+    "rap_v2.xDMOxI_Customer_StdVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Customer ValueHelp",
+      "@sap.value.list": "true",
+      "elements": {
+        "CustomerID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 6,
+          "@sap.display.format": "NonNegative",
+          "@sap.text": "LastName",
+          "@sap.label": "Customer ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Customer ID",
+          "notNull": true
+        },
+        "FirstName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "First Name",
+          "@sap.quickinfo": "Flight Reference Scenario: First Name"
+        },
+        "LastName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Last Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Last Name"
+        },
+        "Title": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.label": "Title",
+          "@sap.quickinfo": "Flight Reference Scenario: Title"
+        },
+        "Street": {
+          "type": "cds.String",
+          "length": 60,
+          "@sap.label": "Street",
+          "@sap.quickinfo": "Flight Reference Scenario: Street"
+        },
+        "PostalCode": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Postal Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Postal Code"
+        },
+        "City": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "City",
+          "@sap.quickinfo": "Flight Reference Scenario: City"
+        },
+        "CountryCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "CountryCodeText",
+          "@sap.label": "Country/Region Key",
+          "@sap.value.list": "standard"
+        },
+        "CountryCodeText": {
+          "type": "cds.String",
+          "length": 50,
+          "@sap.label": "Country/Region Name"
+        },
+        "PhoneNumber": {
+          "type": "cds.String",
+          "length": 30,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Phone No.",
+          "@sap.quickinfo": "Flight Reference Scenario: Phone Number",
+          "@sap.semantics": "tel"
+        },
+        "EMailAddress": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.label": "E-Mail Address",
+          "@sap.quickinfo": "Flight Reference Scenario: Email Address",
+          "@sap.semantics": "email"
+        }
+      }
+    },
+    "rap_v2.Flight": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Flight View - CDS Data Model",
+      "elements": {
+        "AirlineID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "AirlineID_Text",
+          "@sap.label": "Airline ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier ID",
+          "@sap.value.list": "standard",
+          "notNull": true
+        },
+        "ConnectionID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 16,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Flight Number",
+          "@sap.quickinfo": "Flight Reference Scenario: Connection ID",
+          "@sap.value.list": "standard",
+          "notNull": true
+        },
+        "FlightDate": {
+          "key": true,
+          "type": "cds.Date",
+          "@sap.display.format": "Date",
+          "@sap.label": "Flight Date",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Date",
+          "notNull": true
+        },
+        "AirlineID_Text": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airline Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "Price": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Flight Price",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Price"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.semantics": "currency-code"
+        },
+        "PlaneType": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Plane Type",
+          "@sap.quickinfo": "Flight Reference Scenario: Plane Type ID"
+        },
+        "MaximumSeats": {
+          "type": "cds.Integer",
+          "@sap.label": "Maximum Capacity",
+          "@sap.quickinfo": "Flight Reference Scenario: Plane Seats Max"
+        },
+        "OccupiedSeats": {
+          "type": "cds.Integer",
+          "@sap.label": "Occupied Seats",
+          "@sap.quickinfo": "Flight Reference Scenario: Plane Seats Occupied"
+        },
+        "to_Airline": {
+          "type": "cds.Association",
+          "target": "rap_v2.Airline",
+          "on": [{"ref": ["AirlineID"]},"=",{"ref":["to_Airline","AirlineID"]}]
+        },
+        "to_Connection": {
+          "type": "cds.Association",
+          "target": "rap_v2.FlightConnection",
+          "on": [{"ref": ["ConnectionID"]},"=",{"ref":["to_Connection","ConnectionID"]}]
+        },
+        "to_Currency": {
+          "type": "cds.Association",
+          "target": "rap_v2.Currency",
+          "on": [{"ref": ["CurrencyCode"]},"=",{"ref":["to_Currency","Currency"]}]
+        }
+      }
+    },
+    "rap_v2.xDMOxI_Flight_StdVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Flight ValueHelp",
+      "@sap.value.list": "true",
+      "elements": {
+        "AirlineID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "AirlineName",
+          "@sap.label": "Airline ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier ID",
+          "@sap.value.list": "standard",
+          "notNull": true
+        },
+        "ConnectionID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 4,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "Flight Number",
+          "@sap.quickinfo": "Flight Reference Scenario: Connection ID",
+          "@sap.value.list": "standard",
+          "notNull": true
+        },
+        "FlightDate": {
+          "key": true,
+          "type": "cds.Date",
+          "@sap.display.format": "Date",
+          "@sap.label": "Flight Date",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Date",
+          "notNull": true
+        },
+        "Price": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Flight Price",
+          "@sap.quickinfo": "Flight Reference Scenario: Flight Price"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.semantics": "currency-code"
+        },
+        "PlaneType": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Plane Type",
+          "@sap.quickinfo": "Flight Reference Scenario: Plane Type ID"
+        },
+        "MaximumSeats": {
+          "type": "cds.Integer",
+          "@sap.label": "Maximum Capacity",
+          "@sap.quickinfo": "Flight Reference Scenario: Plane Seats Max"
+        },
+        "OccupiedSeats": {
+          "type": "cds.Integer",
+          "@sap.label": "Occupied Seats",
+          "@sap.quickinfo": "Flight Reference Scenario: Plane Seats Occupied"
+        },
+        "AirlineName": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Airline Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Carrier Name"
+        }
+      }
+    },
+    "rap_v2.OverallStatusVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.content.version": "1",
+      "@sap.label": "Overall Status Value Help",
+      "elements": {
+        "OverallStatus": {
+          "key": true,
+          "type": "cds.String",
+          "length": 1,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "OverallStatus_Text",
+          "@sap.label": "Overall Status",
+          "@sap.quickinfo": "Flight Reference Scenario: Travel Status",
+          "notNull": true
+        },
+        "OverallStatus_Text": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Overall Status",
+          "@sap.quickinfo": "Overall Status Text",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        }
+      }
+    },
+    "rap_v2.Supplement": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.deletable.path": "Delete_mc",
+      "@sap.updatable.path": "Update_mc",
+      "@sap.label": "supplement view - cds data model",
+      "elements": {
+        "SupplementID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Product ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement ID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "IsActiveEntity": {
+          "key": true,
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Is active",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "Edit_ac": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Action Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Delete_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Update_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "to_SupplementText_oc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dynamic CbA-Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "SupplementCategory": {
+          "type": "cds.String",
+          "length": 2,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Supplement Category",
+          "@sap.quickinfo": "Supplement Type",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "Price": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Product Price",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement Price"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.semantics": "currency-code"
+        },
+        "LocalCreatedBy": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Created By",
+          "@sap.quickinfo": "Created By User"
+        },
+        "LocalCreatedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Created On",
+          "@sap.quickinfo": "Creation Date Time"
+        },
+        "LocalLastChangedBy": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Changed By",
+          "@sap.quickinfo": "Local Instance Last Changed By User"
+        },
+        "LocalLastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Local Instance Last Change Date Time"
+        },
+        "LastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Last Change Date Time"
+        },
+        "HasDraftEntity": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Has Draft",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "DraftEntityCreationDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Draft Created On",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "DraftEntityLastChangeDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Draft Last Changed On",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "HasActiveEntity": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Has active",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "DraftAdministrativeData": {
+          "type": "cds.Association",
+          "target": "rap_v2.I_DraftAdministrativeData",
+          "keys": []
+        },
+        "SiblingEntity": {
+          "type": "cds.Association",
+          "target": "rap_v2.Supplement",
+          "keys": []
+        },
+        "to_Currency": {
+          "type": "cds.Association",
+          "target": "rap_v2.Currency",
+          "keys": []
+        },
+        "to_SupplementText": {
+          "type": "cds.Composition",
+          "target": "rap_v2.SupplementText",
+          "cardinality": {
+            "max": "*"
+          },
+          "on": [{"ref":["SupplementID"]},"=",{"ref":["to_SupplementText","SupplementID"]}]
+        }
+      },
+      "actions": {
+        "SupplementActivate": {
+          "kind": "action",
+          "returns": {
+            "type": "rap_v2.Supplement"
+          }
+        },
+        "SupplementDiscard": {
+          "kind": "action",
+          "returns": {
+            "type": "rap_v2.DummyFunctionImportResult"
+          }
+        },
+        "SupplementEdit": {
+          "kind": "action",
+          "params": {
+            "PreserveChanges": {
+              "type": "cds.Boolean",
+              "@sap.label": "TRUE"
+            }
+          },
+          "returns": {
+            "type": "rap_v2.Supplement"
+          }
+        },
+        "SupplementPrepare": {
+          "kind": "action",
+          "returns": {
+            "type": "rap_v2.DummyFunctionImportResult"
+          }
+        },
+        "SupplementResume": {
+          "kind": "action",
+          "returns": {
+            "type": "rap_v2.DummyFunctionImportResult"
+          }
+        }
+      }
+    },
+    "rap_v2.SupplementText": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.deletable.path": "Delete_mc",
+      "@sap.updatable.path": "Update_mc",
+      "@sap.label": "Supplement Text View - CDS Data Model",
+      "elements": {
+        "SupplementID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "Description",
+          "@sap.label": "Product ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement ID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "LanguageCode": {
+          "key": true,
+          "type": "cds.String",
+          "length": 2,
+          "@sap.label": "Language Key",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "IsActiveEntity": {
+          "key": true,
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Is active",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "notNull": true
+        },
+        "Delete_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Update_mc": {
+          "type": "cds.Boolean",
+          "@sap.label": "Dyn. Method Control",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false"
+        },
+        "Description": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Product Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement Description"
+        },
+        "LocalLastChangedAt": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Changed On",
+          "@sap.quickinfo": "Local Instance Last Change Date Time"
+        },
+        "HasDraftEntity": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Has Draft",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "DraftEntityCreationDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Draft Created On",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "DraftEntityLastChangeDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Draft Last Changed On",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "HasActiveEntity": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Has active",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "to_Supplement": {
+          "type": "cds.Association",
+          "target": "rap_v2.Supplement",
+          "keys": []
+        },
+        "DraftAdministrativeData": {
+          "type": "cds.Association",
+          "target": "rap_v2.I_DraftAdministrativeData",
+          "keys": []
+        },
+        "SiblingEntity": {
+          "type": "cds.Association",
+          "target": "rap_v2.SupplementText",
+          "on": [{"ref":["SupplementID"]},"=",{"ref":["SiblingEntity","SupplementID"]}]
+        }
+      }
+    },
+    "rap_v2.xDMOxI_Supplement_StdVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Supplement ValueHelp",
+      "@sap.value.list": "true",
+      "elements": {
+        "SupplementID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 10,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "SupplementText",
+          "@sap.label": "Product ID",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement ID",
+          "notNull": true
+        },
+        "SupplementText": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Product Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement Description"
+        },
+        "SupplementCategory": {
+          "type": "cds.String",
+          "length": 2,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "SupplementCategoryText",
+          "@sap.label": "Supplement Category",
+          "@sap.quickinfo": "Supplement Type"
+        },
+        "SupplementCategoryText": {
+          "type": "cds.String",
+          "length": 1024,
+          "@sap.label": "Product Name",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement Description"
+        },
+        "Price": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 3,
+          "@sap.unit": "CurrencyCode",
+          "@sap.variable.scale": "true",
+          "@sap.label": "Product Price",
+          "@sap.quickinfo": "Flight Reference Scenario: Supplement Price"
+        },
+        "CurrencyCode": {
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency Code",
+          "@sap.quickinfo": "Flight Reference Scenario: Currency Code",
+          "@sap.semantics": "currency-code"
+        }
+      }
+    },
+    "rap_v2.Country": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Country/Region",
+      "elements": {
+        "Country": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "Country_Text",
+          "@sap.label": "Country/Region Key",
+          "notNull": true
+        },
+        "Country_Text": {
+          "type": "cds.String",
+          "length": 50,
+          "@sap.label": "Country/Region Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "CountryThreeLetterISOCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "ISO Code 3 Char",
+          "@sap.quickinfo": "ISO Country/Region Code 3 Characters"
+        },
+        "CountryThreeDigitISOCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "NonNegative",
+          "@sap.label": "ISO Code Num. 3",
+          "@sap.quickinfo": "ISO Country/Region Code Numeric 3-Characters"
+        },
+        "CountryISOCode": {
+          "type": "cds.String",
+          "length": 2,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "ISO Code",
+          "@sap.quickinfo": "ISO Code of the Country/Region"
+        },
+        "IsEuropeanUnionMember": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "EU Member",
+          "@sap.quickinfo": "Indicator: European Union Member?"
+        }
+      }
+    },
+    "rap_v2.Currency": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Currency",
+      "elements": {
+        "Currency": {
+          "key": true,
+          "type": "cds.String",
+          "length": 5,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "Currency_Text",
+          "@sap.label": "Currency",
+          "@sap.quickinfo": "Currency Key",
+          "@sap.semantics": "currency-code",
+          "notNull": true
+        },
+        "Currency_Text": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Description",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        },
+        "Decimals": {
+          "type": "cds.Integer",
+          "@odata.Type": "Edm.Byte",
+          "@sap.label": "Decimal Places",
+          "@sap.quickinfo": "Number of decimal places"
+        },
+        "CurrencyISOCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "ISO Code",
+          "@sap.quickinfo": "ISO Currency Code"
+        },
+        "AlternativeCurrencyKey": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Alternative Key"
+        },
+        "IsPrimaryCurrencyForISOCrcy": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Primary",
+          "@sap.quickinfo": "Primary SAP Currency Code for ISO Code"
+        }
+      }
+    },
+    "rap_v2.I_CurrencyStdVH": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.content.version": "1",
+      "@sap.label": "Currency",
+      "@sap.value.list": "true",
+      "elements": {
+        "Currency": {
+          "key": true,
+          "type": "cds.String",
+          "length": 5,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "Currency_Text",
+          "@sap.label": "Currency",
+          "@sap.quickinfo": "Currency Key",
+          "@sap.semantics": "currency-code",
+          "notNull": true
+        },
+        "Currency_Text": {
+          "type": "cds.String",
+          "length": 40,
+          "@sap.label": "Description",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false"
+        }
+      }
+    },
+    "rap_v2.I_DraftAdministrativeData": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.searchable": "true",
+      "@sap.addressable": "false",
+      "@sap.content.version": "1",
+      "@sap.label": "Draft Administration Data",
+      "elements": {
+        "DraftUUID": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "Draft (Technical ID)",
+          "notNull": true
+        },
+        "DraftEntityType": {
+          "key": true,
+          "type": "cds.String",
+          "length": 30,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Draft Entity ID",
+          "notNull": true
+        },
+        "CreationDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.filter.restriction": "interval",
+          "@sap.label": "Draft Created On"
+        },
+        "CreatedByUser": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "CreatedByUserDescription",
+          "@sap.label": "Draft Created By"
+        },
+        "LastChangeDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.filter.restriction": "interval",
+          "@sap.label": "Draft Last Changed On"
+        },
+        "LastChangedByUser": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "LastChangedByUserDescription",
+          "@sap.label": "Draft Last Changed By"
+        },
+        "DraftAccessType": {
+          "type": "cds.String",
+          "length": 1,
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Draft Access Type"
+        },
+        "ProcessingStartDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Draft In Process Since"
+        },
+        "InProcessByUser": {
+          "type": "cds.String",
+          "length": 12,
+          "@sap.display.format": "UpperCase",
+          "@sap.text": "InProcessByUserDescription",
+          "@sap.label": "Draft In Process By"
+        },
+        "DraftIsKeptByUser": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Draft Is Kept By User"
+        },
+        "EnqueueStartDateTime": {
+          "type": "cds.Timestamp",
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@odata.Precision": 7,
+          "@sap.label": "Draft Locked Since"
+        },
+        "DraftIsCreatedByMe": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Draft Created By Me"
+        },
+        "DraftIsLastChangedByMe": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Draft Last Changed By Me"
+        },
+        "DraftIsProcessedByMe": {
+          "type": "cds.Boolean",
+          "@sap.display.format": "UpperCase",
+          "@sap.label": "Draft In Process By Me"
+        },
+        "CreatedByUserDescription": {
+          "type": "cds.String",
+          "length": 80,
+          "@sap.label": "Draft Created By (Description)"
+        },
+        "LastChangedByUserDescription": {
+          "type": "cds.String",
+          "length": 80,
+          "@sap.label": "Draft Last Changed By (Description)"
+        },
+        "InProcessByUserDescription": {
+          "type": "cds.String",
+          "length": 80,
+          "@sap.label": "Draft In Process By (Description)"
+        }
+      }
+    },
+    "rap_v2.SAP__Currencies": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.content.version": "1",
+      "elements": {
+        "CurrencyCode": {
+          "key": true,
+          "type": "cds.String",
+          "length": 5,
+          "@sap.label": "Currency",
+          "@sap.semantics": "currency-code",
+          "notNull": true
+        },
+        "ISOCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.label": "ISO code",
+          "notNull": true
+        },
+        "Text": {
+          "type": "cds.String",
+          "length": 15,
+          "@sap.label": "Short text",
+          "notNull": true
+        },
+        "DecimalPlaces": {
+          "type": "cds.Integer",
+          "@odata.Type": "Edm.Byte",
+          "@sap.label": "Decimals",
+          "notNull": true
+        }
+      }
+    },
+    "rap_v2.SAP__UnitsOfMeasure": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.content.version": "1",
+      "elements": {
+        "UnitCode": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3,
+          "@sap.label": "Internal UoM",
+          "@sap.semantics": "unit-of-measure",
+          "notNull": true
+        },
+        "ISOCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.label": "ISO Code",
+          "notNull": true
+        },
+        "ExternalCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@sap.label": "Commercial",
+          "notNull": true
+        },
+        "Text": {
+          "type": "cds.String",
+          "length": 30,
+          "@sap.label": "Measurement Unit Txt",
+          "notNull": true
+        },
+        "DecimalPlaces": {
+          "type": "cds.Integer",
+          "@sap.label": "Decimal Places"
+        }
+      }
+    },
+    "rap_v2.SAP__MyDocumentDescriptions": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.content.version": "1",
+      "elements": {
+        "Id": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "notNull": true
+        },
+        "CreatedBy": {
+          "type": "cds.String",
+          "length": 12,
+          "notNull": true
+        },
+        "CreatedAt": {
+          "type": "cds.DateTime",
+          "@odata.Type": "Edm.DateTime",
+          "@sap.label": "Time Stamp",
+          "notNull": true
+        },
+        "FileName": {
+          "type": "cds.String",
+          "length": 256,
+          "notNull": true
+        },
+        "Title": {
+          "type": "cds.String",
+          "length": 256,
+          "notNull": true
+        },
+        "Format": {
+          "type": "cds.Association",
+          "target": "rap_v2.SAP__FormatSet",
+          "keys": []
+        },
+        "TableColumns": {
+          "type": "cds.Association",
+          "target": "rap_v2.SAP__TableColumnsSet",
+          "cardinality": {
+            "max": "*"
+          },
+          "keys": []
+        },
+        "CoverPage": {
+          "type": "cds.Association",
+          "target": "rap_v2.SAP__CoverPageSet",
+          "cardinality": {
+            "max": "*"
+          },
+          "keys": []
+        },
+        "Signature": {
+          "type": "cds.Association",
+          "target": "rap_v2.SAP__SignatureSet",
+          "keys": []
+        },
+        "PDFStandard": {
+          "type": "cds.Association",
+          "target": "rap_v2.SAP__PDFStandardSet",
+          "keys": []
+        }
+      }
+    },
+    "rap_v2.SAP__FormatSet": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.pageable": "false",
+      "@sap.addressable": "false",
+      "@sap.content.version": "1",
+      "elements": {
+        "Id": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "FitToPage": {
+          "type": "rap_v2.SAP__FitToPage",
+          "notNull": true
+        },
+        "FontSize": {
+          "type": "cds.Integer",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "Orientation": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "PaperSize": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "BorderSize": {
+          "type": "cds.Integer",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "MarginSize": {
+          "type": "cds.Integer",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "FontName": {
+          "type": "cds.String",
+          "length": 255,
+          "@sap.label": "Font Name",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        }
+      }
+    },
+    "rap_v2.SAP__PDFStandardSet": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.pageable": "false",
+      "@sap.addressable": "false",
+      "@sap.content.version": "1",
+      "elements": {
+        "Id": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "UsePDFAConformance": {
+          "type": "cds.Boolean",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "DoEnableAccessibility": {
+          "type": "cds.Boolean",
+          "@sap.label": "Indicator",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        }
+      }
+    },
+    "rap_v2.SAP__TableColumnsSet": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.pageable": "false",
+      "@sap.addressable": "false",
+      "@sap.content.version": "1",
+      "elements": {
+        "Id": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "Name": {
+          "key": true,
+          "type": "cds.String",
+          "length": 256,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "Header": {
+          "key": true,
+          "type": "cds.String",
+          "length": 256,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "HorizontalAlignment": {
+          "type": "cds.String",
+          "length": 10,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        }
+      }
+    },
+    "rap_v2.SAP__CoverPageSet": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.pageable": "false",
+      "@sap.addressable": "false",
+      "@sap.content.version": "1",
+      "elements": {
+        "Title": {
+          "key": true,
+          "type": "cds.String",
+          "length": 256,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "Id": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "Name": {
+          "key": true,
+          "type": "cds.String",
+          "length": 256,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "Value": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        }
+      }
+    },
+    "rap_v2.SAP__SignatureSet": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.pageable": "false",
+      "@sap.addressable": "false",
+      "@sap.content.version": "1",
+      "elements": {
+        "Id": {
+          "key": true,
+          "type": "cds.UUID",
+          "@sap.label": "UUID",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "DoSign": {
+          "type": "cds.Boolean",
+          "@sap.label": "Indicator",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "Reason": {
+          "type": "cds.String",
+          "length": 256,
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        }
+      }
+    },
+    "rap_v2.SAP__ValueHelpSet": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": false,
+      "@sap.content.version": "1",
+      "elements": {
+        "VALUEHELP": {
+          "key": true,
+          "type": "cds.String",
+          "length": 5000,
+          "notNull": true
+        },
+        "FIELD_VALUE": {
+          "type": "cds.String",
+          "length": 10,
+          "notNull": true
+        },
+        "DESCRIPTION": {
+          "type": "cds.LargeString"
+        }
+      }
+    },
+    "rap_v2.DummyFunctionImportResult": {
+      "kind": "type",
+      "@cds.external": true,
+      "elements": {
+        "IsInvalid": {
+          "type": "cds.Boolean",
+          "@sap.label": "TRUE"
+        }
+      }
+    },
+    "rap_v2.SAP__FitToPage": {
+      "kind": "type",
+      "@cds.external": true,
+      "elements": {
+        "ErrorRecoveryBehavior": {
+          "type": "cds.String",
+          "length": 8,
+          "@sap.label": "Error behavior",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "IsEnabled": {
+          "type": "cds.Boolean",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        },
+        "MinimumFontSize": {
+          "type": "cds.Integer",
+          "@sap.creatable": "false",
+          "@sap.updatable": "false",
+          "@sap.sortable": "false",
+          "@sap.filterable": "false",
+          "notNull": true
+        }
+      }
+    }
+  }
+}

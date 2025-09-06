@@ -1,0 +1,15 @@
+{
+  "name": "@cap-js/database-federation",
+  "version": "0.0.1",
+  "main": "./cds-plugin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "@sap/cds": ">=9"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
