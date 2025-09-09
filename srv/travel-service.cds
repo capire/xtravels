@@ -28,7 +28,7 @@ service TravelService {
 /**
  * Edit this view to control which data to include in CSV/JSON exports
  */
-entity TravelsExport @cds.persistence.skip as projection on sap.capire.travels.Travels {
+entity TravelsExport as projection on sap.capire.travels.Travels {
   ID,
   Agency.Name as Agency,
   concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName) as Customer,

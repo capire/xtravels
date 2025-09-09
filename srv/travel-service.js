@@ -1,4 +1,5 @@
 const cds = require('@sap/cds')
+const { SELECT } = require('@sap/cds/lib/ql/cds-ql')
 module.exports = class TravelService extends cds.ApplicationService { async init() {
 
   // Reflected definitions from the service's CDS model
@@ -32,9 +33,17 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
   // Ensure BeginDate is not after EndDate -> would be automated by Dynamic Validations
-  this.before ('SAVE', Travels, req => { // REVISIT: should also work for Travel.drafts instead of Travel, but doesn't (?)
-    const { BeginDate, EndDate } = req.data
-    if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate') // REVISIT: in/ should go away!
+  this.before ('PATCH', Travels.drafts, async req => {
+    if (req.data.BeginDate || req.data.EndDate) {
+      const dbState = await SELECT.one (`BeginDate, EndDate`) .from (req.subject)
+      const { BeginDate, EndDate } = Object.assign(dbState, req.data)
+      if (BeginDate > EndDate) req.error ({ 
+        status: 400, 
+        message: `End Date must be after Begin Date.`, 
+        target: 'EndDate', 
+        additionalTargets: ['BeginDate'] 
+      })
+    }
   })
 
   const FlightsService = await cds.connect.to ('sap.capire.flights.data') //.then (cds.enqueued)
@@ -105,7 +114,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   const { Readable } = require ('stream')
 
   this.on ('exportCSV', req => {
-    let query = cds.ql (TravelsExport.query)
+    let query = SELECT.from(TravelsExport)
     let stream = Readable.from (async function*() {
       yield Object.keys(query.elements).join(';') + '\n'
       for await (const row of query.localized)
@@ -115,7 +124,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
   this.on ('exportJSON', async req => {
-    let query = cds.ql (TravelsExport.query)
+    let query = SELECT.from(TravelsExport)
     let stream = await query.localized.stream()
     return req.reply (stream, { filename: 'Travels.json' })
   })
