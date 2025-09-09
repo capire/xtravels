@@ -1,4 +1,4 @@
-using { sap, sap.capire.travels as our } from '../db/schema';
+using { sap, sap.capire.travels as db } from '../db/schema';
 
 service TravelService {
 
@@ -8,7 +8,7 @@ service TravelService {
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])
-  entity Travels as projection on sap.capire.travels.Travels actions {
+  entity Travels as projection on db.Travels actions {
     action createTravelByTemplate() returns Travels;
     action rejectTravel();
     action acceptTravel();
@@ -16,7 +16,7 @@ service TravelService {
   }
 
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
-  @readonly entity Flights as projection on sap.capire.travels.masterdata.Flights;
+  @readonly entity Flights as projection on db.masterdata.Flights;
   @readonly entity Currencies as projection on sap.common.Currencies;
 
   // Export functions to export download travel data
@@ -28,7 +28,7 @@ service TravelService {
 /**
  * Edit this view to control which data to include in CSV/JSON exports
  */
-entity TravelsExport @cds.persistence.skip as projection on sap.capire.travels.Travels {
+entity TravelsExport @cds.persistence.skip as projection on db.Travels {
   ID,
   Agency.Name as Agency,
   concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName) as Customer,
