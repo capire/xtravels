@@ -105,7 +105,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   const { Readable } = require ('stream')
 
   this.on ('exportCSV', req => {
-    let query = cds.ql (TravelsExport.query)
+    let query = SELECT.from(TravelsExport)
     let stream = Readable.from (async function*() {
       yield Object.keys(query.elements).join(';') + '\n'
       for await (const row of query.localized)
@@ -115,7 +115,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
   this.on ('exportJSON', async req => {
-    let query = cds.ql (TravelsExport.query)
+    let query = SELECT.from(TravelsExport)
     let stream = await query.localized.stream()
     return req.reply (stream, { filename: 'Travels.json' })
   })
