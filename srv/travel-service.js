@@ -32,7 +32,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
   // Ensure BeginDate is not after EndDate -> would be automated by Dynamic Validations
-  this.before ('SAVE', Travels, req => { // REVISIT: should also work for Travel.drafts instead of Travel, but doesn't (?)
+  this.before ('SAVE', Travels, req => {
     const { BeginDate, EndDate } = req.data
     if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate') // REVISIT: in/ should go away!
   })
