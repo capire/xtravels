@@ -25,12 +25,6 @@ module.exports = class TravelService extends cds.ApplicationService { async init
     req.data.Pos = ++maxID
   })
 
-  // Fill in IDs as sequence numbers -> should be automated by auto-generation
-  this.before ('NEW', Supplements.drafts, async req => {
-    let { maxID } = await SELECT.one (`max(BookingSupplementID) as maxID`) .from (Supplements.drafts) .where (req.data)
-    req.data.BookingSupplementID = ++maxID
-  })
-
   // Ensure BeginDate is not after EndDate -> would be automated by Dynamic Validations
   this.before ('SAVE', Travels, req => {
     const { BeginDate, EndDate } = req.data
