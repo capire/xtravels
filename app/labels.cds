@@ -42,7 +42,7 @@ annotate schema.Bookings with @title: '{i18n>Booking}' {
 }
 
 annotate schema.Bookings.Supplements with @title: '{i18n>BookingSupplement}' {
-  ID  @title: '{i18n>BookingSupplementID}';
+  ID  @title: '{i18n>BookingSupplementID}'; // @Common.Text: booked.descr;
   booked        @title: '{i18n>SupplementID}'  @Common.Text: booked.descr;
   Price             @title: '{i18n>Price}'         @Measures.ISOCurrency: Currency_code;
   Currency          @title: '{i18n>CurrencyCode}';
