@@ -81,7 +81,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   this.before([acceptTravel, rejectTravel], [Travels, Travels.drafts], async req => {
     const existingDraft = await SELECT.one(Travels.drafts).where(req.subject.ref[0].where)
       .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
-    if (existingDraft && existingDraft.InProcessByUser !== req.user.id) throw req.reject (423, `The travel is locked by ${existingDraft.InProcessByUser}.`)
+    if (existingDraft) throw req.reject (423, `The travel is locked by ${existingDraft.InProcessByUser}.`)
   })
   this.on (acceptTravel, [Travels, Travels.drafts], async req => UPDATE (req.subject) .with ({ Status_code: Accepted }))
   this.on (rejectTravel, [Travels, Travels.drafts], async req => UPDATE (req.subject) .with ({ Status_code: Canceled }))
