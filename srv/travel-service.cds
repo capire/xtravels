@@ -10,8 +10,8 @@ service TravelService {
   ])
   entity Travels as projection on db.Travels actions {
     action createTravelByTemplate() returns Travels;
-    action rejectTravel();
-    action acceptTravel();
+    @to: #Canceled action rejectTravel();
+    @to: #Accepted action acceptTravel();
     action deductDiscount( percent: Percentage not null ) returns Travels;
   }
 
