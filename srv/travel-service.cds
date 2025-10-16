@@ -17,6 +17,7 @@ service TravelService {
 
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
   @readonly entity Flights as projection on db.masterdata.Flights;
+  @readonly entity Supplements as projection on db.masterdata.Supplements;
   @readonly entity Currencies as projection on sap.common.Currencies;
 
   // Export functions to export download travel data

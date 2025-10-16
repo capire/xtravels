@@ -174,12 +174,11 @@ annotate TravelService.Bookings.Supplements with @UI : {
     Visualizations : ['@UI.LineItem'],
     SortOrder      : [{
       $Type      : 'Common.SortOrderType',
-      Property   : ID,
+      Property   : booked.ID,
       Descending : false
     }]
   },
   LineItem : [
-    { Value : ID                                       },
     { Value : booked.ID, Label : '{i18n>ProductID}'    },
     { Value : Price,     Label : '{i18n>ProductPrice}' }
   ],
