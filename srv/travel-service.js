@@ -78,8 +78,17 @@ module.exports = class TravelService extends cds.ApplicationService { async init
 
   const { acceptTravel, rejectTravel, deductDiscount } = Travels.actions
 
-  this.on (acceptTravel, async req => UPDATE (req.subject) .with ({ Status_code: Accepted }))
-  this.on (rejectTravel, async req => UPDATE (req.subject) .with ({ Status_code: Canceled }))
+  this.before([acceptTravel, rejectTravel], [Travels, Travels.drafts], async req => {
+    const existingDraft = await SELECT.one(Travels.drafts.name).where(req.params[0])
+      .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
+    // action called on active -> reject if draft exists
+    // action called on draft -> reject if not own draft
+    const isDraft = req.target.name.endsWith('.drafts')
+    if (!isDraft && existingDraft || isDraft && existingDraft?.InProcessByUser !== req.user.id)
+      throw req.reject(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
+  })
+  this.on (acceptTravel, [Travels, Travels.drafts], async req => UPDATE (req.subject) .with ({ Status_code: Accepted }))
+  this.on (rejectTravel, [Travels, Travels.drafts], async req => UPDATE (req.subject) .with ({ Status_code: Canceled }))
   this.on (deductDiscount, async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req.subject) .where ({ Status: Open, BookingFee: {'!=':null} })
