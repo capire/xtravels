@@ -18,13 +18,18 @@ module.exports = class DataFederationService extends cds.Service {
       if (!conf?.credentials) return      // not bound to remote, skipping
       entity['@cds.persistence.table'] = true
       entity['@cds.persistence.skip'] = false
-      return { entity: entity.name, from: srv.name }
+      const ttl = entity['@cds.replicate.ttl']
+      return { entity: entity.name, from: srv.name, ttl }
     })
     if (!todos.length) return
 
     cds.once ('served', async () => {
       const dfs = await cds.connect.to (DataFederationService)
-      return Promise.all (todos.map (todo => dfs.replicate (todo)))
+      return Promise.all (todos.reduce ((acc, todo) => {
+        if (!todo.ttl) acc.push(dfs.replicate (todo))
+        else acc.push(dfs.periodicRefresh (todo))
+        return acc;
+      }, []))
     })
 
   })}
@@ -37,11 +42,23 @@ module.exports = class DataFederationService extends cds.Service {
       await INSERT.into(entity).entries(rows)
       log.info ('initially loaded:', { entity, from: remote, via: srv.kind })
     })
+
+    this.on ('refresh', async req => {
+      const { entity, from: remote } = req.data
+      const srv = await cds.connect.to (remote)
+      const rows = await srv.read (entity)
+      await UPSERT.into(entity).entries(rows)
+      log.info ('periodically loaded:', { entity, from: remote, via: srv.kind })
+    })
   }
 
   replicate ({ entity, from: remote }) {
     return this.schedule ('initial-load', { entity, from: remote })
       .after ('11ms')
+  }
+
+  periodicRefresh ({ entity, from: remote, ttl }) {
+    return this.schedule ('refresh', { entity, from: remote }).after ('11ms').every (ttl);
   }
 }
 
