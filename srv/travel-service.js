@@ -127,7 +127,3 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   return super.init()
 
 }}
-
-
-// Temporary monkey patch until upcoming release of @sap/cds...
-SELECT.class.prototype.stream ??= SELECT.class.prototype.pipeline
