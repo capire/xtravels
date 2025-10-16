@@ -79,7 +79,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   const { acceptTravel, rejectTravel, deductDiscount } = Travels.actions
 
   this.before([acceptTravel, rejectTravel], [Travels, Travels.drafts], async req => {
-    const existingDraft = await SELECT.one(Travel.drafts.name).where(req.params[0])
+    const existingDraft = await SELECT.one(Travels.drafts.name).where(req.params[0])
       .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
     // action called on active -> reject if draft exists
     // action called on draft -> reject if not own draft
