@@ -8,12 +8,26 @@ service TravelService {
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])
-  entity Travels as projection on db.Travels actions {
+  entity Travels as projection on db.Travels
+  // TODO: how to exclude transitions_ automatically?
+  // excluding { transitions_ } 
+  actions {
     action createTravelByTemplate() returns Travels;
-    @to: #Canceled action rejectTravel();
-    @to: #Accepted action acceptTravel();
+    action rejectTravel();
+    action acceptTravel();
     action deductDiscount( percent: Percentage not null ) returns Travels;
   }
+
+  // TODO: is it a problem to add @flow.status here but FlowHistory in db?
+  annotate Travels with @flow.status: status actions {
+    NEW           /* @from: [ null ]   */          @to: /* #Draft */ #Open;
+    SAVE          /* @from: [ #Draft ] */          @to: #Open;
+    cancel        @from: [ #Open ]                 @to: #Cancelled;
+    rejectTravel  @from: [ #Open ]                 @to: #Rejected;
+    acceptTravel  @from: [ #Open ]                 @to: #Approved;
+    close         @from: [ #Approved ]             @to: #Closed;
+    EDIT          @from: [ #Approved, #Rejected ]  @to: /* #Draft */ #Open;
+  };
 
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
   @readonly entity Flights as projection on db.masterdata.Flights;
@@ -23,6 +37,7 @@ service TravelService {
   // Export functions to export download travel data
   function exportJSON() returns LargeBinary @Core.MediaType:'application/json';
   function exportCSV() returns LargeBinary @Core.MediaType:'text/csv';
+
 }
 
 
@@ -40,5 +55,6 @@ entity TravelsExport @cds.persistence.skip as projection on db.Travels {
   Status.name as Status,
   Description
 }
+
 
 type Percentage : Integer @assert.range: [1,100];
