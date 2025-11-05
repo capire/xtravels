@@ -19,7 +19,7 @@ service TravelService {
   }
 
   // TODO: is it a problem to add @flow.status here but FlowHistory in db?
-  annotate Travels with @flow.status: status actions {
+  annotate Travels with @flow.status: Status actions {
     NEW           /* @from: [ null ]   */          @to: /* #Draft */ #Open;
     SAVE          /* @from: [ #Draft ] */          @to: #Open;
     cancel        @from: [ #Open ]                 @to: #Cancelled;
@@ -28,6 +28,9 @@ service TravelService {
     close         @from: [ #Approved ]             @to: #Closed;
     EDIT          @from: [ #Approved, #Rejected ]  @to: /* #Draft */ #Open;
   };
+
+  // extend db.Travels with sap.common.FlowHistory;
+  // extend projection Travels with {} excluding { transitions_ };
 
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
   @readonly entity Flights as projection on db.masterdata.Flights;

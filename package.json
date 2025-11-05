@@ -13,12 +13,15 @@
     "@capire/xflights-data": "*",
     "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@sap-cloud-sdk/http-client": "^4",
-    "@sap/cds": ">=9",
+    "@sap/cds": "*",
     "express": "^4"
   },
   "devDependencies": {
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
   },
+  "workspaces": [
+    "cds"
+  ],
   "license": "Apache-2.0"
 }
