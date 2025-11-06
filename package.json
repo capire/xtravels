@@ -22,7 +22,7 @@
   },
   "cds": {
     "requires": {
-      "--data_federation": "service-level"
+      "-- data_federation": "service-level"
     }
   },
   "parked": {
