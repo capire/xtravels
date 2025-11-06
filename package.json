@@ -16,11 +16,16 @@
     "express": "^4"
   },
   "devDependencies": {
+    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
   },
+  "cds": {
+    "requires": {
+      "--data_federation": "service-level"
+    }
+  },
   "parked": {
-    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "JSON dislikes trailing commas": true
   },
   "license": "Apache-2.0"
