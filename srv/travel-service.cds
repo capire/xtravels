@@ -9,28 +9,27 @@ service TravelService {
     { grant: ['*'], to: 'admin'}
   ])
   entity Travels as projection on db.Travels
-  // TODO: how to exclude transitions_ automatically?
-  // excluding { transitions_ } 
   actions {
     action createTravelByTemplate() returns Travels;
     action rejectTravel();
     action acceptTravel();
     action deductDiscount( percent: Percentage not null ) returns Travels;
+
+    action reopenTravel();
   }
 
-  // TODO: is it a problem to add @flow.status here but FlowHistory in db?
   annotate Travels with @flow.status: Status actions {
     NEW           /* @from: [ null ]   */          @to: /* #Draft */ #Open;
     SAVE          /* @from: [ #Draft ] */          @to: #Open;
-    cancel        @from: [ #Open ]                 @to: #Cancelled;
+    // cancel        @from: [ #Open ]                 @to: #Canceled;
     rejectTravel  @from: [ #Open ]                 @to: #Rejected;
-    acceptTravel  @from: [ #Open ]                 @to: #Approved;
-    close         @from: [ #Approved ]             @to: #Closed;
-    EDIT          @from: [ #Approved, #Rejected ]  @to: /* #Draft */ #Open;
-  };
+    acceptTravel  @from: [ #Open ]                 @to: #Accepted;
+    // close         @from: [ #Accepted ]             @to: #Closed;
+    EDIT          @from: [ #Accepted, #Rejected ]  @to: /* #Draft */ #Open;
 
-  // extend db.Travels with sap.common.FlowHistory;
-  // extend projection Travels with {} excluding { transitions_ };
+    reopenTravel  @from: [ #Accepted, #Rejected ]  @to: $flow.previous;
+    PATCH         /* @from: [ #Open ] */           @to: #Rejected;
+  };
 
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
   @readonly entity Flights as projection on db.masterdata.Flights;

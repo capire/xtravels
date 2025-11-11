@@ -1,15 +1,13 @@
 namespace sap.capire.travels;
 
 using { sap, managed, Country, Currency } from '@sap/cds/common';
-// using { sap.common.FlowHistory as FlowHistory } from '@sap/cds/common';
 using {
   sap.capire.travels.masterdata.Flights,
   sap.capire.travels.masterdata.Supplements,
 } from './master-data';
 
 
-// TODO: how add FlowHistory?
-entity Travels : managed /* , FlowHistory */ {
+entity Travels : managed {
   key ID       : Integer default 0 @readonly;
   Description  : String(1024);
   BeginDate    : Date default $now;
@@ -17,7 +15,6 @@ entity Travels : managed /* , FlowHistory */ {
   BookingFee   : Price default 0;
   TotalPrice   : Price @readonly;
   Currency     : Currency default 'EUR';
-  // @flow.status
   Status       : Association to TravelStatus @readonly default 'O';
   Agency       : Association to TravelAgencies;
   Customer     : Association to Passengers;
@@ -72,6 +69,8 @@ entity TravelStatus : sap.common.CodeList {
     Open     = 'O';
     Accepted = 'A';
     Canceled = 'X';
+
+    Rejected = 'R';
   }
 }
 
