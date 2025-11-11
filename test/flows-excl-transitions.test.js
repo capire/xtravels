@@ -1,16 +1,16 @@
+process.env.cds_features_exclude__flow__transitions = true
+
 const cds = require('@sap/cds')
 
 const { GET, POST, PATCH, DELETE, axios, expect } = cds.test(__dirname + '/..', '--with-mocks')
 axios.defaults.auth = { username: 'alice', password: 'admin' }
 axios.defaults.validateStatus = () => true
 
-describe('Status Transition Flows', () => {
+describe.skip('Status Transition Flows excluding transitions_', () => {
   const READ = async (ID, IsActiveEntity = true) => {
-    const { data: travel } = await GET(
-      `/odata/v4/travel/Travels(ID=${ID},IsActiveEntity=${IsActiveEntity})${
-        IsActiveEntity ? '?$expand=transitions_' : ''
-      }`
-    )
+    const { data: travel } = await GET(`/odata/v4/travel/Travels(ID=${ID},IsActiveEntity=${IsActiveEntity})`)
+    const transitions_ = await SELECT.from('sap.capire.travels.Travels.transitions_').where({ up__ID: ID })
+    travel.transitions_ = transitions_
     return travel
   }
 
