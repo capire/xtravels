@@ -6,11 +6,9 @@ axios.defaults.validateStatus = () => true
 
 describe('Status Transition Flows', () => {
   const READ = async (ID, IsActiveEntity = true) => {
-    const { data: travel } = await GET(
-      `/odata/v4/travel/Travels(ID=${ID},IsActiveEntity=${IsActiveEntity})${
-        IsActiveEntity ? '?$expand=transitions_' : ''
-      }`
-    )
+    const { data: travel } = await GET(`/odata/v4/travel/Travels(ID=${ID},IsActiveEntity=${IsActiveEntity})`)
+    if (IsActiveEntity)
+      travel.transitions_ = await SELECT('sap.capire.travels.Travels.transitions_').where({ up__ID: ID })
     return travel
   }
 
@@ -57,7 +55,8 @@ describe('Status Transition Flows', () => {
     expect(travel.transitions_).to.have.length(4)
   })
 
-  it('prohibits altering the flow history', async () => {
+  // NOTE: not applicable with transitions_ being excluded from projections
+  it.skip('prohibits altering the flow history', async () => {
     let res
 
     await POST('/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/acceptTravel', {})
