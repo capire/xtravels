@@ -11,12 +11,12 @@
   "dependencies": {
     "@capire/common": "*",
     "@capire/xflights-data": "*",
-    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap/cds": "*",
     "express": "^4"
   },
   "devDependencies": {
+    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
   },
