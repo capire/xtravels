@@ -20,10 +20,11 @@ service TravelService {
 
   // Define flow for Travels
   annotate Travels with @flow.status: Status actions {
-    reviewTravel  @from: #Open               @to: #InReview;
-    rejectTravel  @from: [#Open, #InReview]  @to: #Canceled;
-    reopenTravel  @from: #Canceled           @to: $flow.previous;
-    acceptTravel  @from: #InReview           @to: #Accepted;
+    deductDiscount  @from: #Open;
+    reviewTravel    @from: #Open               @to: #InReview;
+    rejectTravel    @from: [#Open, #InReview]  @to: #Canceled;
+    reopenTravel    @from: #Canceled           @to: $flow.previous;
+    acceptTravel    @from: #InReview           @to: #Accepted;
   };
 
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
