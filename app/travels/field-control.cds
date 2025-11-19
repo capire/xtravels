@@ -25,19 +25,19 @@ annotate TravelService.Travels with @(Common : {
   Agency      @Common.FieldControl  : Status.fieldControl;
   Customer    @Common.FieldControl  : Status.fieldControl;
 
-} actions {
-  rejectTravel @(
-    Core.OperationAvailable : ( $self.Status.code != #Canceled ), // FIXME: wrong error in editor
-    Common.SideEffects.TargetProperties : ['in/Status/code','in/Status_code'],
-  );
-  acceptTravel @(
-    Core.OperationAvailable : ( $self.Status.code != #Accepted ), // FIXME: wrong error in editor
-    Common.SideEffects.TargetProperties : ['in/Status/code','in/Status_code'],
-  );
-  deductDiscount @(
-    Core.OperationAvailable : ( $self.Status.code == #Open ),
-    Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],
-  );
+// } actions {
+//   rejectTravel @(
+//     Core.OperationAvailable : ( $self.Status.code != #Canceled ), // FIXME: wrong error in editor
+//     Common.SideEffects.TargetProperties : ['in/Status/code','in/Status_code'],
+//   );
+//   acceptTravel @(
+//     Core.OperationAvailable : ( $self.Status.code != #Accepted ), // FIXME: wrong error in editor
+//     Common.SideEffects.TargetProperties : ['in/Status/code','in/Status_code'],
+//   );
+//   deductDiscount @(
+//     Core.OperationAvailable : ( $self.Status.code == #Open ),
+//     Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],
+//   );
 }
 
 annotate TravelService.Travels @Common.SideEffects#ReactonItemCreationOrDeletion : {
