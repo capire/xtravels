@@ -34,7 +34,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   const FlightsService = await cds.connect.to ('sap.capire.flights.data') //.then (cds.enqueued)
 
   this.after ('SAVE', Travels, async travel => {
-    for (let { flightNumber, flightDate } of travel.Bookings)
+    if (travel.Bookings?.length) for (let { flightNumber, flightDate } of travel.Bookings)
       await FlightsService.send ('BookingCreated', {
         flightNumber,
         flightDate,
