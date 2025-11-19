@@ -5,12 +5,13 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   const { Flights, Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
   const { Open='O', Accepted='A', Canceled='X' } = {}
 
-  // Fill in alternative keys as consecutive numbers for new Travels, Bookings, and Supplements.
-  // Note: For Travels that can't be done at NEW events, that is when drafts are created,
-  // but on CREATE only, as multiple users could create new Travels concurrently.
-  this.before ('CREATE', Travels, async req => {
-    let { maxID } = await SELECT.one (`max(ID) as maxID`) .from (Travels)
-    req.data.ID = ++maxID
+  // Fill in IDs as sequence numbers
+  // NOTE: It's accepted that gaps may occur if a draft is discarded
+  this.before ('NEW', Travels.drafts, async req => {
+    const { maxID } = await SELECT.one (`max(ID) as maxID`) .from (Travels) || { maxID: 0 }
+    const { maxDraftID } = (await SELECT.one (`max(ID) as maxDraftID`) .from (Travels.drafts)) || { maxDraftID: 0 }
+    const newID = (maxDraftID > maxID ? maxDraftID : maxID) + 1
+    req.data.ID = newID
   })
 
   // Prevent changing closed travels -> should be automated by Status-Transition Flows
