@@ -12,7 +12,7 @@
     "@capire/common": "*",
     "@capire/xflights-data": "*",
     "@sap-cloud-sdk/http-client": "^4",
-    "@sap/cds": ">=9",
+    "@sap/cds": "git+https://github.tools.sap/cap/cds.git#feat/add-new-action",
     "express": "^4"
   },
   "devDependencies": {
@@ -20,5 +20,10 @@
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "cds": {
+    "features": {
+      "new_draft_via_action": true
+    }
+  }
 }
