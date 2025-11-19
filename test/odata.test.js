@@ -26,10 +26,7 @@ describe ("Basic Querying", () => {
     expect (travel) .to.exist
     expect (travel.ID) .to.eql (1)
   })
-
 })
-
-
 
 describe('Basic OData', () => {
 
@@ -110,7 +107,7 @@ describe('Basic OData', () => {
   })
 
   it('new draft has initial key, key is auto incremented upon activation', async () => {
-    const { data: newDraft } = await POST(`/odata/v4/travel/Travels`, {})
+    const { data: newDraft } = await POST(`/odata/v4/travel/Travels`, { IsActiveEntity: false })
     expect(newDraft).to.contain({ ID: 0 }) // initial value: 0
 
     // patch new draft in order to fill mandatory fields
@@ -248,5 +245,70 @@ describe('Basic OData', () => {
     const { data:res4 } = await GET (Active)
     expect(res4).to.contain({ TotalPrice: 724, BookingFee: 5 })
   })
-
 })
+
+describe("Basic Drafts", () => {
+  it("should be possible to create a new entity in draft state using the proper action", async () => {
+    const response = await POST(
+      "/odata/v4/travel/Travels/TravelService.draftNew",
+      { ID: 42 }
+    );
+    expect(response.data).toBeDefined();
+    expect(response.data.ID).toEqual(42);
+    expect(response.data.IsActiveEntity).toBe(false);
+    expect(response.status).toBe(201);
+  });
+
+  it("should be possible to create a new entity in active state using a regular POST request", async () => {
+    const response = await POST("/odata/v4/travel/Travels", {
+      ID: 0, // will be replaced by .before SAVE handler
+      BeginDate: "2028-04-01",
+      EndDate: "2028-04-02",
+      BookingFee: "11",
+      Customer_ID: "000001",
+      Agency_ID: "070001",
+      Currency_code: "USD",
+    });
+    expect(response.data).toBeDefined();
+    expect(response.data.ID).toBeDefined();
+    expect(response.data.IsActiveEntity).toBe(true);
+    expect(response.status).toBe(201);
+  });
+
+  it('should be possible to create a new entity in draft state using a regular POST request with body containing IsActiveEntity=false', async () => {
+    const response = await POST("/odata/v4/travel/Travels", {
+      ID: 1, // will be replaced by .before SAVE handler
+      IsActiveEntity: false,
+    })
+    expect(response.data).toBeDefined();
+    expect(response.data.ID).toEqual(1);
+    expect(response.data.IsActiveEntity).toBe(false);
+    expect(response.status).toBe(201);
+  })
+
+  describe("when an active entity exists", () => {
+    let ACTIVE_ENTITY_ID;
+
+    beforeAll(async () => {
+      const response = await POST("/odata/v4/travel/Travels", {
+        ID: 0, // will be replaced by .before SAVE handler
+        BeginDate: "2028-04-01",
+        EndDate: "2028-04-02",
+        BookingFee: "11",
+        Customer_ID: "000001",
+        Agency_ID: "070001",
+        Currency_code: "USD",
+      });
+      expect(response?.data?.ID).toBeDefined();
+      ACTIVE_ENTITY_ID = response.data.ID;
+    });
+    
+    it("should be possible to address an active entity by its id only", async () => {
+      const response = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(response.data).toBeDefined();
+      expect(response.data.ID).toEqual(ACTIVE_ENTITY_ID);
+      expect(response.data.IsActiveEntity).toBe(true);
+      expect(response.status).toBe(200);
+    });
+  });
+});
