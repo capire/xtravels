@@ -68,7 +68,6 @@ entity TravelStatus : sap.common.CodeList {
   key code : String(1) enum {
     Open     = 'O';
     InReview = 'P';
-    Blocked  = 'B';
     Accepted = 'A';
     Canceled = 'X';
   }
