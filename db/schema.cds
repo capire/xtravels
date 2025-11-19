@@ -69,7 +69,10 @@ entity TravelStatus : sap.common.CodeList {
     Open     = 'O';
     Accepted = 'A';
     Canceled = 'X';
+
+    Rejected = 'R';
   }
 }
+
 
 type Price : Decimal(9,4);

@@ -8,12 +8,28 @@ service TravelService {
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])
-  entity Travels as projection on db.Travels actions {
+  entity Travels as projection on db.Travels
+  actions {
     action createTravelByTemplate() returns Travels;
     action rejectTravel();
     action acceptTravel();
     action deductDiscount( percent: Percentage not null ) returns Travels;
+
+    action reopenTravel();
   }
+
+  annotate Travels with @flow.status: Status actions {
+    NEW           /* @from: [ null ]   */          @to: /* #Draft */ #Open;
+    SAVE          /* @from: [ #Draft ] */          @to: #Open;
+    // cancel        @from: [ #Open ]                 @to: #Canceled;
+    rejectTravel  @from: [ #Open ]                 @to: #Rejected;
+    acceptTravel  @from: [ #Open ]                 @to: #Accepted;
+    // close         @from: [ #Accepted ]             @to: #Closed;
+    EDIT          @from: [ #Accepted, #Rejected ]  @to: /* #Draft */ #Open;
+
+    reopenTravel  @from: [ #Accepted, #Rejected ]  @to: $flow.previous;
+    PATCH         /* @from: [ #Open ] */           @to: #Rejected;
+  };
 
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
   @readonly entity Flights as projection on db.masterdata.Flights;
@@ -23,6 +39,7 @@ service TravelService {
   // Export functions to export download travel data
   function exportJSON() returns LargeBinary @Core.MediaType:'application/json';
   function exportCSV() returns LargeBinary @Core.MediaType:'text/csv';
+
 }
 
 
@@ -40,5 +57,6 @@ entity TravelsExport @cds.persistence.skip as projection on db.Travels {
   Status.name as Status,
   Description
 }
+
 
 type Percentage : Integer @assert.range: [1,100];
