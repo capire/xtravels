@@ -23,10 +23,5 @@
   "workspaces": [
     "cds"
   ],
-  "_cds": {
-    "features": {
-      "compile_for_flows": true
-    }
-  },
   "license": "Apache-2.0"
 }
