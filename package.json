@@ -23,7 +23,7 @@
   "workspaces": [
     "cds"
   ],
-  "_cds": {
+  "cds": {
     "features": {
       "compile_for_flows": true
     }
