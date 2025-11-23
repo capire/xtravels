@@ -27,8 +27,10 @@ annotate schema.TravelStatus {
     @Common.Text: name
     @UI.ValueCriticality: [
       { Criticality: 3, Value: 'A', },
-      { Criticality: 2, Value: 'O',  },
-      { Criticality: 1, Value: 'X',  }
+      { Criticality: 2, Value: 'O', },
+      { Criticality: 2, Value: 'P', },
+      { Criticality: 1, Value: 'B', },
+      { Criticality: 1, Value: 'X', }
     ]
 }
 

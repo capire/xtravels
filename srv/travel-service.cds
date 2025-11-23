@@ -4,7 +4,7 @@ service TravelService {
 
   @(restrict: [
     { grant: 'READ', to: 'authenticated-user'},
-    { grant: ['reviewTravel','rejectTravel','reopenTravel','acceptTravel','deductDiscount'], to: 'reviewer'},
+    { grant: ['reviewTravel','reopenTravel','blockTravel','unblockTravel','acceptTravel','rejectTravel','deductDiscount'], to: 'reviewer'},
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])
@@ -12,18 +12,22 @@ service TravelService {
   actions {
     action createTravelByTemplate() returns Travels;
     action reviewTravel();
-    action rejectTravel();
     action reopenTravel();
+    action blockTravel();
+    action unblockTravel();
     action acceptTravel();
+    action rejectTravel();
     action deductDiscount( percent: Percentage not null ) returns Travels;
   }
 
   // Define flow for Travels
   annotate Travels with @flow.status: Status actions {
     reviewTravel    @from: #Open               @to: #InReview;
-    rejectTravel    @from: [#Open, #InReview]  @to: #Canceled;
-    reopenTravel    @from: #Canceled           @to: $flow.previous;
+    reopenTravel    @from: #InReview           @to: #Open;
+    blockTravel     @from: [#Open, #InReview]  @to: #Blocked;
+    unblockTravel   @from: #Blocked            @to: $flow.previous;
     acceptTravel    @from: #InReview           @to: #Accepted;
+    rejectTravel    @from: #InReview           @to: #Canceled;
     deductDiscount  @from: #Open;
   };
 

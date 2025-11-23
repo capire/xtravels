@@ -15,7 +15,7 @@ entity Travels : managed {
   BookingFee   : Price default 0;
   TotalPrice   : Price @readonly;
   Currency     : Currency default 'EUR';
-  Status       : Association to TravelStatus @readonly default #Open;
+  Status       : Association to TravelStatus @readonly default 'O';
   Agency       : Association to TravelAgencies;
   Customer     : Association to Passengers;
   Bookings     : Composition of many Bookings on Bookings.Travel = $self;
@@ -68,6 +68,7 @@ entity TravelStatus : sap.common.CodeList {
   key code : String(1) enum {
     Open     = 'O';
     InReview = 'P';
+    Blocked  = 'B';
     Accepted = 'A';
     Canceled = 'X';
   }

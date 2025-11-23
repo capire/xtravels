@@ -8,10 +8,12 @@ annotate TravelService.Travels with @UI : {
 
   Identification : [
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reviewTravel',   Label  : '{i18n>ReviewTravel}'   },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reopenTravel',   Label  : '{i18n>ReopenTravel}'   },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.blockTravel',    Label  : '{i18n>BlockTravel}'    },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.unblockTravel',  Label  : '{i18n>UnblockTravel}'  },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
-    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reopenTravel',   Label  : '{i18n>ReopenTravel}'   },
-    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' }
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
   ],
 
   HeaderInfo : {
@@ -38,9 +40,11 @@ annotate TravelService.Travels with @UI : {
   LineItem : [
 
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reviewTravel',   Label  : '{i18n>ReviewTravel}'   },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reopenTravel',   Label  : '{i18n>ReopenTravel}'   },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.blockTravel',    Label  : '{i18n>BlockTravel}'    },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.unblockTravel',  Label  : '{i18n>UnblockTravel}'  },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
-    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reopenTravel',   Label  : '{i18n>ReopenTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
 
     { Value : ID,            @UI.Importance : #High },
@@ -54,8 +58,8 @@ annotate TravelService.Travels with @UI : {
     { Value : (Status.code),
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Open ? 2 :
-        Status.code == #Canceled ? 1 : 0
+        Status.code == #Open OR Status.code == #InReview ? 2 :
+        Status.code == #Canceled OR Status.code == #Blocked ? 1 : 0
       ),
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
@@ -78,8 +82,8 @@ annotate TravelService.Travels with @UI : {
     { Value : (Status.code),
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Open ? 2 :
-        Status.code == #Canceled ? 1 : 0
+        Status.code == #Open OR Status.code == #InReview ? 2 :
+        Status.code == #Canceled OR Status.code == #Blocked ? 1 : 0
       ),
     },
     { Value : BeginDate },

@@ -25,24 +25,7 @@ annotate TravelService.Travels with @(Common : {
   Agency      @Common.FieldControl  : Status.fieldControl;
   Customer    @Common.FieldControl  : Status.fieldControl;
 } actions {
-  reviewTravel @(
-    Core.OperationAvailable : ( $self.Status.code == #Open ),
-    Common.SideEffects.TargetProperties : ['in/Status/code', 'in/Status_code'],
-  );
-  rejectTravel @(
-    Core.OperationAvailable : ( $self.Status.code == #Open OR $self.Status.code == #InReview ),
-    Common.SideEffects.TargetProperties : ['in/Status/code', 'in/Status_code'],
-  );
-  reopenTravel @(
-    Core.OperationAvailable : ( $self.Status.code == #Canceled ),
-    Common.SideEffects.TargetProperties : ['in/Status/code', 'in/Status_code'],
-  );
-  acceptTravel @(
-    Core.OperationAvailable : ( $self.Status.code == #InReview ),
-    Common.SideEffects.TargetProperties : ['in/Status/code', 'in/Status_code'],
-  );
   deductDiscount @(
-    Core.OperationAvailable : ( $self.Status.code == #Open ),
     Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],
   );
 };
