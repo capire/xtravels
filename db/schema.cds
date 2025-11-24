@@ -15,7 +15,7 @@ entity Travels : managed {
   BookingFee   : Price default 0;
   TotalPrice   : Price @readonly;
   Currency     : Currency default 'EUR';
-  Status       : Association to TravelStatus @readonly default 'O';
+  Status       : Association to TravelStatus default 'O';
   Agency       : Association to TravelAgencies;
   Customer     : Association to Passengers;
   Bookings     : Composition of many Bookings on Bookings.Travel = $self;
