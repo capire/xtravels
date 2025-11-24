@@ -12,7 +12,7 @@
     "@capire/common": "*",
     "@capire/xflights-data": "*",
     "@sap-cloud-sdk/http-client": "^4",
-    "@sap/cds": ">=9",
+    "@sap/cds": "git+https://github.tools.sap/cap/cds.git",
     "express": "^4"
   },
   "devDependencies": {
