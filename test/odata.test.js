@@ -1,10 +1,11 @@
 const cds = require('@sap/cds')
 cds.env.features.with_mocks = true
 
-const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..','--with-mocks')
+const { GET, POST, PATCH, DELETE, axios, expect } = cds.test(__dirname+'/..','--with-mocks')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
 axios.defaults.auth = { username: 'alice', password: 'admin' }
+axios.defaults.validateStatus = () => true
 
 const ID = '1'
 
@@ -303,12 +304,36 @@ describe("Basic Drafts", () => {
       ACTIVE_ENTITY_ID = response.data.ID;
     });
     
-    it("should be possible to address an active entity by its id only", async () => {
+    it("should be possible to address an active entity by only its id in GET requests", async () => {
       const response = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
       expect(response.data).toBeDefined();
       expect(response.data.ID).toEqual(ACTIVE_ENTITY_ID);
       expect(response.data.IsActiveEntity).toBe(true);
       expect(response.status).toBe(200);
+    });
+
+    it("should be possible to address an active entity by only its id in PATCH requests", async () => {
+      const readBeforePatch = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(readBeforePatch.data).toBeDefined();
+      expect(readBeforePatch.data.ID).toEqual(ACTIVE_ENTITY_ID);
+      expect(readBeforePatch.data.IsActiveEntity).toBe(true);
+      expect(readBeforePatch.data.BookingFee).toEqual(11);
+      expect(readBeforePatch.status).toBe(200);
+
+      const response = await PATCH(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`, { BookingFee: 42});
+      expect(response.data).toBeDefined();
+      expect(response.data.ID).toEqual(ACTIVE_ENTITY_ID);
+      expect(response.data.IsActiveEntity).toBe(true);
+      expect(response.data.BookingFee).toEqual(42);
+      expect(response.status).toBe(200);
+    });
+
+    it("should be possible to address an active entity by only its id in DELETE requests", async () => {
+      const response = await DELETE(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(response.status).toBe(204);
+
+      const readAfterDelete = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(readAfterDelete.status).toBe(404);
     });
   });
 });
