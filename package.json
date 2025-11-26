@@ -22,8 +22,8 @@
   },
   "license": "Apache-2.0",
   "cds": {
-    "features": {
-      "new_draft_via_action": true
+    "fiori": {
+      "draft_new_action": true
     }
   }
 }
