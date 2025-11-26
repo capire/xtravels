@@ -16,3 +16,6 @@ GET {{server}}/processor/Travel/73757221A8E4645C17002DF03754AB66/true
 GET {{server}}/processor/Travel(TravelUUID='73757221A8E4645C17002DF03754AB66',IsActiveEntity=true)
 {{alice}}
 ###
+
+GET {{server}}/odata/v4/travel/Travels?$compute=(BookingFee mul 100) divby TotalPrice as PctOfAdminCosts&$select=PctOfAdminCosts,TotalPrice,BookingFee
+{{alice}}
