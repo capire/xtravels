@@ -61,14 +61,12 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   async function update_totals (req, next, ...fields) {
     if (fields.length && !fields.some(f => f in req.data)) return next() //> skip if no relevant data changed
     await next() // actually UPDATE or DELETE the subject entity
+    // REVISIT: We should be able to read the root entity more easily...
+    const ID = req.target === Travels.drafts ? req.data.ID : (await SELECT.one.from ({ref: [req.subject.ref[0] ] }, ['ID'])).ID
     await cds.run(`UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
      + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
      + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
-    WHERE ID = ?`, [
-      req.target === Travels.drafts ? req.data.ID :
-      req.target === Bookings.drafts ? ( await SELECT.one `Travel_ID as ID` .from (req.subject) ).ID :
-      req.target === Supplements.drafts ? ( await SELECT.one `up__Travel_ID as ID` .from (req.subject) ).ID : null
-    ])
+    WHERE ID = ?`, [ID])
   }
 
 
