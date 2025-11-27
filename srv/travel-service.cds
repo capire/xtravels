@@ -23,22 +23,22 @@ service TravelService {
   // Export functions to export download travel data
   function exportJSON() returns LargeBinary @Core.MediaType:'application/json';
   function exportCSV() returns LargeBinary @Core.MediaType:'text/csv';
+
+  /**
+   * Edit this view to control which data to include in CSV/JSON exports
+   */
+  type TravelsExport : projection on db.Travels {
+    ID,
+    Agency.Name as Agency,
+    concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName) as Customer : String,
+    BeginDate,
+    EndDate,
+    TotalPrice,
+    Currency.code as Currency,
+    Status.name as Status,
+    Description
+  }
 }
 
-
-/**
- * Edit this view to control which data to include in CSV/JSON exports
- */
-entity TravelsExport @cds.persistence.skip as projection on db.Travels {
-  ID,
-  Agency.Name as Agency,
-  concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName) as Customer,
-  BeginDate,
-  EndDate,
-  TotalPrice,
-  Currency.code as Currency,
-  Status.name as Status,
-  Description
-}
 
 type Percentage : Integer @assert.range: [1,100];
