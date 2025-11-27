@@ -25,12 +25,6 @@ module.exports = class TravelService extends cds.ApplicationService { async init
     req.data.Pos = ++maxID
   })
 
-  // Ensure BeginDate is not after EndDate -> would be automated by Dynamic Validations
-  this.before ('SAVE', Travels, req => {
-    const { BeginDate, EndDate } = req.data
-    if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate') // REVISIT: in/ should go away!
-  })
-
   const FlightsService = await cds.connect.to ('sap.capire.flights.data') //.then (cds.enqueued)
 
   this.after ('SAVE', Travels, async travel => {
