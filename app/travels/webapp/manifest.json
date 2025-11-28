@@ -147,7 +147,16 @@
                   }
                 }
               },
-              "editableHeaderContent": false
+              "editableHeaderContent": false,
+              "controlConfiguration": {
+                "Bookings/@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "creationMode": {
+                      "name": "Inline"
+                    }
+                  }
+                }
+              }
             }
           }
         },
