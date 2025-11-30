@@ -7,12 +7,6 @@ using { TravelService } from '../../srv/travel-service';
 annotate TravelService.Travels with @UI : {
 
   Identification : [
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reviewTravel',   Label  : '{i18n>ReviewTravel}'   },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reopenTravel',   Label  : '{i18n>ReopenTravel}'   },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.blockTravel',    Label  : '{i18n>BlockTravel}'    },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.unblockTravel',  Label  : '{i18n>UnblockTravel}'  },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
   ],
 
@@ -38,13 +32,6 @@ annotate TravelService.Travels with @UI : {
   ],
 
   LineItem : [
-
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reviewTravel',   Label  : '{i18n>ReviewTravel}'   },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.reopenTravel',   Label  : '{i18n>ReopenTravel}'   },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.blockTravel',    Label  : '{i18n>BlockTravel}'    },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.unblockTravel',  Label  : '{i18n>UnblockTravel}'  },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
-    // { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
 
     { Value : ID,            @UI.Importance : #High },
