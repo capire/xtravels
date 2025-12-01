@@ -1,6 +1,6 @@
 const cds = require('@sap/cds')
 
-const { GET, POST, PATCH, DELETE, axios, expect } = cds.test(__dirname + '/..', '--with-mocks')
+const { GET, POST, axios, expect } = cds.test(__dirname + '/..', '--with-mocks', '--profile', 'flow')
 axios.defaults.auth = { username: 'alice', password: 'admin' }
 axios.defaults.validateStatus = () => true
 
@@ -11,16 +11,12 @@ describe('Status Transition Flows', () => {
     return travel
   }
 
-  beforeEach(async () => {
-    await cds.ql.DELETE('sap.capire.travels.Travels.transitions_')
-  })
-
   it('flows like a charm', async () => {
     let travel
 
     travel = await READ()
     expect(travel.Status_code).to.eql('O')
-    expect(travel.transitions_).to.have.length(0)
+    expect(travel.transitions_).to.have.length(1)
 
     // @from is checked
     const {
@@ -33,34 +29,34 @@ describe('Status Transition Flows', () => {
     await POST('/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/blockTravel', {})
     travel = await READ()
     expect(travel.Status_code).to.eql('B')
-    expect(travel.transitions_).to.have.length(1)
+    expect(travel.transitions_).to.have.length(2)
 
     // @to: $flow.previous restores the previous status
     await POST('/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/unblockTravel', {})
     travel = await READ()
     expect(travel.Status_code).to.eql('O')
-    expect(travel.transitions_).to.have.length(2)
+    expect(travel.transitions_).to.have.length(3)
 
     // @to is set
     await POST('/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/reviewTravel', {})
     travel = await READ()
     expect(travel.Status_code).to.eql('P')
-    expect(travel.transitions_).to.have.length(3)
+    expect(travel.transitions_).to.have.length(4)
 
     await POST('/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/blockTravel', {})
     travel = await READ()
     expect(travel.Status_code).to.eql('B')
-    expect(travel.transitions_).to.have.length(4)
+    expect(travel.transitions_).to.have.length(5)
 
     // @to: $flow.previous restores the previous status
     await POST('/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/unblockTravel', {})
     travel = await READ()
     expect(travel.Status_code).to.eql('P')
-    expect(travel.transitions_).to.have.length(5)
+    expect(travel.transitions_).to.have.length(6)
 
     await POST('/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)/acceptTravel', {})
     travel = await READ()
     expect(travel.Status_code).to.eql('A')
-    expect(travel.transitions_).to.have.length(6)
+    expect(travel.transitions_).to.have.length(7)
   })
 })

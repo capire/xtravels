@@ -79,8 +79,8 @@ annotate schema.Passengers with @title: '{i18n>Passenger}' {
 using { TravelService } from '../srv/travel-service';
 
 annotate TravelService.Travels with actions {
-  acceptTravel    @title: '{i18n>AcceptTravel}';
   rejectTravel    @title: '{i18n>RejectTravel}';
+  acceptTravel    @title: '{i18n>AcceptTravel}';
   deductDiscount  @title: '{i18n>DeductDiscount}';
 };
 

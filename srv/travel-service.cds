@@ -4,22 +4,21 @@ service TravelService {
 
   @(restrict: [
     { grant: 'READ', to: 'authenticated-user'},
-    { grant: ['acceptTravel','rejectTravel','deductDiscount'], to: 'reviewer'},
+    { grant: ['rejectTravel','acceptTravel','deductDiscount'], to: 'reviewer'},
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])
-  entity Travels as projection on db.Travels
-  actions {
+  entity Travels as projection on db.Travels actions {
     action createTravelByTemplate() returns Travels;
-    action acceptTravel();
     action rejectTravel();
+    action acceptTravel();
     action deductDiscount( percent: Percentage not null ) returns Travels;
   }
 
   // Define flow for Travels
   annotate Travels with @flow.status: Status actions {
-    acceptTravel    @from: #Open  @to: #Accepted;
     rejectTravel    @from: #Open  @to: #Canceled;
+    acceptTravel    @from: #Open  @to: #Accepted;
     deductDiscount  @from: #Open;
   };
 
