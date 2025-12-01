@@ -4,7 +4,7 @@
 
 A more complex flow incl. reverting to the previous state (`$flow.previous`):
 
-![](./flow/xtravels-flow-previous.svg)
+![](./flow/flow-previous.svg)
 
 Run it with:
 ```sh
