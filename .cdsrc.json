@@ -1,5 +1,7 @@
 {
-  "features": {
-    "compile_for_flows": true
+  "[flow]": {
+    "folders": {
+      "flow": "xmpls/flow/"
+    }
   }
 }

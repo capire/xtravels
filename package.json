@@ -12,7 +12,7 @@
     "@capire/common": "*",
     "@capire/xflights-data": "*",
     "@sap-cloud-sdk/http-client": "^4",
-    "@sap/cds": "*",
+    "@sap/cds": "^9.5",
     "express": "^4"
   },
   "devDependencies": {
@@ -20,8 +20,5 @@
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
   },
-  "workspaces": [
-    "cds"
-  ],
   "license": "Apache-2.0"
 }
