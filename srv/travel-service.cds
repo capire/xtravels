@@ -16,6 +16,7 @@ service TravelService {
   }
 
   // Define flow for Travels
+  // NOTE: @flow.status on entity-level makes the target element read-only
   annotate Travels with @flow.status: Status actions {
     rejectTravel    @from: #Open  @to: #Canceled;
     acceptTravel    @from: #Open  @to: #Accepted;
