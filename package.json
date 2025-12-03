@@ -10,12 +10,13 @@
   },
   "dependencies": {
     "@capire/common": "*",
-    "@capire/xflights-data": "*",
+    "@capire/xflights-data": ".plugins/xflights-data",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap/cds": ">=9",
     "express": "^4"
   },
   "devDependencies": {
+    "@capire/xflights": "*",
     "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
