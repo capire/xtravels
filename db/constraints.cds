@@ -5,7 +5,15 @@ annotate my.Travels with {
   @mandatory EndDate;
   @mandatory Agency;
   @mandatory Customer;
-}
+  @assert: (case 
+    when BeginDate > EndDate then 'End Date must be after Begin Date.' 
+    end )
+  EndDate;
+  @assert: (case 
+    when BookingFee < 0 then 'Booking Fee must be non-negative.'
+    end )
+  BookingFee;
+  }
 
 annotate my.Bookings with {
   @mandatory Flight;
