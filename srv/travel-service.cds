@@ -15,6 +15,14 @@ service TravelService {
     action deductDiscount( percent: Percentage not null ) returns Travels;
   }
 
+  // Define flow for Travels
+  // NOTE: @flow.status on entity-level makes the target element read-only
+  annotate Travels with @flow.status: Status actions {
+    rejectTravel    @from: #Open  @to: #Canceled;
+    acceptTravel    @from: #Open  @to: #Accepted;
+    deductDiscount  @from: #Open;
+  };
+
   // Also expose Flights and Currencies for travel booking UIs and Value Helps
   @readonly entity Flights as projection on db.masterdata.Flights;
   @readonly entity Supplements as projection on db.masterdata.Supplements;
@@ -23,6 +31,7 @@ service TravelService {
   // Export functions to export download travel data
   function exportJSON() returns LargeBinary @Core.MediaType:'application/json';
   function exportCSV() returns LargeBinary @Core.MediaType:'text/csv';
+
 }
 
 
@@ -40,5 +49,6 @@ entity TravelsExport @cds.persistence.skip as projection on db.Travels {
   Status.name as Status,
   Description
 }
+
 
 type Percentage : Integer @assert.range: [1,100];
