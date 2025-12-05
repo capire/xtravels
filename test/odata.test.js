@@ -1,10 +1,11 @@
 const cds = require('@sap/cds')
 cds.env.features.with_mocks = true
 
-const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..','--with-mocks')
+const { GET, POST, PATCH, DELETE, axios, expect } = cds.test(__dirname+'/..','--with-mocks')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
 axios.defaults.auth = { username: 'alice', password: 'admin' }
+axios.defaults.validateStatus = () => true
 
 const ID = '1'
 
@@ -26,10 +27,7 @@ describe ("Basic Querying", () => {
     expect (travel) .to.exist
     expect (travel.ID) .to.eql (1)
   })
-
 })
-
-
 
 describe('Basic OData', () => {
 
@@ -110,7 +108,7 @@ describe('Basic OData', () => {
   })
 
   it('new draft has initial key, key is auto incremented upon activation', async () => {
-    const { data: newDraft } = await POST(`/odata/v4/travel/Travels`, {})
+    const { data: newDraft } = await POST(`/odata/v4/travel/Travels`, { IsActiveEntity: false })
     expect(newDraft).to.contain({ ID: 0 }) // initial value: 0
 
     // patch new draft in order to fill mandatory fields
@@ -248,5 +246,94 @@ describe('Basic OData', () => {
     const { data:res4 } = await GET (Active)
     expect(res4).to.contain({ TotalPrice: 724, BookingFee: 5 })
   })
-
 })
+
+describe("Basic Drafts", () => {
+  it("should be possible to create a new entity in draft state using the proper action", async () => {
+    const response = await POST(
+      "/odata/v4/travel/Travels/TravelService.draftNew",
+      { ID: 42 }
+    );
+    expect(response.data).toBeDefined();
+    expect(response.data.ID).toEqual(42);
+    expect(response.data.IsActiveEntity).toBe(false);
+    expect(response.status).toBe(201);
+  });
+
+  it("should be possible to create a new entity in active state using a regular POST request", async () => {
+    const response = await POST("/odata/v4/travel/Travels", {
+      ID: 0, // will be replaced by .before SAVE handler
+      BeginDate: "2028-04-01",
+      EndDate: "2028-04-02",
+      BookingFee: "11",
+      Customer_ID: "000001",
+      Agency_ID: "070001",
+      Currency_code: "USD",
+    });
+    expect(response.data).toBeDefined();
+    expect(response.data.ID).toBeDefined();
+    expect(response.data.IsActiveEntity).toBe(true);
+    expect(response.status).toBe(201);
+  });
+
+  it('should be possible to create a new entity in draft state using a regular POST request with body containing IsActiveEntity=false', async () => {
+    const response = await POST("/odata/v4/travel/Travels", {
+      ID: 1, // will be replaced by .before SAVE handler
+      IsActiveEntity: false,
+    })
+    expect(response.data).toBeDefined();
+    expect(response.data.ID).toEqual(1);
+    expect(response.data.IsActiveEntity).toBe(false);
+    expect(response.status).toBe(201);
+  })
+
+  describe("when an active entity exists", () => {
+    let ACTIVE_ENTITY_ID;
+
+    beforeAll(async () => {
+      const response = await POST("/odata/v4/travel/Travels", {
+        ID: 0, // will be replaced by .before SAVE handler
+        BeginDate: "2028-04-01",
+        EndDate: "2028-04-02",
+        BookingFee: "11",
+        Customer_ID: "000001",
+        Agency_ID: "070001",
+        Currency_code: "USD",
+      });
+      expect(response?.data?.ID).toBeDefined();
+      ACTIVE_ENTITY_ID = response.data.ID;
+    });
+    
+    it("should be possible to address an active entity by only its id in GET requests", async () => {
+      const response = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(response.data).toBeDefined();
+      expect(response.data.ID).toEqual(ACTIVE_ENTITY_ID);
+      expect(response.data.IsActiveEntity).toBe(true);
+      expect(response.status).toBe(200);
+    });
+
+    it("should be possible to address an active entity by only its id in PATCH requests", async () => {
+      const readBeforePatch = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(readBeforePatch.data).toBeDefined();
+      expect(readBeforePatch.data.ID).toEqual(ACTIVE_ENTITY_ID);
+      expect(readBeforePatch.data.IsActiveEntity).toBe(true);
+      expect(readBeforePatch.data.BookingFee).toEqual(11);
+      expect(readBeforePatch.status).toBe(200);
+
+      const response = await PATCH(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`, { BookingFee: 42});
+      expect(response.data).toBeDefined();
+      expect(response.data.ID).toEqual(ACTIVE_ENTITY_ID);
+      expect(response.data.IsActiveEntity).toBe(true);
+      expect(response.data.BookingFee).toEqual(42);
+      expect(response.status).toBe(200);
+    });
+
+    it("should be possible to address an active entity by only its id in DELETE requests", async () => {
+      const response = await DELETE(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(response.status).toBe(204);
+
+      const readAfterDelete = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
+      expect(readAfterDelete.status).toBe(404);
+    });
+  });
+});
