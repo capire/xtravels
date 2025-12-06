@@ -1,4 +1,4 @@
-using { TravelService } from './travel-service.cds';
+using { TravelService } from './travel-service';
 
 annotate TravelService.Travels with {
   BeginDate @mandatory;
