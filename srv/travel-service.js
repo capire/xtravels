@@ -81,8 +81,6 @@ module.exports = class TravelService extends cds.ApplicationService { async init
     if (!isDraft && existingDraft || isDraft && existingDraft?.InProcessByUser !== req.user.id)
       throw req.reject(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
   })
-  this.on (acceptTravel, [Travels, Travels.drafts], async req => UPDATE (req.subject) .with ({ Status_code: Accepted }))
-  this.on (rejectTravel, [Travels, Travels.drafts], async req => UPDATE (req.subject) .with ({ Status_code: Canceled }))
   this.on (deductDiscount, async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req.subject) .where ({ Status: Open, BookingFee: {'!=':null} })
@@ -98,11 +96,11 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
 
+  const { TravelsExport } = this.entities
   const { Readable } = require ('stream')
 
   this.on ('exportCSV', req => {
-    let { columns } = this.types.TravelsExport.projection
-    let query = SELECT.localized (columns) .from (Travels) 
+    let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
     let stream = Readable.from (async function*() {
       yield Object.keys(query.elements).join(';') + '\n'
       for await (const row of query)
@@ -112,8 +110,7 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
   this.on ('exportJSON', async req => {
-    let { columns } = this.types.TravelsExport.projection
-    let query = SELECT.localized (columns) .from (Travels) 
+    let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
     let stream = await query.stream()
     return req.reply (stream, { filename: 'Travels.json' })
   })
