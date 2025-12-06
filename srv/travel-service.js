@@ -25,12 +25,6 @@ module.exports = class TravelService extends cds.ApplicationService { async init
     req.data.Pos = ++maxID
   })
 
-  // Ensure BeginDate is not after EndDate -> would be automated by Dynamic Validations
-  this.before ('SAVE', Travels, req => {
-    const { BeginDate, EndDate } = req.data
-    if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate') // REVISIT: in/ should go away!
-  })
-
   const FlightsService = await cds.connect.to ('sap.capire.flights.data') //.then (cds.enqueued)
 
   this.after ('SAVE', Travels, async travel => {
@@ -102,22 +96,22 @@ module.exports = class TravelService extends cds.ApplicationService { async init
   })
 
 
-  const { TravelsExport } = this.model.definitions
+  const { TravelsExport } = this.entities
   const { Readable } = require ('stream')
 
   this.on ('exportCSV', req => {
-    let query = cds.ql (TravelsExport.query)
+    let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
     let stream = Readable.from (async function*() {
       yield Object.keys(query.elements).join(';') + '\n'
-      for await (const row of query.localized)
+      for await (const row of query)
         yield Object.values(row).join(';') + '\n'
     }())
     return req.reply (stream, { filename: 'Travels.csv' })
   })
 
   this.on ('exportJSON', async req => {
-    let query = cds.ql (TravelsExport.query)
-    let stream = await query.localized.stream()
+    let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
+    let stream = await query.stream()
     return req.reply (stream, { filename: 'Travels.json' })
   })
 
