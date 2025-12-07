@@ -8,6 +8,6 @@ annotate TravelService.Travels with {
 }
 
 annotate TravelService.Bookings with {
-  Flight @mandatory;
   Travel @mandatory;
+  Flight @mandatory;
 }
