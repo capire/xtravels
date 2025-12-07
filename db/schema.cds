@@ -70,7 +70,7 @@ entity TravelStatus : sap.common.CodeList {
     InReview = 'P';
     Blocked  = 'B';
     Accepted = 'A';
-    Canceled = 'X';
+    Rejected = 'X';
   }
 }
 
