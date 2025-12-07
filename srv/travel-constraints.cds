@@ -42,6 +42,11 @@ annotate TravelService.Travels with {
 annotate TravelService.Bookings with {
 
   Travel @mandatory;
+  Flight @mandatory { 
+    date @assert: (case 
+      when date not between $self.Travel.BeginDate and $self.Travel.EndDate then 'ASSERT_BOOKING_IN_TRAVEL_PERIOD'
+    end);
+  };
 
   FlightPrice @assert: (case 
     when FlightPrice < 0 then 'ASSERT_FLIGHT_PRICE_POSITIVE' 
@@ -50,12 +55,6 @@ annotate TravelService.Bookings with {
   Currency @assert: (case 
     when Currency != Travel.Currency then 'ASSERT_BOOKING_CURRENCY_MATCHES_TRAVEL'
   end);
-
-  Flight @mandatory { 
-    date @assert: (case 
-      when date not between $self.Travel.BeginDate and $self.Travel.EndDate then 'ASSERT_BOOKING_IN_TRAVEL_PERIOD'
-    end);
-  };
 
   BookingDate @assert: (case 
     when BookingDate > Travel.EndDate then 'ASSERT_NO_BOOKINGS_AFTER_TRAVEL'
