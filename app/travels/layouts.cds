@@ -105,12 +105,12 @@ annotate TravelService.Bookings with @UI : {
     { Value : Flight.icon,        Label : '  ',                 @HTML5.CssDefaults: {width:'80px'} },
     { Value : (Flight.ID),        Label : '{i18n>FlightID}' },   // REVISIT: the parenthesis are required for editable fields ?!?
     { Value : (Flight.date),      Label : '{i18n>FlightDate}' }, // REVISIT: the parenthesis are required for editable fields ?!?
+    { Value : FlightPrice,        Label : '{i18n>FlightPrice}' },
     { Value : Flight.departure,   Label : '{i18n>Departure}',   @HTML5.CssDefaults: {width:'6em'}, @Common.FieldControl: #ReadOnly },
     { Value : Flight.arrival,     Label : '{i18n>Arrival}',     @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
-    { Value : Flight.origin,      Label : '{i18n>Origin}',      @Common.FieldControl: #ReadOnly },
-    { Value : Flight.destination, Label : '{i18n>Destination}', @Common.FieldControl: #ReadOnly },
-    { Value : Flight.airline,     Label : '{i18n>Airline}',     @Common.FieldControl: #ReadOnly },
-    { Value : FlightPrice,        Label : '{i18n>FlightPrice}' },
+    { Value : Flight.origin,      Label : '{i18n>Origin}',      @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
+    { Value : Flight.destination, Label : '{i18n>Destination}', @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
+    { Value : Flight.airline,     Label : '{i18n>Airline}',     @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
     { Value : BookingDate,        Label : '{i18n>BookingDate}' },
   ],
 
@@ -150,7 +150,7 @@ annotate TravelService.Bookings with @UI : {
   ]},
 };
 
-annotate sap.capire.travels.masterdata.Flights:icon with @UI.IsImageURL;
+annotate sap.capire.flights.Flights:icon with @UI.IsImageURL;
 
 annotate TravelService.Bookings.Supplements with @UI : {
   Identification : [

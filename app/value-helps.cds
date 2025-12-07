@@ -133,7 +133,7 @@ annotate schema.Bookings.Supplements {
 }
 
 
-using sap.capire.travels.masterdata as flights;
+using sap.capire.flights;
 
 
 annotate flights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
