@@ -20,5 +20,10 @@
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
   },
+  "cds": {
+    "folders": {
+      "apps": "app/*"
+    }
+  },
   "license": "Apache-2.0"
 }
