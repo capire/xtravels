@@ -1,125 +1,190 @@
-const cds = require('@sap/cds')
-module.exports = class TravelService extends cds.ApplicationService { async init() {
+const cds = require ('@sap/cds')
 
-  // Reflected definitions from the service's CDS model
-  const { Flights, Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
-  const { Open='O', Accepted='A', Canceled='X' } = {}
+class TravelService extends cds.ApplicationService { 
 
-  // Fill in alternative keys as consecutive numbers for new Travels, Bookings, and Supplements.
-  // Note: For Travels that can't be done at NEW events, that is when drafts are created,
-  // but on CREATE only, as multiple users could create new Travels concurrently.
-  this.before ('CREATE', Travels, async req => {
-    let { maxID } = await SELECT.one (`max(ID) as maxID`) .from (Travels)
-    req.data.ID = ++maxID
-  })
-
-  // Prevent changing closed travels -> should be automated by Status-Transition Flows
-  this.before ('NEW', Bookings.drafts, async req => {
-    let { status } = await SELECT `Status_code as status` .from (Travels.drafts, req.data.to_Travel_ID)
-    if (status === Canceled) return req.reject (400, 'Cannot add new bookings to rejected travels.')
-  })
-
-  // Fill in IDs as sequence numbers -> could be automated by auto-generation
-  this.before ('NEW', Bookings.drafts, async req => {
-    let { maxID } = await SELECT.one (`max(Pos) as maxID`) .from (Bookings.drafts) .where (req.data)
-    req.data.Pos = ++maxID
-  })
-
-  const FlightsService = await cds.connect.to ('sap.capire.flights.data') //.then (cds.enqueued)
-
-  this.after ('SAVE', Travels, async travel => {
-    for (let { flightNumber, flightDate } of travel.Bookings)
-      await FlightsService.send ('BookingCreated', {
-        flightNumber,
-        flightDate,
-        seats: [ 0 ] // no seat numbers managed in sample
-      })
-  })
-
-  FlightsService.on ('Flights.Updated', async msg => {
-    const { flightNumber, flightDate, occupiedSeats } = msg.data
-    await UPDATE (Flights, { flightNumber, flightDate }) .with ({ occupiedSeats })
-  })
-
-
-  // Update a Travel's TotalPrice whenever its BookingFee is modified,
-  // or when a nested Booking is deleted or its FlightPrice is modified,
-  // or when a nested Supplement is deleted or its Price is modified.
-  // -> should be automated by Calculated Elements + auto-GROUP BY
-  this.on ('PATCH', Travels.drafts,      (req, next) => update_totals (req, next, 'BookingFee', 'GoGreen'))
-  this.on ('PATCH', Bookings.drafts,     (req, next) => update_totals (req, next, 'FlightPrice'))
-  this.on ('PATCH', Supplements.drafts, (req, next) => update_totals (req, next, 'Price'))
-  this.on ('DELETE', Bookings.drafts,     (req, next) => update_totals (req, next))
-  this.on ('DELETE', Supplements.drafts, (req, next) => update_totals (req, next))
-  // Note: Using .on handlers as we need to read a Booking's or Supplement's ID before they are deleted.
-  async function update_totals (req, next, ...fields) {
-    if (fields.length && !fields.some(f => f in req.data)) return next() //> skip if no relevant data changed
-    await next() // actually UPDATE or DELETE the subject entity
-    await cds.run(`UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
-     + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
-     + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
-    WHERE ID = ?`, [
-      req.target === Travels.drafts ? req.data.ID :
-      req.target === Bookings.drafts ? ( await SELECT.one `Travel_ID as ID` .from (req.subject) ).ID :
-      req.target === Supplements.drafts ? ( await SELECT.one `up__Travel_ID as ID` .from (req.subject) ).ID : null
-    ])
+  async init() {
+    this.service_integration()
+    this.generate_primary_keys()
+    this.deduct_discounts()
+    this.update_totals()
+    this.status_flows()
+    this.data_export()
+    return super.init()
   }
 
 
-  //
-  // Action Implementations...
-  //
+  /**
+   * Integrates with the XFlights service to keep Flights data in sync on both sides.
+   */
+  async service_integration() {
 
-  const { acceptTravel, rejectTravel, deductDiscount } = Travels.actions
+    const xflights = await cds.connect.to ('sap.capire.flights.data') .then (cds.outboxed)
+    const { Flights, Travels } = this.entities
 
-  this.before([acceptTravel, rejectTravel], [Travels, Travels.drafts], async req => {
-    const existingDraft = await SELECT.one(Travels.drafts.name).where(req.params[0])
-      .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
-    // action called on active -> reject if draft exists
-    // action called on draft -> reject if not own draft
-    const isDraft = req.target.name.endsWith('.drafts')
-    if (!isDraft && existingDraft || isDraft && existingDraft?.InProcessByUser !== req.user.id)
-      throw req.reject(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
-  })
-  this.on (deductDiscount, async req => {
-    let discount = req.data.percent / 100
-    let succeeded = await UPDATE (req.subject) .where ({ Status: Open, BookingFee: {'!=':null} })
-      .with `BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
-      .with `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
+    // Update local Flights data whenever occupied seats change in XFlights
+    xflights.on ('Flights.Updated', async msg => {
+      const { flightNumber, flightDate, occupiedSeats } = msg.data
+      await UPDATE (Flights, { flightNumber, flightDate }) .with ({ occupiedSeats })
+    })    
 
-    if (!succeeded) { //> let's find out why...
-      let travel = await SELECT.one `ID, Status.code as status, BookingFee` .from (req.subject)
-      if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
-      if (travel.status === Accepted) throw req.reject (409, `Travel "${travel.ID}" has been approved already.`)
-      if (travel.BookingFee == null) throw req.reject (404, `No discount possible, "${travel.ID}" does not yet have a booking fee added.`)
+    // Inform XFlights about new bookings, so it can update occupied seats
+    this.after ('SAVE', Travels, ({ Bookings }) => Promise.all (
+      Bookings.map (({ flightNumber, flightDate }) => xflights .send ('BookingCreated', {
+        flightNumber, flightDate
+      })
+    )))
+  }
+
+
+  /**
+   * Generate primary keys for new Travels and Bookings.
+   */
+  generate_primary_keys() {
+
+    const { Travels, Bookings } = this.entities
+    
+    this.before ('CREATE', Travels, async (req) => { // on CREATE to avoid conflicting IDs on concurrent drafts
+      let { id } = await SELECT.one `max(ID) as id` .from (Travels)
+      req.data.ID = ++id
+    })
+    
+    this.before ('NEW', Bookings.drafts, async (req) => { // on NEW as Bookings are per draft, so no concurrency issues
+      let { id } = await SELECT.one `max(Pos) as id` .from (Bookings.drafts) .where (req.data)
+      req.data.Pos = ++id
+    })
+  }
+
+
+  /**
+   * Deduct discounts from Travels' BookingFee and TotalPrice.
+   */
+  deduct_discounts() {
+
+    const { Open } = this.StatusCodes
+    const { Travels } = this.entities
+    const { deductDiscount } = Travels.actions
+
+    this.on (deductDiscount, async req => {
+      let discount = req.data.percent / 100
+      let succeeded = await UPDATE (req.subject) 
+        .set `BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
+        .set `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
+        .where `BookingFee is not null` // only travels with specified booking fee
+        .where `Status.code = ${Open}` // only open travels => implicit constraints check
+      if (!succeeded) return failed (req)
+    })
+
+    async function failed (req) { // find out what caused the failure...
+      let { ID, status, fee } = await SELECT.one `ID, Status.code as status, BookingFee as fee` .from (req.subject) || {}
+      if (!ID) throw req.reject (404, `Travel "${ID}" does not exist; may have been deleted meanwhile.`)
+      if (!fee) throw req.reject (404, `No discount possible, "${ID}" does not yet have a booking fee added.`)
+      if (status !== Open) throw req.reject (409, `Cannot deduct discount from travel "${ID}" as it is not open.`)
     }
-  })
+  }
 
 
-  const { TravelsExport } = this.entities
-  const { Readable } = require ('stream')
+  /**
+   * Recalculate Travels' TotalPrice field, whenever...
+   * 
+   * - its BookingFee is modified,
+   * - a nested Booking is deleted or its FlightPrice is modified,
+   * - a nested Supplement is deleted or its Price is modified.
+   * 
+   * Implemented via direct SQL UPDATE for efficiency.
+   */
+  update_totals() {
 
-  this.on ('exportCSV', req => {
-    let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
-    let stream = Readable.from (async function*() {
-      yield Object.keys(query.elements).join(';') + '\n'
-      for await (const row of query)
-        yield Object.values(row).join(';') + '\n'
-    }())
-    return req.reply (stream, { filename: 'Travels.csv' })
-  })
+    const { Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
+    const UpdateTotals = // Native SQL UPDATE statement, prepared once, and reused subsequently
+    `UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
+      + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
+      + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
+    WHERE ID = ?`
 
-  this.on ('exportJSON', async req => {
-    let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
-    let stream = await query.stream()
-    return req.reply (stream, { filename: 'Travels.json' })
-  })
+    this.on ('PATCH',  Travels.drafts,     (..._) => update_totals (..._, 'BookingFee', 'GoGreen'))
+    this.on ('PATCH',  Bookings.drafts,    (..._) => update_totals (..._, 'FlightPrice'))
+    this.on ('PATCH',  Supplements.drafts, (..._) => update_totals (..._, 'Price'))
+    this.on ('DELETE', Bookings.drafts,    (..._) => update_totals (..._, 'ID'))
+    this.on ('DELETE', Supplements.drafts, (..._) => update_totals (..._, 'ID'))
 
-  // Add base class's handlers. Handlers registered above go first.
-  return super.init()
+    async function update_totals (req, next, ...fields) {
+      // Exit early if no relevant data changed
+      if (!fields.some (field => field in req.data)) return next() 
+      // First execute the actual update or delete, so we can recalculate totals in the database afterwards
+      await next() 
+      // Run the total price recalculation in the database, using the travel from the request target
+      const { ID: TravelID } =
+        req.target === Supplements.drafts ? await SELECT.one `up_.Travel.ID as ID` .from (req.subject) :
+        req.target === Bookings.drafts ? await SELECT.one `Travel.ID as ID` .from (req.subject) :
+        req.target === Travels.drafts ? req.data : cds.error (`No travel found for ${req.subject}`)
+      await cds.run (UpdateTotals, [TravelID])
+    }
+  }
 
-}}
+
+  /**
+   * Enforce custom constraints on status flows.
+   * Should increasingly be automated by generic Status Flows feature.
+   */
+  status_flows() {
+
+    const { Travels, Bookings } = this.entities
+    const { acceptTravel, rejectTravel } = Travels.actions 
+    const { Open } = this.StatusCodes
+
+    // Prevent adding bookings to non-open travels
+    this.before ('NEW', Bookings.drafts, async (req) => {
+      let { status } = await SELECT `Status_code as status`.from (Travels.drafts, req.data.to_Travel_ID)
+      if (status !== Open) req.reject (409, `Cannot add new bookings to travels which are not open.`)
+    })
+
+    // Prevent accepting or rejecting travels that are locked by existings drafts
+    this.before ([ acceptTravel, rejectTravel ], [ Travels, Travels.drafts ], async req => {
+      const draft = await SELECT.one (Travels.drafts, req.params[0]) 
+        .columns `DraftAdministrativeData.InProcessByUser as owner`
+      if (!draft || draft.owner === req.user.id && req.target.isDraft) return //> ok
+      else req.reject (423, `The travel is locked by ${draft.owner}.`)
+    })
+  }
 
 
-// Temporary monkey patch until upcoming release of @sap/cds...
-SELECT.class.prototype.stream ??= SELECT.class.prototype.pipeline
+  /**
+   * Export Travels data in CSV and JSON formats.
+   */
+  data_export() {
+
+    const { Travels, TravelsExport } = this.entities
+    const { exportCSV, exportJSON } = this.actions 
+    const { Readable } = require ('stream')
+
+    this.on (exportCSV, async req => {
+      let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
+      let stream = Readable.from (async function*() {
+        yield Object.keys(query.elements).join(';') + '\n'
+        for await (const row of query)
+          yield Object.values(row).join(';') + '\n'
+      }())
+      return req.reply (stream, { filename: 'Travels.csv' })
+    })
+
+    this.on (exportJSON, async req => {
+      let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
+      let stream = await query.stream()
+      return req.reply (stream, { filename: 'Travels.json' })
+    })
+  }
+
+
+  /**
+   * Derives constants for status codes from enum definitions in CDS.
+   */
+  get StatusCodes() {
+    const { TravelStatus } = this.entities, { code } = TravelStatus.elements
+    return super.StatusCodes = Object.fromEntries (Object.entries (code.enum)
+      .map (([ k, v ]) => [ k, v.val ])
+    )
+  }
+
+}
+
+module.exports = { TravelService }
