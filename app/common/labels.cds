@@ -1,4 +1,4 @@
-using { sap.capire.travels as schema } from '../db/schema';
+using { sap.capire.travels as schema } from '../../db/schema';
 
 //
 // annotations that control rendering of fields and labels
@@ -76,7 +76,7 @@ annotate schema.Passengers with @title: '{i18n>Passenger}' {
 }
 
 
-using { TravelService } from '../srv/travel-flows';
+using { TravelService } from '../../srv/travel-flows';
 
 annotate TravelService.Travels with actions {
   acceptTravel    @title: '{i18n>Accept}';
