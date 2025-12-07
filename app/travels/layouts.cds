@@ -45,8 +45,8 @@ annotate TravelService.Travels with @UI : {
     { Value : Status.code,   @UI.Importance : #High, @HTML5.CssDefaults: {width:'10em'},
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Open ? 2 :
-        Status.code == #Canceled ? 1 : 0
+        Status.code == #Blocked ? 2 : 
+        Status.code == #Rejected ? 1 : 0
       ),
     }
   ],
@@ -64,11 +64,11 @@ annotate TravelService.Travels with @UI : {
     { Value : (Customer.ID) },
     { Value : (Agency.ID) },
     { Value : Description },
-    { Value : (Status.code),
+    { Value : Status.code,
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Open OR Status.code == #InReview ? 2 :
-        Status.code == #Canceled OR Status.code == #Blocked ? 1 : 0
+        Status.code == #Blocked ? 2 : 
+        Status.code == #Rejected ? 1 : 0
       ),
     },
     { Value : BeginDate },
