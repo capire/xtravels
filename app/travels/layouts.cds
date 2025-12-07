@@ -108,9 +108,9 @@ annotate TravelService.Bookings with @UI : {
     { Value : FlightPrice,        Label : '{i18n>FlightPrice}' },
     { Value : Flight.departure,   Label : '{i18n>Departure}',   @HTML5.CssDefaults: {width:'6em'}, @Common.FieldControl: #ReadOnly },
     { Value : Flight.arrival,     Label : '{i18n>Arrival}',     @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
-    { Value : Flight.origin,      Label : '{i18n>Origin}',      @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
-    { Value : Flight.destination, Label : '{i18n>Destination}', @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
-    { Value : Flight.airline,     Label : '{i18n>Airline}',     @HTML5.CssDefaults: {width:'4em'}, @Common.FieldControl: #ReadOnly },
+    { Value : Flight.origin,      Label : '{i18n>Origin}',      @HTML5.CssDefaults: {width:'19em'}, @Common.FieldControl: #ReadOnly },
+    { Value : Flight.destination, Label : '{i18n>Destination}', @HTML5.CssDefaults: {width:'19em'}, @Common.FieldControl: #ReadOnly },
+    { Value : Flight.airline,     Label : '{i18n>Airline}',     @HTML5.CssDefaults: {width:'11em'}, @Common.FieldControl: #ReadOnly },
     { Value : BookingDate,        Label : '{i18n>BookingDate}' },
   ],
 
