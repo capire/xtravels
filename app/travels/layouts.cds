@@ -36,13 +36,13 @@ annotate TravelService.Travels with @UI : {
 
     { Value : ID,            @UI.Importance : #High },
     { Value : Description,   @UI.Importance : #High },
-    { Value : Customer.ID,   @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
-    { Value : Agency.ID,     @HTML5.CssDefaults: {width:'16em'} },
+    { Value : (Customer.ID), @UI.Importance : #High, @HTML5.CssDefaults: {width:'14em'} },
+    { Value : (Agency.ID),   @HTML5.CssDefaults: {width:'16em'} },
     { Value : BeginDate,     @HTML5.CssDefaults: {width:'9em'} },
     { Value : EndDate,       @HTML5.CssDefaults: {width:'9em'} },
     { Value : BookingFee,    @HTML5.CssDefaults: {width:'10em'} },
     { Value : TotalPrice,    @HTML5.CssDefaults: {width:'12em'} },
-    { Value : Status.code,   @UI.Importance : #High, @HTML5.CssDefaults: {width:'10em'},
+    { Value : (Status.code), @UI.Importance : #High, @HTML5.CssDefaults: {width:'10em'},
       Criticality : (
         Status.code == #Accepted ? 3 :
         Status.code == #Blocked ? 2 : 

@@ -19,7 +19,7 @@ annotate schema.Travels with @title: '{i18n>Travel}' {
   TotalPrice  @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: Currency_code;
   Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.LastName, TextArrangement : #TextOnly };
   Agency      @title: '{i18n>Agency}'        @Common: { Text: Agency.Name, TextArrangement : #TextOnly };
-  Status      @title: '{i18n>TravelStatus}'
+  Status      @title: '{i18n>TravelStatus}'  @Common: { Text: Status.name, TextArrangement : #TextOnly };
 }
 
 annotate schema.TravelStatus {
