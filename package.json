@@ -11,14 +11,19 @@
   "dependencies": {
     "@capire/common": "*",
     "@capire/xflights-data": "*",
-    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@sap-cloud-sdk/http-client": "^4",
-    "@sap/cds": ">=9",
+    "@sap/cds": "^9.5",
     "express": "^4"
   },
   "devDependencies": {
+    "@cap-js/xsrv-federation": ".plugins/fed-xrv",
     "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=2"
+  },
+  "cds": {
+    "folders": {
+      "apps": "app/*"
+    }
   },
   "license": "Apache-2.0"
 }

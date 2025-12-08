@@ -1,4 +1,4 @@
-using { sap.capire.travels as schema } from '../db/schema';
+using from '../../db/schema';
 
 //
 // annotations for value helps
@@ -8,7 +8,7 @@ using { sap.capire.travels as schema } from '../db/schema';
 //   code @Common: { Text: name, TextArrangement: #TextOnly }
 // }
 
-annotate schema.Travels {
+annotate sap.capire.travels.Travels {
 
   Status @Common.ValueListWithFixedValues;
 
@@ -60,7 +60,7 @@ annotate schema.Travels {
 }
 
 
-annotate schema.Bookings {
+annotate sap.capire.travels.Bookings {
 
   Flight {
     @Common.ValueList: {
@@ -106,7 +106,7 @@ annotate schema.Bookings {
 }
 
 
-annotate schema.Bookings.Supplements {
+annotate sap.capire.travels.Bookings.Supplements {
 
   booked @Common.ValueList: {
     CollectionPath : 'Supplement',
@@ -133,10 +133,7 @@ annotate schema.Bookings.Supplements {
 }
 
 
-using sap.capire.travels.masterdata as flights;
-
-
-annotate flights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
+annotate sap.capire.flights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
     SortOrder      : [{
       Property   : flightDate,
       Descending : true
@@ -155,7 +152,7 @@ annotate flights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used
 };
 
 
-annotate schema.Passengers {
+annotate sap.capire.travels.Passengers {
 
   Country @Common.ValueList : {
     CollectionPath  : 'Countries',
@@ -170,7 +167,7 @@ annotate schema.Passengers {
 }
 
 
-annotate schema.TravelAgencies {
+annotate sap.capire.travels.TravelAgencies {
 
   Country @Common.ValueList: {
     CollectionPath : 'Countries',
