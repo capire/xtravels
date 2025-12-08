@@ -18,7 +18,7 @@ annotate TravelService.Travels with {
   end);
 
   BeginDate @mandatory @assert: (case 
-    when EndDate < BeginDate then 'ASSERT_ENDDATE_AFTER_BEGINDATE' 
+    when EndDate < BeginDate then 'ASSERT_BEGINDATE_BEFORE_ENDDATE' 
     when exists Bookings [Flight.date < Travel.BeginDate] then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD'
     // when Bookings.Flight.date < BeginDate then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD' 
     // The above works as well, but de-normalization of to-many assiciations, like Bookings, 

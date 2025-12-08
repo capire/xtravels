@@ -28,7 +28,7 @@ class TravelService extends cds.ApplicationService {
     })    
 
     // Inform XFlights about new bookings, so it can update occupied seats
-    this.after ('SAVE', Travels, ({ Bookings }) => Promise.all (
+    this.after ('SAVE', Travels, ({ Bookings=[] }) => Promise.all (
       Bookings.map (({ flightNumber, flightDate }) => xflights .send ('BookingCreated', {
         flightNumber, flightDate
       })
