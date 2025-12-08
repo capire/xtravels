@@ -2,9 +2,9 @@ namespace sap.capire.travels;
 
 using { sap, managed, Country, Currency } from '@sap/cds/common';
 using {
-  sap.capire.travels.masterdata.Flights,
-  sap.capire.travels.masterdata.Supplements,
-} from './master-data';
+  sap.capire.flights.Flights,
+  sap.capire.flights.Supplements,
+} from './xflights';
 
 
 entity Travels : managed {
@@ -70,7 +70,7 @@ entity TravelStatus : sap.common.CodeList {
     InReview = 'P';
     Blocked  = 'B';
     Accepted = 'A';
-    Canceled = 'X';
+    Rejected = 'X';
   }
 }
 
