@@ -16,9 +16,9 @@
     "express": "^4"
   },
   "devDependencies": {
-    "@cap-js/srv-level-data-feed": ".plugins/srv-level-data-feed",
     "@cap-js/cds-test": "*",
-    "@cap-js/sqlite": ">=2"
+    "@cap-js/sqlite": "*",
+    "@cap-js/srv-level-data-feed": "file:.plugins/srv-level-data-feed"
   },
   "cds": {
     "folders": {
