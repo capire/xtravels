@@ -1,4 +1,4 @@
-using { sap, sap.capire.travels as db, sap.capire.flights as dbx } from '../db/schema';
+using { sap, sap.capire.travels as db, sap.capire.xflights as dbx } from '../db/schema';
 
 service TravelService {
 
