@@ -2,8 +2,8 @@ namespace sap.capire.travels;
 
 using { sap, managed, Country, Currency } from '@sap/cds/common';
 using {
-  sap.capire.flights.Flights,
-  sap.capire.flights.Supplements,
+  sap.capire.xflights.Flights,
+  sap.capire.xflights.Supplements,
 } from './xflights';
 
 
