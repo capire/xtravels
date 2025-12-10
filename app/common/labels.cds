@@ -1,4 +1,4 @@
-using { sap.capire.travels as schema } from '../db/schema';
+using { sap.capire.travels as schema } from '../../db/schema';
 
 //
 // annotations that control rendering of fields and labels
@@ -19,7 +19,7 @@ annotate schema.Travels with @title: '{i18n>Travel}' {
   TotalPrice  @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: Currency_code;
   Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.LastName, TextArrangement : #TextOnly };
   Agency      @title: '{i18n>Agency}'        @Common: { Text: Agency.Name, TextArrangement : #TextOnly };
-  Status      @title: '{i18n>TravelStatus}'
+  Status      @title: '{i18n>TravelStatus}'  @Common: { Text: Status.name, TextArrangement : #TextOnly };
 }
 
 annotate schema.TravelStatus {
@@ -27,8 +27,10 @@ annotate schema.TravelStatus {
     @Common.Text: name
     @UI.ValueCriticality: [
       { Criticality: 3, Value: 'A', },
-      { Criticality: 2, Value: 'O',  },
-      { Criticality: 1, Value: 'X',  }
+      { Criticality: 2, Value: 'O', },
+      { Criticality: 2, Value: 'P', },
+      { Criticality: 1, Value: 'B', },
+      { Criticality: 1, Value: 'X', }
     ]
 }
 
@@ -72,6 +74,16 @@ annotate schema.Passengers with @title: '{i18n>Passenger}' {
   PhoneNumber  @title: '{i18n>PhoneNumber}';
   EMailAddress @title: '{i18n>EMailAddress}';
 }
+
+
+using { TravelService } from '../../srv/travel-flows';
+
+annotate TravelService.Travels with actions {
+  acceptTravel    @title: '{i18n>Accept}';
+  rejectTravel    @title: '{i18n>Reject}';
+  reopenTravel    @title: '{i18n>Reopen}';
+  deductDiscount  @title: '{i18n>DeductDiscount}';
+};
 
 
 using sap.capire.flights.data;

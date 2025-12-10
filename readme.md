@@ -92,6 +92,11 @@ Which should print something like that:
 
 
 
+## Additional Examples
+
+For more (extensive) examples, have a look at the [readme file in the xmpls folder](./xmpls/readme.md).
+
+
 
 ## License
 

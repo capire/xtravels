@@ -3,7 +3,7 @@
 //
 
 using { sap.capire.flights.data as external } from '@capire/xflights-data';
-namespace sap.capire.travels.masterdata;
+namespace sap.capire.flights;
 
 @federated entity Flights as projection on external.Flights {
   *,

@@ -3,8 +3,8 @@ const cds = require('@sap/cds')
 // Prepare Flights and Supplements for data replication
 cds.on ('loaded', csn => {
   const {
-    'sap.capire.travels.masterdata.Flights': Flights,
-    'sap.capire.travels.masterdata.Supplements': Supplements
+    'sap.capire.flights.Flights': Flights,
+    'sap.capire.flights.Supplements': Supplements
   } = csn.definitions
   Flights['@cds.persistence.table'] = true
   Supplements['@cds.persistence.table'] = true
@@ -13,7 +13,7 @@ cds.on ('loaded', csn => {
 // Initial load remote data when server starts
 cds.once ('served', async () => {
   const srv = await cds.connect.to ('sap.capire.flights.data')
-  const { Flights, Supplements } = cds.entities ('sap.capire.travels.masterdata')
+  const { Flights, Supplements } = cds.entities ('sap.capire.flights')
   const [ flights, supplements ] = await Promise.all([
     srv.read (Flights),
     srv.read (Supplements)
