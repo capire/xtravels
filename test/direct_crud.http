@@ -1,0 +1,32 @@
+@server = http://localhost:4004
+@alice = Authorization: Basic alice:password
+
+###
+
+POST {{server}}/odata/v4/travel/Travels
+{{alice}}
+Content-Type: application/json
+
+{
+  "ID": 4711
+}
+
+###
+
+PATCH {{server}}/odata/v4/travel/Travels(ID=4711)
+{{alice}}
+Content-Type: application/json
+
+{
+  "Description": "Fun times!"
+}
+
+###
+
+GET {{server}}/odata/v4/travel/Travels(ID=4711)
+{{alice}}
+
+###
+
+DELETE {{server}}/odata/v4/travel/Travels(ID=4711)
+{{alice}}
