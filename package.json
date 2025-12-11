@@ -25,7 +25,7 @@
       "apps": "app/*"
     },
     "fiori": {
-      "draft_new_action": true
+      "direct_crud": true
     }
   },
   "license": "Apache-2.0"
