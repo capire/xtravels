@@ -30,7 +30,7 @@ GET {{server}}/odata/v4/travel/Travels?$compute=(BookingFee mul 100) divby Total
 
 # Draft: New Action
 # -----------------
-# > cds.fiori.draft_new_action = true
+# > cds.fiori.direct_crud = true
 
 ### Create an active instance using the regular POST endpoint
 # @name CreateActiveInstance
@@ -83,9 +83,7 @@ PATCH {{server}}/odata/v4/travel/Travels(ID={{CreateActiveInstance.response.body
 Content-Type: application/json
 {{alice}}
 
-{
-    "BookingFee": 150.0
-}
+{ "BookingFee": 150.0 }
 
 ### Update the draft instance by specifying 'IsActiveEntity=false'
 # @name UpdateDraftInstance
@@ -93,9 +91,7 @@ PATCH {{server}}/odata/v4/travel/Travels(ID={{CreateDraftInstanceViaAction.respo
 Content-Type: application/json
 {{alice}}
 
-{
-    "BookingFee": 75.0
-}
+{ "BookingFee": 75.0 }
 
 ### Delete the active instance without specifying the 'IsActiveEntity' key
 # @name DeleteActiveInstance
