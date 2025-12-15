@@ -4,19 +4,19 @@
 # Common Requests
 # ---------------
 
-GET {{server}}/processor/Travel?$filter=ID eq 4133
+GET {{server}}/odata/v4/travel/Travels?$filter=ID eq 4133
 {{alice}}
 ###
 
-GET {{server}}/processor/Travel(TravelUUID='73757221A8E4645C17002DF03754AB66')
+GET {{server}}/odata/v4/travel/Travels(ID=4133)
 {{alice}}
 ###
 
-GET {{server}}/processor/Travel/73757221A8E4645C17002DF03754AB66/true
+GET {{server}}/odata/v4/travel/Travels/4133/true
 {{alice}}
 ###
 
-GET {{server}}/processor/Travel(TravelUUID='73757221A8E4645C17002DF03754AB66',IsActiveEntity=true)
+GET {{server}}/odata/v4/travel/Travels(ID=4133,IsActiveEntity=true)
 {{alice}}
 ###
 
