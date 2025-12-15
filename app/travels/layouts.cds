@@ -86,7 +86,7 @@ annotate TravelService.Bookings with @UI : {
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : Travel.Customer.LastName },
+    Title          : { Value : Travel.Customer.Name },
     Description    : { Value : Pos }
   },
 

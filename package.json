@@ -13,7 +13,8 @@
     "@capire/xflights-data": "*",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap/cds": "^9.5",
-    "express": "^4"
+    "express": "^4",
+    "sap-s4com-customer-v1": "file:./apis/imported/sap-s4com-customer-v1"
   },
   "devDependencies": {
     "@cap-js/cds-test": "*",

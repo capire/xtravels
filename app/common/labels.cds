@@ -6,7 +6,7 @@ using { sap.capire.travels as schema } from '../../db/schema';
 
 
 
-// Required to allow fetching Travel.Agency.Name and Travel.Customer.LastName
+// Required to allow fetching Travel.Agency.Name and Travel.Customer.Name
 annotate schema.TravelAgencies with @cds.autoexpose;
 annotate schema.Passengers with @cds.autoexpose;
 
@@ -17,7 +17,7 @@ annotate schema.Travels with @title: '{i18n>Travel}' {
   Description @title: '{i18n>Description}';
   BookingFee  @title: '{i18n>BookingFee}'    @Measures.ISOCurrency: Currency_code;
   TotalPrice  @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: Currency_code;
-  Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.LastName, TextArrangement : #TextOnly };
+  Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.Name, TextArrangement : #TextOnly };
   Agency      @title: '{i18n>Agency}'        @Common: { Text: Agency.Name, TextArrangement : #TextOnly };
   Status      @title: '{i18n>TravelStatus}'  @Common: { Text: Status.name, TextArrangement : #TextOnly };
 }
@@ -63,16 +63,12 @@ annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {
 }
 
 annotate schema.Passengers with @title: '{i18n>Passenger}' {
-  ID           @title: '{i18n>Customer}'    @Common.Text: LastName;
-  FirstName    @title: '{i18n>FirstName}';
-  LastName     @title: '{i18n>LastName}';
-  Title        @title: '{i18n>Title}';
+  ID           @title: '{i18n>Customer}'    @Common.Text: Name;
+  Name         @title: '{i18n>Name}';
   Street       @title: '{i18n>Street}';
   PostalCode   @title: '{i18n>PostalCode}';
   City         @title: '{i18n>City}';
-  Country      @title: '{i18n>CountryCode}';
-  PhoneNumber  @title: '{i18n>PhoneNumber}';
-  EMailAddress @title: '{i18n>EMailAddress}';
+  CountryCode  @title: '{i18n>CountryCode}';
 }
 
 
