@@ -15,7 +15,7 @@ extend service TravelService with {
   entity TravelsExport as projection on db.Travels {
     ID,
     Agency.Name as Agency,
-    concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName) as Customer : String, 
+    Customer.Name as Customer,
     BeginDate,
     EndDate,
     TotalPrice,

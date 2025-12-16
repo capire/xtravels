@@ -33,15 +33,11 @@ annotate sap.capire.travels.Travels {
     Label : 'Customer ID',
     Parameters : [
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_ID, ValueListProperty: 'ID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FirstName'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
+      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FullName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Street'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PostalCode'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode_code'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PhoneNumber'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'EMailAddress'}
+      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode'},
     ]
   };
 
@@ -151,20 +147,6 @@ annotate sap.capire.xflights.Flights with @UI.PresentationVariant#SortOrderPV : 
   };
 };
 
-
-annotate sap.capire.travels.Passengers {
-
-  Country @Common.ValueList : {
-    CollectionPath  : 'Countries',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut',       LocalDataProperty : Country_code, ValueListProperty : 'code'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'descr'}
-    ]
-  };
-
-}
 
 
 annotate sap.capire.travels.TravelAgencies {

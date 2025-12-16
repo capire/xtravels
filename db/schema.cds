@@ -50,17 +50,16 @@ entity TravelAgencies {
 };
 
 
-entity Passengers : managed {
-  key ID           : String(6);
-      FirstName    : String(40);
-      LastName     : String(40);
-      Title        : String(10);
-      Street       : String(60);
-      PostalCode   : String(10);
-      City         : String(40);
-      Country      : Country;
-      PhoneNumber  : String(30);
-      EMailAddress : String(256);
+using { sap.s4com.Customer.v1 as s4 } from 'sap-s4com-customer-v1';
+
+/** Consumption View for Customers imported from S/4HANA */
+@federated entity Passengers as projection on s4.Customer {
+  key Customer          as ID,
+      CustomerFullName  as Name,
+      StreetName        as Street,
+      PostalCode        as PostalCode,
+      CityName          as City,
+      Country           as CountryCode,
 }
 
 
