@@ -12,7 +12,7 @@
     "@capire/common": "*",
     "@capire/xflights-data": "^0.1.11",
     "@sap-cloud-sdk/http-client": "^4",
-    "@sap/cds": "^9.5",
+    "@sap/cds": "^9.6",
     "express": "^4"
   },
   "devDependencies": {
