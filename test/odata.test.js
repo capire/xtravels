@@ -5,6 +5,7 @@ const { GET, POST, PATCH, DELETE, axios, expect } = cds.test(__dirname+'/..','--
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
 axios.defaults.auth = { username: 'alice', password: 'admin' }
+axios.defaults.validateStatus = status => status < 500 // make axios test client not throw on 4xx
 
 const ID = '1'
 
@@ -249,12 +250,10 @@ describe('Basic OData', () => {
 
 describe("Basic Drafts", () => {
   it("should be possible to create a new entity in draft state using the proper action", async () => {
-    const response = await POST(
-      "/odata/v4/travel/Travels/TravelService.draftNew",
-      { ID: 42 }
-    );
-    expect(response.data).to.not.be.undefined;
-    expect(response.data.ID).to.be(42);
+    const response = await POST("/odata/v4/travel/Travels/TravelService.draftNew", { 
+      ID: -1 // will be replaced by .before NEW handler
+    });
+    expect(response.data.ID).to.not.be.undefined;
     expect(response.data.IsActiveEntity).to.be(false);
     expect(response.status).to.be(201);
   });
@@ -276,11 +275,11 @@ describe("Basic Drafts", () => {
 
   it('should be possible to create a new entity in draft state using a regular POST request with body containing IsActiveEntity=false', async () => {
     const response = await POST("/odata/v4/travel/Travels", {
-      ID: 1, // will be replaced by .before SAVE handler
+      ID: -1, // will be replaced by .before NEW handler
       IsActiveEntity: false,
     })
     expect(response.data).to.not.be.undefined;
-    expect(response.data.ID).to.be(1);
+    expect(response.data.ID).to.not.be.undefined;
     expect(response.data.IsActiveEntity).to.be(false);
     expect(response.status).to.be(201);
   })
