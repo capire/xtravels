@@ -108,7 +108,7 @@ describe('Basic OData', () => {
 
   it('new draft has initial key, key is auto incremented upon activation', async () => {
     const { data: newDraft } = await POST(`/odata/v4/travel/Travels`, { IsActiveEntity: false })
-    expect(newDraft).toBeDefined  
+    expect(newDraft.ID).to.be.defined
 
     // patch new draft in order to fill mandatory fields
     await PATCH (`/odata/v4/travel/Travels(ID='${newDraft.ID}',IsActiveEntity=false)`, {
