@@ -43,12 +43,19 @@ class TravelService extends cds.ApplicationService {
 
     const { Travels, Bookings } = this.entities
     
-    this.before ('NEW', Travels.drafts, async req => { // Fill in IDs as sequence numbers
-      const { maxID } = await SELECT.one (`max(ID) as maxID`) .from (Travels) || { maxID: 0 }
-      const { maxDraftID } = (await SELECT.one (`max(ID) as maxDraftID`) .from (Travels.drafts)) || { maxDraftID: 0 }
-      const newID = (maxDraftID > maxID ? maxDraftID : maxID) + 1
-      req.data.ID = newID
+    this.before ('CREATE', Travels, async (req) => { // on CREATE to avoid conflicting IDs on concurrent drafts
+      let { id } = await SELECT.one `max(ID) as id` .from (Travels)
+      req.data.ID = ++id
     })
+
+    this.before ('NEW', Travels.drafts, async req => { // Fill in IDs as sequence numbers
+      const [ active, draft ] = await Promise.all([
+         SELECT.one (`max(ID) as maxID`) .from (Travels),
+         SELECT.one (`max(ID) as maxID`) .from (Travels.drafts)
+      ])
+      req.data.ID = Math.max(draft?.maxID, active?.maxID) + 1
+    })
+
     
     this.before ('NEW', Bookings.drafts, async (req) => { // on NEW as Bookings are per draft, so no concurrency issues
       let { id } = await SELECT.one `max(Pos) as id` .from (Bookings.drafts) .where (req.data)
