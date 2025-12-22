@@ -44,10 +44,11 @@ class TravelService extends cds.ApplicationService {
     const { Travels, Bookings } = this.entities
     
     const ensureIncrementalTravelId = async (req) => {
-      const { maxID } = await SELECT.one (`max(ID) as maxID`) .from (Travels) || { maxID: 0 }
-      const { maxDraftID } = (await SELECT.one (`max(ID) as maxDraftID`) .from (Travels.drafts)) || { maxDraftID: 0 }
-      const newID = (maxDraftID > maxID ? maxDraftID : maxID) + 1
-      req.data.ID = newID
+      const [ active, draft ] = await Promise.all([
+         SELECT.one (`max(ID) as maxID`) .from (Travels),
+         SELECT.one (`max(ID) as maxID`) .from (Travels.drafts)
+      ])
+      req.data.ID = Math.max(draft?.maxID, active?.maxID) + 1
     }
 
     this.before ('NEW', Travels.drafts, req => ensureIncrementalTravelId(req))

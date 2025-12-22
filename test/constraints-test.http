@@ -1,0 +1,280 @@
+
+### Get all Travels
+GET http://localhost:4004/odata/v4/travel/Travels
+Authorization: Basic alice:
+
+### Get all Bookings
+GET http://localhost:4004/odata/v4/travel/Bookings
+Authorization: Basic alice:
+
+###############################################
+# VALID REQUESTS
+###############################################
+
+### Create Valid Travel
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "ID": 1001,
+  "Description": "Summer vacation in Italy",
+  "Agency": {"ID":"070001"},
+  "Customer": {"ID":"000001"},
+  "BeginDate": "2025-07-01",
+  "EndDate": "2025-07-15",
+  "BookingFee": 50.00,
+  "TotalPrice": 2500.00,
+  "Currency": {"code":"EUR"}
+}
+
+### Create Valid Booking for Travel
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "BookingID": 5001,
+  "to_Travel_ID": 1001,
+  "to_Flight_FlightID": "AA0001",
+  "FlightPrice": 450.00,
+  "Currency": {"code":"EUR"},
+  "BookingDate": "2025-06-15"
+}
+
+###############################################
+# INVALID REQUESTS - Description
+###############################################
+
+### Invalid: Description too short (< 3 characters)
+# Expected: 400 - "Description too short"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Hi",
+  "Agency": {"ID":"070001"},
+  "Customer": {"ID":"000001"},
+  "BeginDate": "2025-07-01",
+  "EndDate": "2025-07-15",
+  "Currency": {"code":"EUR"}
+}
+
+###############################################
+# INVALID REQUESTS - Dates
+###############################################
+
+### Invalid: EndDate before BeginDate
+# Expected: 400 - "ASSERT_ENDDATE_AFTER_BEGINDATE"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Invalid dates trip",
+  "Agency": {"ID":"xxxx"},
+  "Customer": {"ID":"000001"},
+  "BeginDate": "2025-07-15",
+  "EndDate": "2025-07-01",
+  "Currency": {"code":"EUR"}
+}
+
+### Invalid: BeginDate after EndDate
+# Expected: 400 - "ASSERT_BEGINDATE_BEFORE_ENDDATE"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Another invalid dates trip",
+  "Agency": {"ID":"070001"},
+  "Customer": {"ID":"000001"},
+  "BeginDate": "2025-08-15",
+  "EndDate": "2025-08-01",
+  "Currency": {"code":"EUR"}
+}
+
+###############################################
+# INVALID REQUESTS - Agency/Customer
+###############################################
+
+### Invalid: Missing Agency
+# Expected: 400 - "Agency must be specified"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Trip without agency",
+  "Customer": {"ID":"000001"},
+  "BeginDate": "2025-07-01",
+  "EndDate": "2025-07-15",
+  "Currency": {"code":"EUR"}
+}
+
+### Invalid: Non-existent Agency
+# Expected: 400 - "Agency does not exist"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Trip with invalid agency",
+  "Agency": {"ID":"INVALID999"},
+  "Customer": {"ID":"000001"},
+  "BeginDate": "2025-07-01",
+  "EndDate": "2025-07-15",
+  "Currency": {"code":"EUR"}
+}
+
+### Invalid: Missing Customer
+# Expected: 400 - "Customer must be specified"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Trip without customer",
+  "Agency": {"ID":"070001"},
+  "BeginDate": "2025-07-01",
+  "EndDate": "2025-07-15",
+  "Currency": {"code":"EUR"}
+}
+
+### Invalid: Non-existent Customer
+# Expected: 400 - "Customer does not exist"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Trip with invalid customer",
+  "Agency": {"ID":"070001"},
+  "Customer": {"ID":"INVALID999"},
+  "BeginDate": "2025-07-01",
+  "EndDate": "2025-07-15",
+  "Currency": {"code":"EUR"}
+}
+
+###############################################
+# INVALID REQUESTS - BookingFee
+###############################################
+
+### Invalid: Negative BookingFee
+# Expected: 400 - "ASSERT_BOOKING_FEE_NON_NEGATIVE"
+POST http://localhost:4004/odata/v4/travel/Travels
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "Description": "Trip with negative fee",
+  "Agency": {"ID":"070001"},
+  "Customer": {"ID":"000001"},
+  "BeginDate": "2025-07-01",
+  "EndDate": "2025-07-15",
+  "BookingFee": -50.00,
+  "Currency": {"code":"EUR"}
+}
+
+###############################################
+# INVALID REQUESTS - Booking Validations
+###############################################
+
+### Invalid: Flight date outside travel period (too late)
+# Expected: 400 - "ASSERT_BOOKING_IN_TRAVEL_PERIOD"
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "to_Travel_ID": 1001,
+  "to_Flight_FlightID": "AA0001",
+  "FlightDate": "2025-08-01",
+  "FlightPrice": 450.00,
+  "Currency": {"code":"EUR"},
+  "BookingDate": "2025-06-15"
+}
+
+### Invalid: Flight date outside travel period (too early)
+# Expected: 400 - "ASSERT_BOOKING_IN_TRAVEL_PERIOD"
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "to_Travel_ID": 1001,
+  "to_Flight_FlightID": "AA0001",
+  "FlightDate": "2025-06-15",
+  "FlightPrice": 450.00,
+  "Currency": {"code":"EUR"},
+  "BookingDate": "2025-06-15"
+}
+
+### Invalid: Currency mismatch
+# Expected: 400 - "ASSERT_BOOKING_CURRENCY_MATCHES_TRAVEL"
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "to_Travel_ID": 1001,
+  "to_Flight_FlightID": "AA0001",
+  "FlightPrice": 450.00,
+  "Currency": {"code":"USD"},
+  "BookingDate": "2025-06-15"
+}
+
+### Invalid: Negative FlightPrice
+# Expected: 400 - "ASSERT_FLIGHT_PRICE_POSITIVE"
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "to_Travel_ID": 1001,
+  "to_Flight_FlightID": "AA0001",
+  "FlightPrice": -100.00,
+  "Currency": {"code":"EUR"},
+  "BookingDate": "2025-06-15"
+}
+
+### Invalid: BookingDate after Travel EndDate
+# Expected: 400 - "ASSERT_NO_BOOKINGS_AFTER_TRAVEL"
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "to_Travel_ID": 1001,
+  "to_Flight_FlightID": "AA0001",
+  "FlightPrice": 450.00,
+  "Currency": {"code":"EUR"},
+  "BookingDate": "2025-08-01"
+}
+
+### Invalid: Missing Travel reference
+# Expected: 400 - Travel is mandatory
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "to_Flight_FlightID": "AA0001",
+  "FlightPrice": 450.00,
+  "Currency": {"code":"EUR"},
+  "BookingDate": "2025-06-15"
+}
+
+### Invalid: Missing Flight reference
+# Expected: 400 - Flight is mandatory
+POST http://localhost:4004/odata/v4/travel/Bookings
+Content-Type: application/json
+Authorization: Basic alice:
+
+{
+  "to_Travel_ID": 1001,
+  "FlightPrice": 450.00,
+  "Currency": {"code":"EUR"},
+  "BookingDate": "2025-06-15"
+}
