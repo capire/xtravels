@@ -1,5 +1,8 @@
 @server = http://localhost:4004
-@alice = Authorization: Basic alice
+@alice = Authorization: Basic alice:
+
+# Common Requests
+# ---------------
 
 GET {{server}}/odata/v4/travel/Travels?$filter=ID eq 4133
 {{alice}}
@@ -16,3 +19,88 @@ GET {{server}}/odata/v4/travel/Travels/4133/true
 GET {{server}}/odata/v4/travel/Travels(ID=4133,IsActiveEntity=true)
 {{alice}}
 ###
+
+# Compute
+# -------
+
+### Use Compute to dynamically calculate and select the percentage of admin costs
+# @name ComputePercentageOfAdminCosts
+GET {{server}}/odata/v4/travel/Travels?$compute=(BookingFee mul 100) divby TotalPrice as PctOfAdminCosts&$select=PctOfAdminCosts,TotalPrice,BookingFee
+{{alice}}
+
+# Draft: New Action
+# -----------------
+# > cds.fiori.direct_crud = true
+
+### Create an active instance using the regular POST endpoint
+# @name CreateActiveInstance
+POST {{server}}/odata/v4/travel/Travels
+Content-Type: application/json
+{{alice}}
+
+{
+    "BeginDate": "2025-01-01",
+    "EndDate": "2025-12-31",
+    "Agency_ID": "070007",
+    "Customer_ID": "000042"
+}
+
+### Create a draft instance using the draftNew action
+# @name CreateDraftInstanceViaAction
+
+POST {{server}}/odata/v4/travel/Travels/TravelService.draftNew
+Content-Type: application/json
+{{alice}}
+
+{ "ID": 0 }
+
+### Create a draft instance using the regular POST endpoint with IsActiveEntity=false
+# @name CreateDraftInstanceViaPOST
+
+POST {{server}}/odata/v4/travel/Travels
+Content-Type: application/json
+{{alice}}
+
+{ "IsActiveEntity": false }
+
+### Fetch the active instance without specifying the 'IsActiveEntity' key
+# @name FetchActiveInstance
+
+GET {{server}}/odata/v4/travel/Travels(ID={{CreateActiveInstance.response.body.ID}})
+Accept: application/json
+{{alice}}
+
+### Fetch the draft instance by specifying 'IsActiveEntity=false'
+# @name FetchDraftInstance
+
+GET {{server}}/odata/v4/travel/Travels(ID={{CreateDraftInstanceViaAction.response.body.ID}},IsActiveEntity=false)
+Accept: application/json
+{{alice}}
+
+### Update the active instance without specifying the 'IsActiveEntity' key
+# @name UpdateActiveInstance
+PATCH {{server}}/odata/v4/travel/Travels(ID={{CreateActiveInstance.response.body.ID}})
+Content-Type: application/json
+{{alice}}
+
+{ "BookingFee": 150.0 }
+
+### Update the draft instance by specifying 'IsActiveEntity=false'
+# @name UpdateDraftInstance
+PATCH {{server}}/odata/v4/travel/Travels(ID={{CreateDraftInstanceViaAction.response.body.ID}},IsActiveEntity=false)
+Content-Type: application/json
+{{alice}}
+
+{ "BookingFee": 75.0 }
+
+### Delete the active instance without specifying the 'IsActiveEntity' key
+# @name DeleteActiveInstance
+
+DELETE {{server}}/odata/v4/travel/Travels(ID={{CreateActiveInstance.response.body.ID}})
+{{alice}}
+
+### Delete the draft instance by specifying 'IsActiveEntity=false'
+# @name DeleteDraftInstance
+
+DELETE {{server}}/odata/v4/travel/Travels(ID={{CreateDraftInstanceViaAction.response.body.ID}},IsActiveEntity=false)
+{{alice}}

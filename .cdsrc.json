@@ -3,5 +3,11 @@
     "folders": {
       "flow": "xmpls/flow/"
     }
+  },
+  "folders": {
+    "apps": "app/*"
+  },
+  "fiori": {
+    "direct_crud": true
   }
 }
