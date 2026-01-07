@@ -1,6 +1,6 @@
 sap.ui.define(
   ["sap/m/MessageToast", "sap/ui/core/library"],
-  function (MessageToast, coreLibrary) {
+  function (MessageToast) {
     return {
       exportJSON: async function () {
         // REVISIT: we bypass the actual OData model here and retrieve it manually
