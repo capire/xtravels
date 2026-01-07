@@ -3,5 +3,12 @@
     "folders": {
       "flow": "xmpls/flow/"
     }
+  },
+  "build": {
+    "[with-apps]": {
+      "tasks": [
+        { "src": "srv", "for": "nodejs", "options": { "model": [ "db", "srv", "app", "app/*", "@sap/cds/srv/outbox", "@capire/common" ] } }
+      ]
+    }
   }
 }
