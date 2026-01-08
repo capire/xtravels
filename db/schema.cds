@@ -8,7 +8,7 @@ using {
 
 
 entity Travels : managed {
-  key ID       : Integer default 0 @readonly;
+  key ID       : Integer @readonly;
   Description  : String(1024);
   BeginDate    : Date default $now;
   EndDate      : Date default $now;

@@ -19,10 +19,5 @@
     "@cap-js/sqlite": "*",
     "@cap-js/srv-level-data-feed": "file:.plugins/srv-level-data-feed"
   },
-  "cds": {
-    "fiori": {
-      "direct_crud": true
-    }
-  },
   "license": "Apache-2.0"
 }
