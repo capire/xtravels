@@ -34,10 +34,7 @@ describe('Basic OData', () => {
   it('serves $metadata documents in v4', async () => {
     const { headers, status, data } = await GET `/odata/v4/travel/$metadata`
     expect(status).to.equal(200)
-    expect(headers).to.contain({
-      // 'content-type': 'application/xml', //> fails with 'application/xml;charset=utf-8', which is set by express
-      'odata-version': '4.0',
-    })
+    expect(headers).to.contain({ 'odata-version': '4.0' })
     expect(headers['content-type']).to.match(/application\/xml/)
     expect(data).to.contain('<EntitySet Name="Travels" EntityType="TravelService.Travels">')
     expect(data).to.contain('<Annotation Term="Common.Label" String="Travel"/>')
@@ -158,7 +155,7 @@ describe('Basic OData', () => {
 
     // Ensure it is not in accepted state as that would disallow changing
     await PATCH (Draft, { Status_code: 'O' }) // REVISIT: should actually be forbidden !!!
-    await PATCH (Draft, { BeginDate: '2222-01-01', EndDate: '2222-01-02' })
+    await PATCH (Draft, { BeginDate: '2024-01-01', EndDate: '2024-12-31' }) // avoid validation errors
 
     // Change the Travel's Booking Fee
     await PATCH (Draft, { BookingFee: 120 })
@@ -228,11 +225,6 @@ describe('Basic OData', () => {
 
     const { data:res1 } = await EDIT (Active)
     expect(res1).to.contain({ TotalPrice: 729, BookingFee: 10 })
-
-    // Change the Travel's dates to avoid validation errors
-    const today = new Date, tomorrow = new Date; tomorrow.setDate(today.getDate()+1)
-    await PATCH (Draft, { BeginDate: today.toISOString().slice(0,10) })
-    await PATCH (Draft, { EndDate: tomorrow.toISOString().slice(0,10) })
 
     await POST (`${Draft}/TravelService.deductDiscount`, { percent: 50 })
     const { data:res2 } = await GET `/odata/v4/travel/Travels(ID=66,IsActiveEntity=false)`
