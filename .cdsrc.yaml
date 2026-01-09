@@ -1,0 +1,5 @@
+"[flow]":
+  folders:
+    flow: xmpls/flow/
+fiori:
+  direct_crud: true
