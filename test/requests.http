@@ -12,7 +12,7 @@ GET {{server}}/odata/v4/travel/Travels(ID=4133)
 {{alice}}
 ###
 
-GET {{server}}/odata/v4/travel/Travels/4133/true
+GET {{server}}/odata/v4/travel/Travels/4133
 {{alice}}
 ###
 

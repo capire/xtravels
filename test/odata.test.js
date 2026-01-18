@@ -1,7 +1,6 @@
-const cds = require('@sap/cds')
-cds.env.features.with_mocks = true
+const cds = require ('@sap/cds')
 
-const { GET, POST, PATCH, DELETE, axios, expect } = cds.test(__dirname+'/..','--with-mocks')
+const { GET, POST, PATCH, DELETE, axios, expect } = cds.test (__dirname+'/..','--with-mocks')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
 axios.defaults.auth = { username: 'alice', password: 'admin' }
