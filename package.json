@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@capire/common": "*",
-    "@capire/xflights-data": "^0.1.11",
+    "@capire/xflights-data": "*",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap/cds": "^9.6"
   },

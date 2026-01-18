@@ -6,7 +6,7 @@ using { sap.capire.flights.data as external } from '@capire/xflights-data';
 namespace sap.capire.xflights;
 
 @federated entity Flights as projection on external.Flights {
-  *,
+  *, // all fields, plus these flattened:
   airline.icon     as icon,
   airline.name     as airline,
   origin.name      as origin,
