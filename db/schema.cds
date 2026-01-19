@@ -25,12 +25,12 @@ entity Travels : managed {
 entity Bookings {
   key Travel      : Association to Travels;
   key Pos         : Integer @readonly;
-      Flight      : Association to Flights;
+      Flight      : Association to Flights;     //> reference to xflights
       FlightPrice : Price;
       Currency    : Currency;
       Supplements : Composition of many {
         key ID   : UUID;
-        booked   : Association to Supplements;
+        booked   : Association to Supplements;  //> reference to xflights
         Price    : Price;
         Currency : Currency;
       };
