@@ -1,10 +1,7 @@
 namespace sap.capire.travels;
 
 using { sap, managed, Country, Currency } from '@sap/cds/common';
-using {
-  sap.capire.xflights.Flights,
-  sap.capire.xflights.Supplements,
-} from './xflights';
+using { sap.capire.xflights as federated } from './xflights';
 
 
 entity Travels : managed {
@@ -25,12 +22,12 @@ entity Travels : managed {
 entity Bookings {
   key Travel      : Association to Travels;
   key Pos         : Integer @readonly;
-      Flight      : Association to Flights;     //> reference to xflights
+      Flight      : Association to federated.Flights;     //> reference to xflights
       FlightPrice : Price;
       Currency    : Currency;
       Supplements : Composition of many {
         key ID   : UUID;
-        booked   : Association to Supplements;  //> reference to xflights
+        booked   : Association to federated.Supplements;  //> reference to xflights
         Price    : Price;
         Currency : Currency;
       };

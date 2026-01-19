@@ -1,7 +1,3 @@
-//
-// Consumption views for master data imported from xflights...
-//
-
 using { sap.capire.flights.data as external } from '@capire/xflights-data';
 namespace sap.capire.xflights;
 
