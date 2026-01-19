@@ -35,8 +35,8 @@ Authorization: Basic alice:
 
 {
   "BookingID": 5001,
-  "to_Travel_ID": 1001,
-  "to_Flight_FlightID": "AA0001",
+  "Travel_ID": 1001,
+  "Flight_ID": "AA0001",
   "FlightPrice": 450.00,
   "Currency": {"code":"EUR"},
   "BookingDate": "2025-06-15"
@@ -188,8 +188,8 @@ Content-Type: application/json
 Authorization: Basic alice:
 
 {
-  "to_Travel_ID": 1001,
-  "to_Flight_FlightID": "AA0001",
+  "Travel_ID": 1001,
+  "Flight_ID": "AA0001",
   "FlightDate": "2025-08-01",
   "FlightPrice": 450.00,
   "Currency": {"code":"EUR"},
@@ -203,8 +203,8 @@ Content-Type: application/json
 Authorization: Basic alice:
 
 {
-  "to_Travel_ID": 1001,
-  "to_Flight_FlightID": "AA0001",
+  "Travel_ID": 1001,
+  "Flight_ID": "AA0001",
   "FlightDate": "2025-06-15",
   "FlightPrice": 450.00,
   "Currency": {"code":"EUR"},
@@ -218,8 +218,8 @@ Content-Type: application/json
 Authorization: Basic alice:
 
 {
-  "to_Travel_ID": 1001,
-  "to_Flight_FlightID": "AA0001",
+  "Travel_ID": 1001,
+  "Flight_ID": "AA0001",
   "FlightPrice": 450.00,
   "Currency": {"code":"USD"},
   "BookingDate": "2025-06-15"
@@ -232,8 +232,8 @@ Content-Type: application/json
 Authorization: Basic alice:
 
 {
-  "to_Travel_ID": 1001,
-  "to_Flight_FlightID": "AA0001",
+  "Travel_ID": 1001,
+  "Flight_ID": "AA0001",
   "FlightPrice": -100.00,
   "Currency": {"code":"EUR"},
   "BookingDate": "2025-06-15"
@@ -246,8 +246,8 @@ Content-Type: application/json
 Authorization: Basic alice:
 
 {
-  "to_Travel_ID": 1001,
-  "to_Flight_FlightID": "AA0001",
+  "Travel_ID": 1001,
+  "Flight_ID": "AA0001",
   "FlightPrice": 450.00,
   "Currency": {"code":"EUR"},
   "BookingDate": "2025-08-01"
@@ -260,7 +260,7 @@ Content-Type: application/json
 Authorization: Basic alice:
 
 {
-  "to_Flight_FlightID": "AA0001",
+  "Flight_ID": "AA0001",
   "FlightPrice": 450.00,
   "Currency": {"code":"EUR"},
   "BookingDate": "2025-06-15"
@@ -273,7 +273,7 @@ Content-Type: application/json
 Authorization: Basic alice:
 
 {
-  "to_Travel_ID": 1001,
+  "Travel_ID": 1001,
   "FlightPrice": 450.00,
   "Currency": {"code":"EUR"},
   "BookingDate": "2025-06-15"

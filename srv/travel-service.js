@@ -141,7 +141,7 @@ class TravelService extends cds.ApplicationService {
 
     // Prevent adding bookings to non-open travels
     this.before ('NEW', Bookings.drafts, async (req) => {
-      let { status } = await SELECT `Status_code as status`.from (Travels.drafts, req.data.to_Travel_ID)
+      let { status } = await SELECT `Status_code as status`.from (Travels.drafts, req.data.Travel_ID)
       if (status !== Open) req.reject (409, `Cannot add new bookings to travels which are not open.`)
     })
 
