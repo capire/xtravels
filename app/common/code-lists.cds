@@ -133,7 +133,7 @@ annotate sap.capire.travels.Bookings.Supplements {
 }
 
 
-annotate sap.capire.xflights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
+annotate sap.capire.federated.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
     SortOrder      : [{
       Property   : flightDate,
       Descending : true

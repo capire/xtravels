@@ -150,7 +150,7 @@ annotate TravelService.Bookings with @UI : {
   ]},
 };
 
-annotate sap.capire.xflights.Flights:icon with @UI.IsImageURL;
+annotate sap.capire.federated.Flights:icon with @UI.IsImageURL;
 
 annotate TravelService.Bookings.Supplements with @UI : {
   Identification : [

@@ -1,7 +1,7 @@
 namespace sap.capire.travels;
 
 using { sap, managed, Country, Currency } from '@sap/cds/common';
-using { sap.capire.xflights as federated } from './xflights';
+using { sap.capire.federated } from './xflights';
 
 
 entity Travels : managed {

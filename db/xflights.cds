@@ -1,5 +1,5 @@
 using { sap.capire.flights.data as external } from '@capire/xflights-data';
-namespace sap.capire.xflights;
+namespace sap.capire.federated;
 
 /**
  * Consumption view declaring the subset of fields we actually want to use 
