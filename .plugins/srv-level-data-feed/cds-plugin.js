@@ -17,7 +17,12 @@ cds.on ('loaded', csn => {
       if (!conf?.credentials?.url) continue
 
       // only if default federation config matches
-      if (fed === true && (conf.federation?.[each.name] || conf.federation?.default) !== 'initial-load') continue
+      if (fed === true && (
+        conf.federation?.[each.name] || 
+        conf.federation?.default ||
+        cds.env.federation?.default
+      ) !== 'initial-load') continue
+
 
       // use consumption view as table for replication
       each['@cds.persistence.table'] = true
