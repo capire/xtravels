@@ -9,15 +9,15 @@
     "jest": "npx jest"
   },
   "dependencies": {
+    "@sap/cds": "^9.6",
     "@capire/common": "*",
     "@capire/xflights-data": "*",
-    "@sap-cloud-sdk/http-client": "^4",
-    "@sap/cds": "^9.6"
+    "@capire/s4": "*",
+    "@sap-cloud-sdk/http-client": "^4"
   },
   "devDependencies": {
     "@cap-js/cds-test": "*",
-    "@cap-js/sqlite": "*",
-    "@cap-js/srv-level-data-feed": "file:.plugins/srv-level-data-feed"
+    "@cap-js/sqlite": "*"
   },
   "license": "Apache-2.0"
 }

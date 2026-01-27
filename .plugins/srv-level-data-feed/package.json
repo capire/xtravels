@@ -1,9 +1,0 @@
-{
-  "name": "@cap-js/srv-level-data-feed",
-  "version": "0.1.23",
-  "cds": {
-    "federation": {
-      "default": "initial-load"
-    }
-  }
-}

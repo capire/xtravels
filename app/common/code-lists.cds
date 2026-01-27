@@ -29,19 +29,20 @@ annotate sap.capire.travels.Travels {
   };
 
   Customer @Common.ValueList: {
-    CollectionPath : 'Passengers',
+    CollectionPath : 'Customers',
     Label : 'Customer ID',
     Parameters : [
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_ID, ValueListProperty: 'ID'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FirstName'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Street'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PostalCode'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode_code'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PhoneNumber'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'EMailAddress'}
+      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
+      // Following are excluded as OData does not support flattening queries
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Street'},
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PostalCode'},
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode_code'},
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PhoneNumber'},
+      // {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'EMailAddress'}
     ]
   };
 
@@ -133,7 +134,7 @@ annotate sap.capire.travels.Bookings.Supplements {
 }
 
 
-annotate sap.capire.federated.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
+annotate sap.capire.xflights.Flights with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
     SortOrder      : [{
       Property   : flightDate,
       Descending : true
@@ -152,19 +153,19 @@ annotate sap.capire.federated.Flights with @UI.PresentationVariant#SortOrderPV :
 };
 
 
-annotate sap.capire.travels.Passengers {
+// annotate sap.capire.s4.Customers {
 
-  Country @Common.ValueList : {
-    CollectionPath  : 'Countries',
-    Label : '',
-    Parameters : [
-      {$Type: 'Common.ValueListParameterInOut',       LocalDataProperty : Country_code, ValueListProperty : 'code'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'name'},
-      {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'descr'}
-    ]
-  };
+//   Country @Common.ValueList : {
+//     CollectionPath  : 'Countries',
+//     Label : '',
+//     Parameters : [
+//       {$Type: 'Common.ValueListParameterInOut',       LocalDataProperty : Country_code, ValueListProperty : 'code'},
+//       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'name'},
+//       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'descr'}
+//     ]
+//   };
 
-}
+// }
 
 
 annotate sap.capire.travels.TravelAgencies {

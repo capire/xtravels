@@ -1,28 +1,23 @@
-using { sap.capire.travels as schema } from '../../db/schema';
+using { sap.capire.travels as my } from '../../db/schema';
+using { sap.capire.s4 } from '../../apis/outbound/capire/s4';
 
 //
 // annotations that control rendering of fields and labels
 //
 
-
-
-// Required to allow fetching Travel.Agency.Name and Travel.Customer.LastName
-annotate schema.TravelAgencies with @cds.autoexpose;
-annotate schema.Passengers with @cds.autoexpose;
-
-annotate schema.Travels with @title: '{i18n>Travel}' {
+annotate my.Travels with @title: '{i18n>Travel}' {
   ID          @title: '{i18n>Travel}';
   BeginDate   @title: '{i18n>BeginDate}';
   EndDate     @title: '{i18n>EndDate}';
   Description @title: '{i18n>Description}';
   BookingFee  @title: '{i18n>BookingFee}'    @Measures.ISOCurrency: Currency_code;
   TotalPrice  @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: Currency_code;
-  Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.LastName, TextArrangement : #TextOnly };
+  Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.Name, TextArrangement : #TextOnly };
   Agency      @title: '{i18n>Agency}'        @Common: { Text: Agency.Name, TextArrangement : #TextOnly };
   Status      @title: '{i18n>TravelStatus}'  @Common: { Text: Status.name, TextArrangement : #TextOnly };
 }
 
-annotate schema.TravelStatus {
+annotate my.TravelStatus {
   code @title: '{i18n>TravelStatus}'
     @Common.Text: name
     @UI.ValueCriticality: [
@@ -34,7 +29,7 @@ annotate schema.TravelStatus {
     ]
 }
 
-annotate schema.Bookings with @title: '{i18n>Booking}' {
+annotate my.Bookings with @title: '{i18n>Booking}' {
   Travel @UI.Hidden;
   Pos @title: '{i18n>BookingID}';
   BookingDate @title: '{i18n>BookingDate}';
@@ -43,14 +38,14 @@ annotate schema.Bookings with @title: '{i18n>Booking}' {
   FlightPrice  @title: '{i18n>FlightPrice}'  @Measures.ISOCurrency: Currency_code;
 }
 
-annotate schema.Bookings.Supplements with @title: '{i18n>BookingSupplement}' {
+annotate my.Bookings.Supplements with @title: '{i18n>BookingSupplement}' {
   ID  @title: '{i18n>BookingSupplementID}'; // @Common.Text: booked.descr;
   booked        @title: '{i18n>SupplementID}'  @Common.Text: booked.descr;
   Price             @title: '{i18n>Price}'         @Measures.ISOCurrency: Currency_code;
   Currency          @title: '{i18n>CurrencyCode}';
 }
 
-annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {
+annotate my.TravelAgencies with @title: '{i18n>TravelAgency}' {
   ID           @title: '{i18n>Agency}'      @Common.Text: Name;
   Name         @title: '{i18n>Agency}';
   Street       @title: '{i18n>Street}';
@@ -62,17 +57,16 @@ annotate schema.TravelAgencies with @title: '{i18n>TravelAgency}' {
   WebAddress   @title: '{i18n>WebAddress}';
 }
 
-annotate schema.Passengers with @title: '{i18n>Passenger}' {
-  ID           @title: '{i18n>Customer}'    @Common.Text: LastName;
-  FirstName    @title: '{i18n>FirstName}';
-  LastName     @title: '{i18n>LastName}';
-  Title        @title: '{i18n>Title}';
-  Street       @title: '{i18n>Street}';
-  PostalCode   @title: '{i18n>PostalCode}';
-  City         @title: '{i18n>City}';
-  Country      @title: '{i18n>CountryCode}';
-  PhoneNumber  @title: '{i18n>PhoneNumber}';
-  EMailAddress @title: '{i18n>EMailAddress}';
+annotate s4.Customers with @title: '{i18n>Customer}' {
+  ID           @title: '{i18n>Customer}'    @Common.Text: Name;
+  Name    @title: '{i18n>Name}';
+  // Following are excluded as OData does not support flattening queries
+  // Street       @title: '{i18n>Street}';
+  // PostalCode   @title: '{i18n>PostalCode}';
+  // City         @title: '{i18n>City}';
+  // Country      @title: '{i18n>CountryCode}';
+  // PhoneNumber  @title: '{i18n>PhoneNumber}';
+  // EMailAddress @title: '{i18n>EMailAddress}';
 }
 
 

@@ -14,8 +14,8 @@ extend service TravelService with {
   @cds.redirection.target: false  // don't use as redirection target
   entity TravelsExport as projection on db.Travels {
     ID,
+    // Customer.Name as Customer, 
     Agency.Name as Agency,
-    concat(Customer.Title, ' ', Customer.FirstName, ' ', Customer.LastName) as Customer : String, 
     BeginDate,
     EndDate,
     TotalPrice,

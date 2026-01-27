@@ -86,7 +86,7 @@ annotate TravelService.Bookings with @UI : {
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : Travel.Customer.LastName },
+    Title          : { Value : Travel.Customer.Name },
     Description    : { Value : Pos }
   },
 
@@ -149,8 +149,6 @@ annotate TravelService.Bookings with @UI : {
     { Value: FlightPrice }
   ]},
 };
-
-annotate sap.capire.federated.Flights:icon with @UI.IsImageURL;
 
 annotate TravelService.Bookings.Supplements with @UI : {
   Identification : [
