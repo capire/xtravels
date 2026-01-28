@@ -1,4 +1,6 @@
-using { sap, sap.capire.travels as our, sap.capire.xflights, sap.capire.s4 } from '../db/schema';
+using { sap.capire.travels as our, sap } from '../db/schema';
+using { sap.capire.xflights as x } from '../apis/capire/xflights';
+using { sap.capire.s4 } from '../apis/capire/s4';
 
 @fiori service TravelService {
 
@@ -14,8 +16,8 @@ using { sap, sap.capire.travels as our, sap.capire.xflights, sap.capire.s4 } fro
   @readonly entity TravelAgencies as projection on our.TravelAgencies;
   @readonly entity Currencies as projection on sap.common.Currencies;
   @readonly entity Customers as projection on s4.Customers;
-  @readonly entity Flights as projection on xflights.Flights;
-  @readonly entity Supplements as projection on xflights.Supplements;
+  @readonly entity Flights as projection on x.Flights;
+  @readonly entity Supplements as projection on x.Supplements;
 
 }
 

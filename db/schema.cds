@@ -1,8 +1,8 @@
 namespace sap.capire.travels;
 
 using { sap, managed, Country, Currency } from '@sap/cds/common';
-using { sap.capire.xflights } from '../apis/outbound/capire/xflights';
-using { sap.capire.s4 } from '../apis/outbound/capire/s4';
+using { sap.capire.xflights as x } from '../apis/capire/xflights';
+using { sap.capire.s4 } from '../apis/capire/s4';
 
 
 entity Travels : managed {
@@ -23,12 +23,12 @@ entity Travels : managed {
 entity Bookings {
   key Travel      : Association to Travels;
   key Pos         : Integer @readonly;
-      Flight      : Association to xflights.Flights;
+      Flight      : Association to x.Flights;
       FlightPrice : Price;
       Currency    : Currency;
       Supplements : Composition of many {
         key ID   : UUID;
-        booked   : Association to xflights.Supplements;
+        booked   : Association to x.Supplements;
         Price    : Price;
         Currency : Currency;
       };
@@ -70,6 +70,6 @@ extend s4.Customers with columns {
 }
 
 // Extend Flights to navigate to back to local Bookings
-extend xflights.Flights with columns {
+extend x.Flights with columns {
   Bookings : Association to many Bookings on Bookings.Flight = $self
 }

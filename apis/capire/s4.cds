@@ -1,9 +1,10 @@
 using { API_BUSINESS_PARTNER as S4 } from '@capire/s4';
 namespace sap.capire.s4;
 
-entity Customers as projection on S4.A_BusinessPartner {
+@federated entity Customers as projection on S4.A_BusinessPartner {
   BusinessPartner as ID,
   PersonFullName  as Name,
+  LastChangeDate  as modifiedAt,
   // Not supported by OData, and not used in XTravels so far...
   // to_BusinessPartnerAddress[1:].{
   //   StreetName                                            as Street,
