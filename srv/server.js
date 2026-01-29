@@ -1,2 +1,1 @@
-const PROD = process.env.NODE_ENV === 'production'
-PROD || require ('./data-federation')
+// process.env.NODE_ENV || require ('./data-federation')

@@ -7,7 +7,7 @@ namespace sap.capire.xflights;
  * destination flattened (aka denormalized).
  */
 @federated entity Flights as projection on external.Flights {
-  ID, date, departure, arrival, modifiedAt,
+  ID, date, departure, arrival, free_seats, modifiedAt,
   airline.icon     as icon @UI.IsImageURL,
   airline.name     as airline,
   origin.name      as origin,

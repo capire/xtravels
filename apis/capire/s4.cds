@@ -14,4 +14,4 @@ namespace sap.capire.s4;
   //   to_PhoneNumber[1:IsDefaultPhoneNumber].PhoneNumber    as PhoneNumber,
   //   to_EmailAddress[1:IsDefaultEmailAddress].EmailAddress as EmailAddress,
   // },
-} where BusinessPartnerCategory == 1; // 1 = Person
+} where BusinessPartnerCategory == '1'; // '1' = Person
