@@ -19,7 +19,7 @@ PROD || cds.on ('loaded', csn => {
 PROD || cds.once ('served', () => Promise.all (feed.map (async each => {
   const srv = await cds.connect.to (each.remote)
   srv._once ??=!! srv.on ('replicate', replicate)
-  await srv.schedule ('replicate', each) .every ('3 seconds')
+  await srv.schedule ('replicate', each) .every ('10 minutes')
 })))
 
 // Event handler for replicating single entities

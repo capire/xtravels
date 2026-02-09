@@ -18,19 +18,21 @@ class TravelService extends cds.ApplicationService {
    */
   async service_integration() {
 
+    const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
+    const xflights = await cds.connect.to ('sap.capire.flights.data')
+    const yfligths = cds.outboxed (xflights)
     const { Flights, Travels, Customers } = this.entities
 
     // Delegate value helpp requests on Customers to S4 Business Partner service
-    const s4 = await cds.connect.to ('S4BusinessPartnerService')
     this.on ('READ', Customers, req =>  s4.run (req.query))
 
     // Inform XFlights about new bookings, so it can update occupied seats
-    const xflights = await cds.connect.to ('sap.capire.flights.data') .then (cds.outboxed)
-    this.after ('SAVE', Travels, ({ Bookings=[] }) => Promise.all (
-      Bookings.map (({ Flight_ID: flight, Flight_date: date }) => {
-        return xflights.send ('POST', 'BookingCreated', { flight, date })
-      })
-    ))
+    this.after ('SAVE', Travels, ({ Bookings=[] }) => {
+      return Promise.all (Bookings.map (booking => {
+        let { Flight_ID: flight, Flight_date: date } = booking
+        return yfligths.send ('POST', 'BookingCreated', { flight, date })
+      }))
+    })
 
     // Update local Flights data whenever occupied seats change in XFlights
     if (Flights['@cds.persistence.table']) xflights.on ('Flights.Updated', async msg => {
