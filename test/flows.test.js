@@ -7,7 +7,6 @@ axios.defaults.validateStatus = () => true
 describe('Status Transition Flows', () => {
   const READ = async () => {
     const { data: travel } = await GET(`/odata/v4/travel/Travels(ID=1,IsActiveEntity=true)`)
-    travel.transitions_ = await SELECT('sap.capire.travels.Travels.transitions_').where({ up__ID: 1 })
     return travel
   }
 
