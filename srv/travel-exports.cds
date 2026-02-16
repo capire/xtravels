@@ -13,7 +13,7 @@ extend service TravelService with {
   @cds.persistence.skip           // don't create view in database
   @cds.redirection.target: false  // don't use as redirection target
   entity TravelsExport as projection on db.Travels {
-    ID,
+    key ID,
     // Customer.Name as Customer, 
     Agency.Name as Agency,
     BeginDate,
