@@ -4,7 +4,9 @@ sap.ui.define(
     return {
       exportJSON: async function () {
         // REVISIT: we bypass the actual OData model here and retrieve it manually
-        window.open(this.getModel().sServiceUrl + "/TravelService.exportJSON()", "_self")
+        const serviceUrl = this.getModel().sServiceUrl
+        const url = `${serviceUrl + (serviceUrl.endsWith('/') ? '' : '/')}TravelService.exportJSON()`
+        window.open(url, "_self")
 
         const oBundle = this.getModel("i18n").getResourceBundle()
         const sMsg = oBundle.getText("exportSucess")
@@ -12,7 +14,9 @@ sap.ui.define(
       },
       exportCSV: async function () {
         // REVISIT: we bypass the actual OData model here and retrieve it manually
-        window.open(this.getModel().sServiceUrl + "/TravelService.exportCSV()", "_self")
+        const serviceUrl = this.getModel().sServiceUrl
+        const url = `${serviceUrl + (serviceUrl.endsWith('/') ? '' : '/')}TravelService.exportCSV()`
+        window.open(url, "_self")
 
         const oBundle = this.getModel("i18n").getResourceBundle()
         const sMsg = oBundle.getText("exportSucess")
