@@ -5,7 +5,8 @@ using { TravelService } from './travel-service';
 annotate TravelService.Travels with {
 
   Description @assert: (case 
-    when length(Description) < 3 then 'Description too short' 
+    when Description is null then 'Description is required'
+    when length(trim(Description)) < 3 then 'Description is too short' 
   end);
 
   Agency @mandatory @assert: (case 
