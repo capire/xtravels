@@ -19,5 +19,10 @@
     "@cap-js/cds-test": ">=0.4.1",
     "@cap-js/sqlite": "^2"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "cds": {
+    "cdsc": {
+      "sqliteRealAffinityForDecimal": true
+    }
+  }
 }
