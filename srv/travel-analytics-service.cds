@@ -19,25 +19,21 @@ service TravelAnalyticsService {
     // Key
     key ID,
 
-    // Dimension fields
-    @ObjectModel.foreignKey.association: Agency
+    // Dimension fields with associations
     Agency.ID as Agency_ID,
-    Agency,
-
-    @ObjectModel.foreignKey.association: Customer
     Customer.ID as Customer_ID,
-    Customer,
-
-    @ObjectModel.foreignKey.association: Status
     Status.code as Status_code,
-    Status,
-
-    @ObjectModel.foreignKey.association: to_BeginDate
+    
+    // Time dimension
     BeginDate,
     EndDate,
 
-    // Navigation attributes
-    Customer.Name as CustomerName,
+    // Navigation attributes for time hierarchy
+    to_BeginDate.Month as BeginMonth,
+    to_BeginDate.Quarter as BeginQuarter,
+    to_BeginDate.Year as BeginYear,
+
+    // Navigation attributes for dimensions  
     Agency.Name as AgencyName,
     Status.name as StatusName,
 
@@ -76,8 +72,29 @@ service TravelAnalyticsService {
     @Measures.ISOCurrency: currency_code
     BookingFee as AvgBookingFee : Decimal,
 
-    // Association to time dimension (will be defined below)
-    to_BeginDate : Association[0..1] to CalendarDateDimension on to_BeginDate.Date = BeginDate
+    // Restricted Measure: Revenue by Status (using literal)
+    @AnalyticsDetails.measureType: #RESTRICTION
+    case when Status.code = 'A'
+      then TotalPrice
+      end as RevenueAccepted : Decimal,
+
+    // Exception Aggregation: Count distinct agencies
+    @AnalyticsDetails.exceptionAggregationSteps: [{
+      exceptionAggregationBehavior: #SUM,
+      exceptionAggregationElements: [Agency_ID]
+    }]
+    @AnalyticsDetails.measureType: #CALCULATION
+    @Common.Label: null @title:null
+    1 as ExcAggCount : Integer,
+
+    // Exception Aggregation: Average daily price
+    @AnalyticsDetails.measureType: #BASE
+    @AnalyticsDetails.exceptionAggregationSteps: [{
+      exceptionAggregationBehavior: #AVG,
+      exceptionAggregationElements: [ BeginDate ]
+    }]
+    @Measures.ISOCurrency: currency_code
+    TotalPrice as AvgDailyPrice : Decimal
   };
 
 }
@@ -109,7 +126,7 @@ annotate t.TravelStatus with
 // Calendar Date base entity for time hierarchy
 using { sap.capire.travels.CalendarDate } from '../db/calendar';
 
-// Calendar Date Dimension with leveled hierarchy
+// Calendar Date Dimension with leveled hierarchy (outside service)
 @ObjectModel.modelingPattern: #ANALYTICAL_DIMENSION
 @ObjectModel.supportedCapabilities: [#ANALYTICAL_DIMENSION]
 @Analytics.dimensionType: #TIME

@@ -31,12 +31,15 @@ The cube is built on `sap.capire.travels.Travels` and includes:
 - `BookingFee` - Booking fees with SUM aggregation and currency support
 - `TravelCount` - Count of travels using COUNT aggregation
 - `AvgBookingFee` - Average booking fee using AVG aggregation
+- `AvgDailyPrice` - Average price with exception aggregation by BeginDate
 
 **Calculated Measures:**
 - `NetRevenue` - Calculated as `TotalPrice - BookingFee`
+- `ExcAggCount` - Count with exception aggregation by Agency_ID
 
 **Advanced Measures:**
 - `DistinctCustomersCount` - COUNT_DISTINCT on Customer.ID
+- `RevenueAccepted` - Restricted measure filtering by Status = 'A'
 
 #### Dimensions
 
@@ -50,6 +53,7 @@ The cube is built on `sap.capire.travels.Travels` and includes:
 - `CustomerName` - Customer name for display
 - `AgencyName` - Agency name for display  
 - `StatusName` - Status description
+- `BeginMonth`, `BeginQuarter`, `BeginYear` - Time hierarchy levels
 
 **Currency:**
 - `currency` - Currency code for all monetary measures
@@ -129,12 +133,24 @@ The CalendarDate entity requires manual data provisioning. You need to populate 
 
 ## Testing
 
-To verify the model structure:
+**Compilation Test:**
 ```bash
 cds compile srv/travel-analytics-service.cds
 ```
 
-Note: External dependencies (@capire/s4, @capire/xflights-data) are required for full compilation but do not affect the analytics model structure.
+**Runtime Test:**
+```bash
+cds serve --in-memory
+```
+
+Note: The service compiles and deploys successfully. Errors about S/4 credentials are expected and unrelated to the analytics service.
+
+## Known Limitations
+
+1. **Customer Navigation**: Cannot access `Customer.Name` directly because Customer is a federated entity with `@cds.persistence.skip`. Use `Customer.ID` for aggregation only.
+2. **Composition Navigation**: Cannot directly access booking-level measures (e.g., `Bookings.FlightPrice`) in the cube because Bookings is a composition. Would require flattening.
+3. **Foreign Key vs Association**: When projecting both a foreign key (e.g., `Agency.ID as Agency_ID`) and the association itself causes conflicts. Project only what's needed.
+4. **Restricted Measure Syntax**: Must use source entity association paths (e.g., `Status.code`) in CASE expressions, not the projected field aliases (e.g., `Status_code`).
 
 ## Sample Queries
 
@@ -149,20 +165,25 @@ Once deployed with SAP Analytics Cloud, you can create stories that:
 
 This implementation demonstrates all major features from the embedded analytics guide:
 - ✅ Cube definition with proper annotations
-- ✅ Base, calculated, and aggregate measures
+- ✅ Base, calculated, restricted, and exception aggregation measures
 - ✅ Dimension entities with text associations
-- ✅ Navigation attributes for drill-down
-- ✅ Time-based hierarchies
-- ✅ Currency handling
-- ✅ Authorization at cube level
+- ✅ Navigation attributes for drill-down (including time hierarchy)
+- ✅ Time-based hierarchies with Year/Quarter/Month/Date levels
+- ✅ Currency handling on all monetary measures
+- ✅ Authorization at cube level with role-based restrictions
 - ✅ Multiple aggregation types (SUM, AVG, COUNT, COUNT_DISTINCT)
+- ✅ Restricted measures with literal conditions
+- ✅ Exception aggregation for advanced calculations
 
-## Known Limitations
+## Implementation Notes
 
-1. **Restricted Measures**: Removed parameter-based restricted measures due to syntax limitations
-2. **Exception Aggregation**: Simplified to focus on core features
-3. **Booking-level Measures**: FlightPrice from Bookings composition not included (would require flattening)
-4. **Customer Attributes**: Limited by S4 federated entity structure (no FirstName/LastName split)
+1. **Restricted Measures**: Use source entity association paths (e.g., `Status.code`) in CASE expressions, not projected field names (e.g., `Status_code`). Implemented using literal value ('A' for Accepted status) rather than parameters for simplicity.
+2. **Association References**: In calculated/restricted measures, reference fields from the source entity (Travels) using association paths. Projected aliases are not accessible in these contexts.
+3. **Exception Aggregation**: Two examples - count distinct agencies and average daily price
+4. **Time Hierarchy**: Complete implementation with navigation attributes (BeginYear, BeginQuarter, BeginMonth)
+5. **Booking-level Measures**: FlightPrice from Bookings composition not included (would require flattening)
+6. **Customer Attributes**: Limited by S4 federated entity structure (no FirstName/LastName split)
+7. **Federated Entity Navigation**: Cannot navigate through Customer.Name because Customer is a federated entity with `@cds.persistence.skip`
 
 ## Next Steps
 
