@@ -110,6 +110,7 @@ describe('Basic OData', () => {
 
     // patch new draft in order to fill mandatory fields
     await PATCH (`/odata/v4/travel/Travels(ID='${newDraft.ID}',IsActiveEntity=false)`, {
+      Description: 'test',
       BeginDate: '2028-04-01',
       EndDate: '2028-04-02',
       BookingFee: '11',
@@ -252,6 +253,7 @@ describe("Basic Drafts", () => {
 
   it("should be possible to create a new entity in active state using a regular POST request", async () => {
     const response = await POST("/odata/v4/travel/Travels", {
+      Description: "test",
       BeginDate: "2028-04-01",
       EndDate: "2028-04-02",
       BookingFee: "11",
@@ -281,6 +283,7 @@ describe("Basic Drafts", () => {
 
     beforeAll(async () => {
       const response = await POST("/odata/v4/travel/Travels", {
+        Description: "test",
         BeginDate: "2028-04-01",
         EndDate: "2028-04-02",
         BookingFee: "11",
