@@ -9,15 +9,27 @@
     "jest": "npx jest"
   },
   "dependencies": {
-    "@sap/cds": "^9.6",
+    "@cap-js/hana": "^2",
     "@capire/common": "*",
-    "@capire/xflights-data": "*",
     "@capire/s4": "*",
-    "@sap-cloud-sdk/http-client": "^4"
+    "@capire/xflights-data": "*",
+    "@sap-cloud-sdk/http-client": "^4",
+    "@sap/cds": "^9.6",
+    "@sap/cds-adapter-ina-js": "^1.1.8",
+    "@sap/xssec": "^4"
   },
   "devDependencies": {
     "@cap-js/cds-test": "*",
-    "@cap-js/sqlite": "*"
+    "@cap-js/sqlite": "*",
+    "@sap/cds-analytics": "^1.0.1",
+    "@sap/cds-dk": "^9"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "cds": {
+    "requires": {
+      "[production]": {
+        "auth": "xsuaa"
+      }
+    }
+  }
 }

@@ -1,0 +1,83 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.analytics",
+      "description": "analytics"
+    },
+    {
+      "name": "$XSAPPNAME.analytics-restricted",
+      "description": "analytics-restricted"
+    },
+    {
+      "name": "$XSAPPNAME.reviewer",
+      "description": "reviewer"
+    },
+    {
+      "name": "$XSAPPNAME.processor",
+      "description": "processor"
+    },
+    {
+      "name": "$XSAPPNAME.admin",
+      "description": "admin"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "agency",
+      "description": "agency",
+      "valueType": "s",
+      "valueRequired": false
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "analytics",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.analytics"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "analytics-restricted",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.analytics-restricted"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "reviewer",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.reviewer"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "processor",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.processor"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "admin",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.admin"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "userattributes",
+      "description": "generated",
+      "default-role-name": "Attributes of a User",
+      "scope-references": [],
+      "attribute-references": [
+        "agency"
+      ]
+    }
+  ]
+}

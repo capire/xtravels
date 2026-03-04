@@ -1,0 +1,125 @@
+_schema-version: 3.3.0
+ID: capire.xtravels
+version: 1.0.0
+description: "CAP SFlight travel service demo"
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: xtravels-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: xtravels-auth
+      - name: xtravels-db
+      - name: xtravels-destination
+
+  - name: xtravels-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: xtravels-db
+  - name: xtravels
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: xtravels-auth
+      - name: xtravels-destination
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+    properties:
+     CORS: '[{"uriPattern": "^/sap/bc/ina/(.*)$", "allowedOrigin":
+       [{"host":"https://cap-embedded-test.eu10.analytics.cloud.sap/",
+       "protocol":"https"}], "allowedMethods": ["GET", "POST", "OPTIONS"],
+       "allowedHeaders": ["Origin", "Accept", "X-Requested-With",
+       "Content-Type", "Access-Control-Request-Method",
+       "Access-Control-Request-Headers", "Authorization", "X-Sap-Cid",
+       "X-Csrf-Token", "application-id"], "exposeHeaders": ["Accept",
+       "Authorization", "X-Requested-With", "X-Sap-Cid",
+       "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials",
+       "X-Csrf-Token", "Content-Type"]}]'
+     COOKIES: '{"SameSite": "None"}'
+     SESSION_TIMEOUT: 120
+
+resources:
+  - name: xtravels-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: xtravels-${org}-${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
+          redirect-uris:
+            - https://*~{app-api/app-uri}/**
+        role-collections:
+          - name: 'analytics (xtravels ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.analytics'
+          - name: 'analytics-restricted (xtravels ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.analytics-restricted'
+          - name: 'reviewer (xtravels ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.reviewer'
+          - name: 'processor (xtravels ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.processor'
+          - name: 'admin (xtravels ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.admin'
+          - name: 'userattributes (xtravels ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.userattributes'
+    requires:
+      - name: app-api
+  - name: xtravels-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: xtravels-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
