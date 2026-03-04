@@ -121,7 +121,7 @@ Authorization: Basic alice:
 
 {
   "Description": "Trip with invalid agency",
-  "Agency": {"ID":"INVALID999"},
+  "Agency": {"ID":"xxxx"},
   "Customer": {"ID":"000001"},
   "BeginDate": "2025-07-01",
   "EndDate": "2025-07-15",
