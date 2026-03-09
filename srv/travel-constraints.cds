@@ -20,7 +20,8 @@ annotate TravelService.Travels with {
 
   BeginDate @mandatory @assert: (case 
     when EndDate < BeginDate then 'ASSERT_BEGINDATE_BEFORE_ENDDATE' 
-    when exists Bookings [Flight.date < Travel.BeginDate] then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD'
+    // Temporarily disabled for HANA builds with analytics (path resolution issue):
+    // when exists Bookings [Flight.date < Travel.BeginDate] then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD'
     // when Bookings.Flight.date < BeginDate then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD' 
     // The above works as well, but de-normalization of to-many assiciations, like Bookings, 
     // leads to duplicate messages reported.
@@ -28,7 +29,8 @@ annotate TravelService.Travels with {
 
   EndDate @mandatory @assert: (case 
     when EndDate < BeginDate then 'ASSERT_ENDDATE_AFTER_BEGINDATE' 
-    when exists Bookings [Flight.date > Travel.EndDate] then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD'
+    // Temporarily disabled for HANA builds with analytics (path resolution issue):
+    // when exists Bookings [Flight.date > Travel.EndDate] then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD'
     // when Bookings.Flight.date > EndDate then 'ASSERT_BOOKINGS_IN_TRAVEL_PERIOD'
   end);
 

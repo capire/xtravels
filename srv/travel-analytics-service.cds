@@ -138,10 +138,13 @@ using { sap.capire.travels.CalendarDate } from '../db/calendar';
 entity CalendarDateDimension as projection on CalendarDate {
   Date,
   @Common.IsCalendarYear: true
+  @Analytics.dimension: true
   Year,
   @Common.IsCalendarQuarter
+  @Analytics.dimension: true
   Year || Quarter as Quarter : String(5),
   @Common.IsCalendarMonth
+  @Analytics.dimension: true
   Year || (length(Month) = 1 ? '0' : '' ) || Month as Month : String(6)
 }
 
