@@ -6,7 +6,7 @@ using { sap.capire.s4 } from '../apis/capire/s4';
 
 
 entity Travels : managed {
-  key ID       : Integer @readonly;
+  key ID       : Integer @Core.ComputedDefaultValue @Core.Computed; //@readonly @Core.Computed @Common.FieldControl: #ReadOnly;
   Description  : String(1024);
   BeginDate    : Date default $now;
   EndDate      : Date default $now;
