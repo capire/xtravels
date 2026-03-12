@@ -20,11 +20,11 @@ annotate my.TravelStatus {
   code @title: '{i18n>TravelStatus}'
     @Common.Text: name
     @UI.ValueCriticality: [
-      { Criticality: 3, Value: 'A', },
-      { Criticality: 2, Value: 'O', },
-      { Criticality: 2, Value: 'P', },
-      { Criticality: 1, Value: 'B', },
-      { Criticality: 1, Value: 'X', }
+      { Criticality: #Positive, Value: 'A', },
+      { Criticality: #Neutral, Value: 'O', },
+      { Criticality: #Neutral, Value: 'P', },
+      { Criticality: #Negative, Value: 'B', },
+      { Criticality: #Negative, Value: 'X', }
     ]
 }
 
