@@ -137,15 +137,42 @@ describe("Direct CRUD", () => {
       expect(response.data.HasDraftEntity).to.be.false;
     });
 
-    it('should allow to delete the active instance via DELETE', async () => {
-        const deleteResponse = await DELETE(
-            `/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID},IsActiveEntity=true)`,
+    it("should allow to delete the active instance via DELETE", async () => {
+      const deleteResponse = await DELETE(
+        `/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID},IsActiveEntity=true)`,
+      );
+
+      expect(deleteResponse).to.be.ok;
+      expect(deleteResponse.data?.error).to.be.undefined;
+      expect(deleteResponse.status).to.equal(204);
+    });
+
+    describe("when the instance is draft-locked by another user", () => {
+      beforeEach(async () => {
+        const response = await POST(
+          `/odata/v4/travel/Travels(${ACTIVE_ENTITY_ID})/draftEdit`,
         );
-        
-        expect(deleteResponse).to.be.ok;
-        expect(deleteResponse.data?.error).to.be.undefined;
-        expect(deleteResponse.status).to.equal(204);
-    })
+
+        expect(response).to.be.ok;
+        expect(response.data?.error).to.be.undefined;
+        expect(response.status).to.equal(201);
+      });
+
+      test("should not allow another user to edit the active entity while locked", async () => {
+        const editActiveResponse = await PUT(
+          `/odata/v4/travel/Travels(${ACTIVE_ENTITY_ID})`,
+          { Description: "Updated Description" },
+          { headers: { Authorization: `Basic ${btoa("bob:")}` } },
+        );
+
+        expect(editActiveResponse).to.be.ok;
+        expect(editActiveResponse.data?.error).to.be.ok;
+        expect(editActiveResponse.data.error.message).to.match(
+          /draft.+already.+exists/i, // REVISIT: This might fail with "locked by another user" instead
+        );
+        expect(editActiveResponse.status).to.equal(409);
+      });
+    });
   });
 
   describe("when a draft instance exists", () => {
