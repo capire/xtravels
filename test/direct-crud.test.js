@@ -1,14 +1,12 @@
 const cds = require("@sap/cds");
+const { POST, PUT, PATCH, DELETE, GET, expect, axios, data } = cds.test(
+  cds.utils.path.join(__dirname, ".."),
+  "--with-mocks",
+);
 
 describe("Direct CRUD", () => {
-  const { POST, PUT, PATCH, DELETE, GET, expect, axios, data } = cds.test(
-    cds.utils.path.join(__dirname, ".."),
-    "--with-mocks",
-  );
   axios.defaults.validateStatus = () => true;
-  axios.defaults.headers.common["Authorization"] = `Basic ${btoa("alice:")}`;
-
-  beforeEach(data.reset);
+  axios.defaults.auth = { username: "alice" };
 
   it("should create an active instance via POST", async () => {
     const createActiveResponse = await POST("/odata/v4/travel/Travels", {
