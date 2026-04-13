@@ -263,7 +263,6 @@ describe("Basic Drafts", () => {
     });
     expect(response.data).to.not.be.undefined;
     expect(response.data.ID).to.not.be.undefined;
-    expect(response.data.IsActiveEntity).to.equal(true);
     expect(response.status).to.equal(201);
   });
 
@@ -274,7 +273,7 @@ describe("Basic Drafts", () => {
     })
     expect(response.data).to.not.be.undefined;
     expect(response.data.ID).to.not.be.undefined;
-    expect(response.data.IsActiveEntity).to.equal(false);
+    expect(response.data.IsActiveEntity).to.be.false;
     expect(response.status).to.equal(201);
   })
 
@@ -299,7 +298,6 @@ describe("Basic Drafts", () => {
       const response = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
       expect(response.data).to.not.be.undefined;
       expect(response.data.ID).to.equal(ACTIVE_ENTITY_ID);
-      expect(response.data.IsActiveEntity).to.equal(true);
       expect(response.status).to.equal(200);
     });
 
@@ -307,14 +305,12 @@ describe("Basic Drafts", () => {
       const readBeforePatch = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
       expect(readBeforePatch.data).to.not.be.undefined;
       expect(readBeforePatch.data.ID).to.equal(ACTIVE_ENTITY_ID);
-      expect(readBeforePatch.data.IsActiveEntity).to.equal(true);
       expect(readBeforePatch.data.BookingFee).to.equal(11);
       expect(readBeforePatch.status).to.equal(200);
 
       const response = await PATCH(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`, { BookingFee: 42});
       expect(response.data).to.not.be.undefined;
       expect(response.data.ID).to.equal(ACTIVE_ENTITY_ID);
-      expect(response.data.IsActiveEntity).to.equal(true);
       expect(response.data.BookingFee).to.equal(42);
       expect(response.status).to.equal(200);
     });

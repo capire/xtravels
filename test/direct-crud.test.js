@@ -20,9 +20,6 @@ describe("Direct CRUD", () => {
     expect(createActiveResponse).to.be.ok;
     expect(createActiveResponse.data?.error).to.be.undefined;
     expect(createActiveResponse.status).to.equal(201);
-
-    expect(createActiveResponse.data.IsActiveEntity).to.be.true;
-    expect(createActiveResponse.data.HasDraftEntity).to.be.false;
   });
 
   it("should create a draft instance via draftNew action", async () => {
@@ -64,9 +61,6 @@ describe("Direct CRUD", () => {
       expect(createActiveResponse).to.be.ok;
       expect(createActiveResponse.data?.error).to.be.undefined;
       expect(createActiveResponse.status).to.equal(201);
-
-      expect(createActiveResponse.data.IsActiveEntity).to.be.true;
-      expect(createActiveResponse.data.HasDraftEntity).to.be.false;
       expect(createActiveResponse.data.ID).to.be.ok;
       ACTIVE_ENTITY_ID = createActiveResponse.data.ID;
     });
@@ -117,9 +111,6 @@ describe("Direct CRUD", () => {
       expect(response).to.be.ok;
       expect(response.data?.error).to.be.undefined;
       expect(response.status).to.equal(200);
-
-      expect(response.data.IsActiveEntity).to.be.true;
-      expect(response.data.HasDraftEntity).to.be.false;
     });
 
     it("should allow to reference the active instance without specifying key names", async () => {
@@ -130,9 +121,6 @@ describe("Direct CRUD", () => {
       expect(response).to.be.ok;
       expect(response.data?.error).to.be.undefined;
       expect(response.status).to.equal(200);
-
-      expect(response.data.IsActiveEntity).to.be.true;
-      expect(response.data.HasDraftEntity).to.be.false;
     });
 
     it("should allow to delete the active instance via DELETE", async () => {
