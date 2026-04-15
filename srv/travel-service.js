@@ -63,7 +63,7 @@ class TravelService extends cds.ApplicationService {
 
     this.before ('NEW', Bookings.drafts, async (req) => { // on NEW as Bookings are per draft, so no concurrency issues
       let { id } = await SELECT.one `max(Pos) as id` .from (Bookings.drafts) .where (req.data)
-      req.data.Pos = ++id
+      req.data.Pos = id+1
     })
   }
 
