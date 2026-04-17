@@ -151,9 +151,7 @@ describe('Direct CRUD', () => {
 
         expect(editActiveResponse).to.be.ok
         expect(editActiveResponse.data?.error).to.be.ok
-        expect(editActiveResponse.data.error.message).to.match(
-          /draft.+already.+exists/i, // REVISIT: This might fail with 'locked by another user' instead
-        )
+        expect(editActiveResponse.data.error).to.have.property('code', 'DRAFT_ALREADY_EXISTS')
         expect(editActiveResponse.status).to.equal(409)
       })
     })

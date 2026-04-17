@@ -1,78 +1,104 @@
-@server = http://localhost:4004
-@alice = Authorization: Basic alice:
+@service = http://localhost:4004/odata/v4/travel
+@_ = \n Authorization: Basic alice: \n Content-Type: application/json \n
+@ID = ID=4134
 
 # Using cds.fiori.direct_crud = true
 
-### Create an active instance using the regular POST endpoint
-# @name CreateActiveInstance
-POST {{server}}/odata/v4/travel/Travels
-Content-Type: application/json
-{{alice}}
 
+###
+# @name CREATE_Active
+POST {{service}}/Travels {{_}}
 {
-    "BeginDate": "2025-01-01",
-    "EndDate": "2025-12-31",
-    "Agency_ID": "070007",
-    "Description": "Test Travel",
-    "Customer_ID": "000042"
+  "Description": "Test Travel",
+  "BeginDate": "2025-01-01",
+  "EndDate": "2025-12-31",
+  "Agency_ID": "070007",
+  "Customer_ID": "000042"
 }
 
-### Create a draft instance using the draftNew action
-# @name CreateDraftInstanceViaAction
 
-POST {{server}}/odata/v4/travel/Travels/TravelService.draftNew
-Content-Type: application/json
-{{alice}}
+###
+# @name CREATE_Active_with_IsActiveEntity_true
+POST {{service}}/Travels {{_}}
+{
+  "IsActiveEntity": true,
+  "Description": "Test Travel",
+  "BeginDate": "2025-01-01",
+  "EndDate": "2025-12-31",
+  "Agency_ID": "070007",
+  "Customer_ID": "000042"
+}
+### FIXME: Response data should contain Draft Elements, i.e., IsActiveEntity, HasActiveEntity, HasDraftEntity
 
-{ "ID": 0 }
 
-### Create a draft instance using the regular POST endpoint with IsActiveEntity=false
-# @name CreateDraftInstanceViaPOST
-
-POST {{server}}/odata/v4/travel/Travels
-Content-Type: application/json
-{{alice}}
-
+###
+# @name NEW_Draft_with_IsActiveEntity_false
+POST {{service}}/Travels {{_}}
 { "IsActiveEntity": false }
 
-### Fetch the active instance without specifying the 'IsActiveEntity' key
-# @name FetchActiveInstance
 
-GET {{server}}/odata/v4/travel/Travels(ID={{CreateActiveInstance.response.body.ID}})
-Accept: application/json
-{{alice}}
+###
+# @name NEW_Draft_via_Action
+POST {{service}}/Travels/draftNew {{_}}
 
-### Fetch the draft instance by specifying 'IsActiveEntity=false'
-# @name FetchDraftInstance
 
-GET {{server}}/odata/v4/travel/Travels(ID={{CreateDraftInstanceViaAction.response.body.ID}},IsActiveEntity=false)
-Accept: application/json
-{{alice}}
 
-### Update the active instance without specifying the 'IsActiveEntity' key
-# @name UpdateActiveInstance
-PATCH {{server}}/odata/v4/travel/Travels(ID={{CreateActiveInstance.response.body.ID}})
-Content-Type: application/json
-{{alice}}
 
+###
+# @name EDIT_Active_creating_Draft
+POST {{service}}/Travels({{ID}},IsActiveEntity=true)/draftEdit {{_}}
+
+
+
+
+
+###
+# @name GET_Active
+GET {{service}}/Travels({{ID}}) {{_}}
+
+
+###
+# @name GET_Active_with_IsActiveEntity_true
+GET {{service}}/Travels({{ID}},IsActiveEntity=true) {{_}}
+
+
+###
+# @name GET_Draft_with_IsActiveEntity_false
+GET {{service}}/Travels({{ID}},IsActiveEntity=false) {{_}}
+
+
+
+
+###
+# @name PATCH_Active
+PATCH {{service}}/Travels({{ID}}) {{_}}
 { "BookingFee": 150.0 }
 
-### Update the draft instance by specifying 'IsActiveEntity=false'
-# @name UpdateDraftInstance
-PATCH {{server}}/odata/v4/travel/Travels(ID={{CreateDraftInstanceViaAction.response.body.ID}},IsActiveEntity=false)
-Content-Type: application/json
-{{alice}}
 
+###
+# @name PATCH_Active_with_IsActiveEntity_true
+PATCH {{service}}/Travels({{ID}},IsActiveEntity=true) {{_}}
+{ "BookingFee": 150.0 }
+
+
+###
+# @name PATCH_Draft_with_IsActiveEntity_false
+PATCH {{service}}/Travels({{ID}},IsActiveEntity=false) {{_}}
 { "BookingFee": 75.0 }
 
-### Delete the active instance without specifying the 'IsActiveEntity' key
-# @name DeleteActiveInstance
 
-DELETE {{server}}/odata/v4/travel/Travels(ID={{CreateActiveInstance.response.body.ID}})
-{{alice}}
 
-### Delete the draft instance by specifying 'IsActiveEntity=false'
-# @name DeleteDraftInstance
 
-DELETE {{server}}/odata/v4/travel/Travels(ID={{CreateDraftInstanceViaAction.response.body.ID}},IsActiveEntity=false)
-{{alice}}
+###
+# @name DELETE_Active
+DELETE {{service}}/Travels({{ID}}) {{_}}
+
+
+###
+# @name DELETE_Active_with_IsActiveEntity_true
+DELETE {{service}}/Travels({{ID}},IsActiveEntity=true) {{_}}
+
+
+###
+# @name DISCARD_Draft_with_IsActiveEntity_false
+DELETE {{service}}/Travels({{ID}},IsActiveEntity=false) {{_}}
