@@ -146,7 +146,11 @@ annotate TravelService.Bookings with @UI : {
     { Value: Flight.airline },
     { Value: Flight.ID },
     { Value: Flight.date },
-    { Value: FlightPrice }
+    { Value: FlightPrice },
+    { Value: Flight.origin },
+    { Value: Flight.destination },
+    { Value: Flight.departure },
+    { Value: Flight.arrival },
   ]},
 };
 
