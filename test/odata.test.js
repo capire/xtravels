@@ -243,10 +243,10 @@ describe('Basic OData', () => {
 
 describe("Basic Drafts", () => {
   it("should be possible to create a new entity in draft state using the proper action", async () => {
-    const response = await POST("/odata/v4/travel/Travels/TravelService.draftNew", { 
+    const response = await POST("/odata/v4/travel/Travels/TravelService.draftNew", {
       ID: -1 // will be replaced by .before NEW handler
     });
-    expect(response.data.ID).to.not.be.undefined;
+    expect(response.data.ID).to.exist;
     expect(response.data.IsActiveEntity).to.equal(false);
     expect(response.status).to.equal(201);
   });
@@ -261,8 +261,8 @@ describe("Basic Drafts", () => {
       Agency_ID: "070001",
       Currency_code: "USD",
     });
-    expect(response.data).to.not.be.undefined;
-    expect(response.data.ID).to.not.be.undefined;
+    expect(response.data).to.exist;
+    expect(response.data.ID).to.exist;
     expect(response.status).to.equal(201);
   });
 
@@ -271,8 +271,8 @@ describe("Basic Drafts", () => {
       ID: -1, // will be replaced by .before NEW handler
       IsActiveEntity: false,
     })
-    expect(response.data).to.not.be.undefined;
-    expect(response.data.ID).to.not.be.undefined;
+    expect(response.data).to.exist;
+    expect(response.data.ID).to.exist;
     expect(response.data.IsActiveEntity).to.be.false;
     expect(response.status).to.equal(201);
   })
@@ -290,26 +290,26 @@ describe("Basic Drafts", () => {
         Agency_ID: "070001",
         Currency_code: "USD",
       });
-      expect(response?.data?.ID).to.not.be.undefined;
+      expect(response?.data?.ID).to.exist;
       ACTIVE_ENTITY_ID = response.data.ID;
     });
-    
+
     it("should be possible to address an active entity by only its id in GET requests", async () => {
       const response = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
-      expect(response.data).to.not.be.undefined;
+      expect(response.data).to.exist;
       expect(response.data.ID).to.equal(ACTIVE_ENTITY_ID);
       expect(response.status).to.equal(200);
     });
 
     it("should be possible to address an active entity by only its id in PATCH requests", async () => {
       const readBeforePatch = await GET(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`);
-      expect(readBeforePatch.data).to.not.be.undefined;
+      expect(readBeforePatch.data).to.exist;
       expect(readBeforePatch.data.ID).to.equal(ACTIVE_ENTITY_ID);
       expect(readBeforePatch.data.BookingFee).to.equal(11);
       expect(readBeforePatch.status).to.equal(200);
 
       const response = await PATCH(`/odata/v4/travel/Travels(ID=${ACTIVE_ENTITY_ID})`, { BookingFee: 42});
-      expect(response.data).to.not.be.undefined;
+      expect(response.data).to.exist;
       expect(response.data.ID).to.equal(ACTIVE_ENTITY_ID);
       expect(response.data.BookingFee).to.equal(42);
       expect(response.status).to.equal(200);
