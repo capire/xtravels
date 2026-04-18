@@ -1,6 +1,5 @@
 using { sap.capire.travels as my } from '../../db/schema';
 
-
 annotate my.Travels with @title: '{i18n>Travel}' {
   ID          @title: '{i18n>Travel}';
   BeginDate   @title: '{i18n>BeginDate}';
@@ -54,6 +53,7 @@ annotate my.TravelAgencies with @title: '{i18n>TravelAgency}' {
 }
 
 
+
 using { TravelService } from '../../srv/travel-flows';
 
 annotate TravelService.Travels with actions {
@@ -84,6 +84,7 @@ annotate x.Supplements with @title: '{i18n>Supplement}' {
   price           @title: '{i18n>Price}'         @Measures.ISOCurrency: currency_code;
   currency        @title: '{i18n>CurrencyCode}';
 }
+
 
 
 using { sap.capire.s4 } from '../../apis/capire/s4';
