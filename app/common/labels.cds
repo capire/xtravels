@@ -1,8 +1,5 @@
 using { sap.capire.travels as my } from '../../db/schema';
 
-//
-// annotations that control rendering of fields and labels
-//
 
 annotate my.Travels with @title: '{i18n>Travel}' {
   ID          @title: '{i18n>Travel}';
@@ -68,9 +65,9 @@ annotate TravelService.Travels with actions {
 
 
 
-using { sap.capire.xflights } from '../../apis/capire/xflights';
+using { sap.capire.xflights as x } from '../../apis/capire/xflights';
 
-annotate xflights.Flights with @title: '{i18n>Flight}' {
+annotate x.Flights with @title: '{i18n>Flight}' {
   ID              @title: '{i18n>FlightID}';
   date            @title: '{i18n>FlightDate}';
   departure       @title: '{i18n>DepartureTime}';
@@ -81,7 +78,7 @@ annotate xflights.Flights with @title: '{i18n>Flight}' {
   destination     @title: '{i18n>Destination}';
 }
 
-annotate xflights.Supplements with @title: '{i18n>Supplement}' {
+annotate x.Supplements with @title: '{i18n>Supplement}' {
   ID              @title: '{i18n>SupplementID}'  @Common.Text: descr;
   descr           @title: '{i18n>Description}';
   price           @title: '{i18n>Price}'         @Measures.ISOCurrency: currency_code;
@@ -94,13 +91,22 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
 annotate s4.Customers with @title: '{i18n>Customer}' {
   ID           @title: '{i18n>Customer}'    @Common.Text: Name;
   Name         @title: '{i18n>Name}';
+  // Following are excluded as OData does not support flattening queries
+  // Street       @title: '{i18n>Street}';
+  // PostalCode   @title: '{i18n>PostalCode}';
+  // City         @title: '{i18n>City}';
+  // Country      @title: '{i18n>CountryCode}';
+  // PhoneNumber  @title: '{i18n>PhoneNumber}';
+  // EMailAddress @title: '{i18n>EMailAddress}';
 }
 
 
+
+// ---------------------------------------------------------------------------
 // TODO move the labels to the xflights app
 
 // using sap.capire.flights.data as x;
-  
+
 // annotate x.Airlines with @title: '{i18n>Airline}' {
 //   ID              @title: '{i18n>AirlineID}'  @Common.Text: name;
 //   name            @title: '{i18n>Name}';
@@ -121,21 +127,4 @@ annotate s4.Customers with @title: '{i18n>Customer}' {
 //   price           @title: '{i18n>Price}'         @Measures.ISOCurrency: currency_code;
 //   currency        @title: '{i18n>CurrencyCode}';
 //   descr           @title: '{i18n>Description}';
-// }
-
-
-
-
-// using sap.capire.s4;
-
-// annotate s4.Customers with @title: '{i18n>Customer}' {
-//   ID           @title: '{i18n>Customer}'    @Common.Text: Name;
-//   Name         @title: '{i18n>Name}';
-//   // Following are excluded as OData does not support flattening queries
-//   // Street       @title: '{i18n>Street}';
-//   // PostalCode   @title: '{i18n>PostalCode}';
-//   // City         @title: '{i18n>City}';
-//   // Country      @title: '{i18n>CountryCode}';
-//   // PhoneNumber  @title: '{i18n>PhoneNumber}';
-//   // EMailAddress @title: '{i18n>EMailAddress}';
 // }
