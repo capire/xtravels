@@ -5,11 +5,10 @@ using { sap.capire.s4 } from '../apis/capire/s4';
 @fiori service TravelService {
 
   entity Travels as projection on our.Travels actions {
-    action createTravelByTemplate() returns Travels;
+    action deductDiscount( percent: Percentage not null ) returns Travels;
     action acceptTravel();
     action rejectTravel();
     action reopenTravel();
-    action deductDiscount( percent: Percentage not null ) returns Travels;
   }
 
   // Also expose related entities as read-only projections

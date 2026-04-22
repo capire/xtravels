@@ -1,0 +1,104 @@
+@service = http://localhost:4004/odata/v4/travel
+@_ = \n Authorization: Basic alice: \n Content-Type: application/json \n
+@ID = ID=4134
+
+# Using cds.fiori.direct_crud = true
+
+
+###
+# @name CREATE_Active
+POST {{service}}/Travels {{_}}
+{
+  "Description": "Test Travel",
+  "BeginDate": "2025-01-01",
+  "EndDate": "2025-12-31",
+  "Agency_ID": "070007",
+  "Customer_ID": "000042"
+}
+
+
+###
+# @name CREATE_Active_with_IsActiveEntity_true
+POST {{service}}/Travels {{_}}
+{
+  "IsActiveEntity": true,
+  "Description": "Test Travel",
+  "BeginDate": "2025-01-01",
+  "EndDate": "2025-12-31",
+  "Agency_ID": "070007",
+  "Customer_ID": "000042"
+}
+### FIXME: Response data should contain Draft Elements, i.e., IsActiveEntity, HasActiveEntity, HasDraftEntity
+
+
+###
+# @name NEW_Draft_with_IsActiveEntity_false
+POST {{service}}/Travels {{_}}
+{ "IsActiveEntity": false }
+
+
+###
+# @name NEW_Draft_via_Action
+POST {{service}}/Travels/draftNew {{_}}
+
+
+
+
+###
+# @name EDIT_Active_creating_Draft
+POST {{service}}/Travels({{ID}},IsActiveEntity=true)/draftEdit {{_}}
+
+
+
+
+
+###
+# @name GET_Active
+GET {{service}}/Travels({{ID}}) {{_}}
+
+
+###
+# @name GET_Active_with_IsActiveEntity_true
+GET {{service}}/Travels({{ID}},IsActiveEntity=true) {{_}}
+
+
+###
+# @name GET_Draft_with_IsActiveEntity_false
+GET {{service}}/Travels({{ID}},IsActiveEntity=false) {{_}}
+
+
+
+
+###
+# @name PATCH_Active
+PATCH {{service}}/Travels({{ID}}) {{_}}
+{ "BookingFee": 150.0 }
+
+
+###
+# @name PATCH_Active_with_IsActiveEntity_true
+PATCH {{service}}/Travels({{ID}},IsActiveEntity=true) {{_}}
+{ "BookingFee": 150.0 }
+
+
+###
+# @name PATCH_Draft_with_IsActiveEntity_false
+PATCH {{service}}/Travels({{ID}},IsActiveEntity=false) {{_}}
+{ "BookingFee": 75.0 }
+
+
+
+
+###
+# @name DELETE_Active
+DELETE {{service}}/Travels({{ID}}) {{_}}
+
+
+###
+# @name DELETE_Active_with_IsActiveEntity_true
+DELETE {{service}}/Travels({{ID}},IsActiveEntity=true) {{_}}
+
+
+###
+# @name DISCARD_Draft_with_IsActiveEntity_false
+DELETE {{service}}/Travels({{ID}},IsActiveEntity=false) {{_}}

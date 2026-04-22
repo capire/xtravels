@@ -1,24 +1,23 @@
 using {TravelService} from '../../srv/travel-flows';
 
-// add actions
+// Add actions
 extend TravelService.Travels with actions {
   action reviewTravel();
   action blockTravel();
   action unblockTravel();
 };
 
-// extend flow
+// Extend flow
 annotate TravelService.Travels with actions {
-  reviewTravel   @from: [ #Open ]                           @to: #InReview;
-  blockTravel    @from: [ #InReview, #Open ]                @to: #Blocked;
-  reopenTravel   @from: [ #InReview, #Accepted, #Rejected ] @to: #Open;
-  unblockTravel  @from: [ #Blocked ]                        @to: $flow.previous;
-  // in the extended flow, accept/reject only from InReview
+  reviewTravel   @from: [ #Open ]             @to: #InReview;
+  blockTravel    @from: [ #InReview, #Open ]  @to: #Blocked;
+  unblockTravel  @from: [ #Blocked ]          @to: $flow.previous;
   acceptTravel   @from: [ #InReview ];
   rejectTravel   @from: [ #InReview ];
+  reopenTravel   @from: [ #InReview, ... ]    @to: #Open;
 };
 
-// specify ui labels
+// Add labels for UIs
 annotate TravelService.Travels with actions {
   reviewTravel    @title: '{i18n>Review}';
   blockTravel     @title: '{i18n>Block}';

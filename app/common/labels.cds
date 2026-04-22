@@ -1,9 +1,5 @@
 using { sap.capire.travels as my } from '../../db/schema';
 
-//
-// annotations that control rendering of fields and labels
-//
-
 annotate my.Travels with @title: '{i18n>Travel}' {
   ID          @title: '{i18n>Travel}';
   BeginDate   @title: '{i18n>BeginDate}';
@@ -57,6 +53,7 @@ annotate my.TravelAgencies with @title: '{i18n>TravelAgency}' {
 }
 
 
+
 using { TravelService } from '../../srv/travel-flows';
 
 annotate TravelService.Travels with actions {
@@ -67,33 +64,30 @@ annotate TravelService.Travels with actions {
 };
 
 
-using sap.capire.flights.data as x;
-  
-annotate x.Airlines with @title: '{i18n>Airline}' {
-  ID              @title: '{i18n>AirlineID}'  @Common.Text: name;
-  name            @title: '{i18n>Name}';
-  currency        @title: '{i18n>CurrencyCode}';
-}
+
+using { sap.capire.xflights as x } from '../../apis/capire/xflights';
 
 annotate x.Flights with @title: '{i18n>Flight}' {
-  aircraft        @title: '{i18n>PlaneType}';
+  ID              @title: '{i18n>FlightID}';
   date            @title: '{i18n>FlightDate}';
-  price           @title: '{i18n>Price}'        @Measures.ISOCurrency: currency_code;
-  currency        @title: '{i18n>CurrencyCode}';
-  maximum_seats   @title: '{i18n>MaximumSeats}';
-  occupied_seats  @title: '{i18n>OccupiedSeats}';
+  departure       @title: '{i18n>DepartureTime}';
+  arrival         @title: '{i18n>ArrivalTime}';
+  free_seats      @title: '{i18n>MaximumSeats}';
+  airline         @title: '{i18n>Name}';
+  origin          @title: '{i18n>Origin}';
+  destination     @title: '{i18n>Destination}';
 }
 
 annotate x.Supplements with @title: '{i18n>Supplement}' {
   ID              @title: '{i18n>SupplementID}'  @Common.Text: descr;
+  descr           @title: '{i18n>Description}';
   price           @title: '{i18n>Price}'         @Measures.ISOCurrency: currency_code;
   currency        @title: '{i18n>CurrencyCode}';
-  descr           @title: '{i18n>Description}';
 }
 
 
 
-using sap.capire.s4;
+using { sap.capire.s4 } from '../../apis/capire/s4';
 
 annotate s4.Customers with @title: '{i18n>Customer}' {
   ID           @title: '{i18n>Customer}'    @Common.Text: Name;
@@ -106,3 +100,32 @@ annotate s4.Customers with @title: '{i18n>Customer}' {
   // PhoneNumber  @title: '{i18n>PhoneNumber}';
   // EMailAddress @title: '{i18n>EMailAddress}';
 }
+
+
+
+// ---------------------------------------------------------------------------
+// TODO move the labels to the xflights app
+
+// using sap.capire.flights.data as x;
+
+// annotate x.Airlines with @title: '{i18n>Airline}' {
+//   ID              @title: '{i18n>AirlineID}'  @Common.Text: name;
+//   name            @title: '{i18n>Name}';
+//   currency        @title: '{i18n>CurrencyCode}';
+// }
+
+// annotate x.Flights with @title: '{i18n>Flight}' {
+//   aircraft        @title: '{i18n>PlaneType}';
+//   date            @title: '{i18n>FlightDate}';
+//   price           @title: '{i18n>Price}'        @Measures.ISOCurrency: currency_code;
+//   currency        @title: '{i18n>CurrencyCode}';
+//   maximum_seats   @title: '{i18n>MaximumSeats}';
+//   occupied_seats  @title: '{i18n>OccupiedSeats}';
+// }
+
+// annotate x.Supplements with @title: '{i18n>Supplement}' {
+//   ID              @title: '{i18n>SupplementID}'  @Common.Text: descr;
+//   price           @title: '{i18n>Price}'         @Measures.ISOCurrency: currency_code;
+//   currency        @title: '{i18n>CurrencyCode}';
+//   descr           @title: '{i18n>Description}';
+// }

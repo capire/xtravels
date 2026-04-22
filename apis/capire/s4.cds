@@ -22,7 +22,3 @@ namespace sap.capire.s4;
   // },
 
 } where BusinessPartnerCategory == '1'; // '1' = Person
-
-
-// Minify A_BusinessPartner to keep used elements only
-annotate Customers with @cds.minify:'unused-elements';

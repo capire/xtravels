@@ -2,4 +2,5 @@
   folders:
     flow: xmpls/flow/
 fiori:
+  draft_new_action: true
   direct_crud: true

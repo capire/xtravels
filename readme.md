@@ -50,6 +50,7 @@ Alternatively you can work with related packages in local workspace setups like 
    git clone https://github.com/capire/xtravels
    git clone https://github.com/capire/xflights
    git clone https://github.com/capire/common
+   git clone https://github.com/capire/s4
    ```
 
 3. Install dependencies:
