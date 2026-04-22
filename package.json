@@ -9,7 +9,7 @@
     "jest": "npx jest"
   },
   "dependencies": {
-    "@sap/cds": "^9.6",
+    "@sap/cds": ">=9.6",
     "@capire/common": "*",
     "@capire/xflights-data": "*",
     "@capire/s4": "*",
