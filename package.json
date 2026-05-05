@@ -12,8 +12,7 @@
     "@sap/cds": ">=9.6",
     "@capire/common": "*",
     "@capire/xflights-data": "*",
-    "@capire/s4": "*",
-    "@sap-cloud-sdk/http-client": "^4"
+    "@capire/s4": "*"
   },
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",

@@ -1,8 +1,9 @@
-const cds = require ('@sap/cds')
+const cds = require ('@sap/cds/lib')
 
-const { GET, POST, PATCH, DELETE, axios, expect } = cds.test (__dirname+'/..','--with-mocks')
+const { GET, POST, PATCH, DELETE, axios, expect } = cds.test (__dirname+'/..', '--with-mocks')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
+cds.env.features.ieee754compatible = false
 axios.defaults.auth = { username: 'alice', password: 'admin' }
 axios.defaults.validateStatus = status => status < 500 // make axios test client not throw on 4xx
 
