@@ -3,6 +3,7 @@ const cds = require ('@sap/cds')
 class TravelService extends cds.ApplicationService { 
 
   async init() {
+    await this.extension_points()
     await this.service_integration()
     this.generate_primary_keys()
     this.deduct_discounts()
@@ -10,6 +11,30 @@ class TravelService extends cds.ApplicationService {
     this.status_flows()
     this.data_export()
     return super.init()
+  }
+
+
+  /**
+   * Wire predefined extension points to the TravelExtensionService.
+   */
+  async extension_points() {
+    const ext = await cds.connect.to('TravelExtensionService')
+    const { Travels, Bookings } = this.entities
+
+    // Call validateTravel before any travel is created or updated
+    this.before(['CREATE', 'UPDATE'], Travels, async (req) => {
+      if (req.data.ID) {
+        await ext.validateTravel({ travel_ID: req.data.ID })
+      }
+    })
+
+    // Call onBookingCreated after a booking is added
+    this.after('CREATE', Bookings, async (data, req) => {
+      await ext.onBookingCreated({
+        travel_ID: data.Travel_ID,
+        bookingPos: data.Pos
+      })
+    })
   }
 
 

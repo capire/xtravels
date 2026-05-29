@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@sap/cds": ">=9.6",
+    "@sap/cds-oyster": "git+https://github.tools.sap/cap/cds-oyster.git",
     "@capire/common": "*",
     "@capire/xflights-data": "*",
     "@capire/s4": "*"
@@ -17,6 +18,16 @@
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",
     "@cap-js/sqlite": "^2"
+  },
+  "cds": {
+    "requires": {
+      "code-extensibility": {
+        "runtime": "oyster",
+        "maxTime": 1000,
+        "maxMemory": 4,
+        "extensibleAnnotation": true
+      }
+    }
   },
   "license": "Apache-2.0"
 }
