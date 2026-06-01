@@ -24,15 +24,15 @@ class TravelService extends cds.ApplicationService {
     // Call validateTravel before any travel is created or updated
     this.before(['CREATE', 'UPDATE'], Travels, async (req) => {
       if (req.data.ID) {
-        await ext.validateTravel({ travel_ID: req.data.ID })
+        await ext.validateTravel({ travel: req.data, user: req.user.id, timestamp: req.timestamp })
       }
     })
 
-    // Call onBookingCreated after a booking is added
+    // Call bookingCreated after a booking is added
     this.after('CREATE', Bookings, async (data, req) => {
-      await ext.onBookingCreated({
-        travel_ID: data.Travel_ID,
-        bookingPos: data.Pos
+      await ext.bookingCreated({
+        booking: data,
+        user: req.user.id
       })
     })
   }
