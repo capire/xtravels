@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",
-    "@cap-js/sqlite": "^2"
+    "@cap-js/sqlite": ">=2"
   },
   "license": "Apache-2.0"
 }
