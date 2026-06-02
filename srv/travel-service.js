@@ -24,14 +24,21 @@ class TravelService extends cds.ApplicationService {
     // Call validateTravel before any travel is created or updated
     this.before(['CREATE', 'UPDATE'], Travels, async (req) => {
       if (req.data.ID) {
-        await ext.validateTravel({ travel: req.data, user: req.user.id, timestamp: req.timestamp?.toISOString() })
+        const { ID, Description, BeginDate, EndDate, BookingFee, TotalPrice,
+                Currency_code, Status_code, Agency_ID, Customer_ID, Bookings } = req.data
+        const travel = { ID, Description, BeginDate, EndDate, BookingFee, TotalPrice,
+                         Currency_code, Status_code, Agency_ID, Customer_ID,
+                         Bookings: (Bookings||[]).map(({ Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate }) =>
+                           ({ Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate })) }
+        await ext.validateTravel({ travel, user: req.user.id, timestamp: req.timestamp?.toISOString() })
       }
     })
 
     // Call bookingCreated after a booking is added
     this.after('CREATE', Bookings, async (data, req) => {
+      const { Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate } = data
       await ext.bookingCreated({
-        booking: data,
+        booking: { Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate },
         user: req.user.id
       })
     })
