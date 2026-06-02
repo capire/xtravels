@@ -12,6 +12,7 @@ type TravelData {
   Status_code   : String(1);
   Agency_ID     : String(10);
   Customer_ID   : String(10);
+  Bookings      : array of BookingData;
 }
 
 type BookingData {
