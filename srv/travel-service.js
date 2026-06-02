@@ -26,10 +26,11 @@ class TravelService extends cds.ApplicationService {
       if (req.data.ID) {
         const { ID, Description, BeginDate, EndDate, BookingFee, TotalPrice,
                 Currency_code, Status_code, Agency_ID, Customer_ID, Bookings } = req.data
-        const travel = { ID, Description, BeginDate, EndDate, BookingFee, TotalPrice,
+        // Only pass fields that were actually provided in the request (partial update support)
+        const travel = omitUndefined({ ID, Description, BeginDate, EndDate, BookingFee, TotalPrice,
                          Currency_code, Status_code, Agency_ID, Customer_ID,
-                         Bookings: (Bookings||[]).map(({ Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate }) =>
-                           ({ Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate })) }
+                         Bookings: Bookings?.map(({ Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate }) =>
+                           omitUndefined({ Travel_ID, Pos, Flight_ID, Flight_date, FlightPrice, Currency_code, BookingDate })) })
         await ext.validateTravel({ travel, user: req.user.id, timestamp: req.timestamp?.toISOString() })
       }
     })
@@ -233,3 +234,5 @@ class TravelService extends cds.ApplicationService {
 }
 
 module.exports = { TravelService }
+
+const omitUndefined = obj => Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined))

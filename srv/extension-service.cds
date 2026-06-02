@@ -1,28 +1,28 @@
 using { sap.capire.travels as db } from '../db/schema';
 
-// Types for extension point interfaces
+// Types for extension point interfaces — fields are nullable since only changed fields are passed
 type TravelData {
   ID            : Integer;
-  Description   : String(1024);
-  BeginDate     : Date;
-  EndDate       : Date;
-  BookingFee    : Decimal(9,4);
-  TotalPrice    : Decimal(9,4);
-  Currency_code : String(3);
-  Status_code   : String(1);
-  Agency_ID     : String(10);
-  Customer_ID   : String(10);
+  Description   : String(1024) null;
+  BeginDate     : Date null;
+  EndDate       : Date null;
+  BookingFee    : Decimal(9,4) null;
+  TotalPrice    : Decimal(9,4) null;
+  Currency_code : String(3) null;
+  Status_code   : String(1) null;
+  Agency_ID     : String(10) null;
+  Customer_ID   : String(10) null;
   Bookings      : array of BookingData;
 }
 
 type BookingData {
-  Travel_ID     : Integer;
-  Pos           : Integer;
-  Flight_ID     : String(50);
-  Flight_date   : Date;
-  FlightPrice   : Decimal(9,4);
-  Currency_code : String(3);
-  BookingDate   : Date;
+  Travel_ID     : Integer null;
+  Pos           : Integer null;
+  Flight_ID     : String(50) null;
+  Flight_date   : Date null;
+  FlightPrice   : Decimal(9,4) null;
+  Currency_code : String(3) null;
+  BookingDate   : Date null;
 }
 
 @kind: 'ext-service'
