@@ -9,11 +9,12 @@
     "jest": "npx jest"
   },
   "dependencies": {
-    "@sap/cds": ">=9.6",
-    "@sap/cds-oyster": "git+https://github.tools.sap/cap/cds-oyster.git",
     "@capire/common": "*",
+    "@capire/s4": "*",
     "@capire/xflights-data": "*",
-    "@capire/s4": "*"
+    "@sap/cds": ">=9.6",
+    "@sap/cds-mtxs": "^3",
+    "@sap/cds-oyster": "git+https://github.tools.sap/cap/cds-oyster.git"
   },
   "devDependencies": {
     "@cap-js/cds-test": ">=0.4.1",
@@ -26,8 +27,14 @@
         "maxTime": 1000,
         "maxMemory": 4,
         "extensibleAnnotation": true
+      },
+      "[development]": {
+        "multitenancy": true,
+        "toggles": true,
+        "extensibility": true
       }
-    }
+    },
+    "profile": "with-mtx-sidecar"
   },
   "license": "Apache-2.0"
 }
