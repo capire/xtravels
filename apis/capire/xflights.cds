@@ -8,6 +8,7 @@ namespace sap.capire.xflights;
  */
 @federated entity Flights as projection on external.Flights {
   ID, date, departure, arrival, free_seats, modifiedAt,
+  price, currency,
   airline.icon     as icon @UI.IsImageURL,
   airline.name     as airline,
   origin.name      as origin,
