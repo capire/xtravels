@@ -18,5 +18,13 @@
     "@cap-js/cds-test": ">=0.4.1",
     "@cap-js/sqlite": ">=2"
   },
+  "cds": {
+    "requires": {
+      "messaging": {
+        "kind": "file-based-messaging",
+        "inboxed": true
+      }
+    }
+  },
   "license": "Apache-2.0"
 }

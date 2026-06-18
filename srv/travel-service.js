@@ -1,6 +1,6 @@
 const cds = require ('@sap/cds')
 
-class TravelService extends cds.ApplicationService { 
+class TravelService extends cds.ApplicationService {
 
   async init() {
     await this.service_integration()
@@ -21,24 +21,52 @@ class TravelService extends cds.ApplicationService {
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
     const xflights = await cds.connect.to ('sap.capire.flights.data')
     const yfligths = cds.outboxed (xflights)
-    const { Flights, Travels, Customers } = this.entities
+    const messaging = await cds.connect.to ('messaging')
+
+    const { Flights, Supplements, Travels, Customers } = this.entities
+    const { Bookings } = cds.entities ('sap.capire.travels')
 
     // Delegate value helpp requests on Customers to S4 Business Partner service
     this.on ('READ', Customers, req =>  s4.run (req.query))
 
+    // REVISIT: generic crud does not handle @cds.persistence.table and hence rejects due to @cds.persistence.skip
+    this.on('READ', [Flights, Supplements], async function(req) {
+      if (req.target['@cds.persistence.table']) return cds.db.run(req.query)
+      return xflights.run(req.query)
+    })
+
     // Inform XFlights about new bookings, so it can update occupied seats
-    this.after ('SAVE', Travels, ({ Bookings=[] }) => {
+    this.after ('SAVE', Travels, (_, req) => {
+      const { Bookings=[] } = req.data
       return Promise.all (Bookings.map (booking => {
-        let { Flight_ID: flight, Flight_date: date } = booking
-        return yfligths.send ('POST', 'BookingCreated', { flight, date })
+        let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
+        // REVISIT: transport Travel_ID, Pos to callback via headers -> we need a backpack
+        return yfligths.emit ('BookingCreated', { flight, date }, { Travel_ID, Pos })
       }))
+    })
+
+    xflights.after('BookingCreated/#succeeded', async function(_, req) {
+      const { Travel_ID, Pos } = req.headers
+      await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'C' })
+    })
+
+    xflights.after('BookingCreated/#failed', async function(err, req) {
+      const { Travel_ID, Pos } = req.headers
+      await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
+    })
+
+    messaging.on('FlightUpdated', async function(event) {
+      const { flight_ID: ID, date } = event.data
+      // read current! free seats (messages can overtake each other -> don't propagate free seats in payload)
+      const free_seats = await xflights.read(Flights, { ID, date }).columns('free_seats')
+      await UPDATE(Flights, { ID, date }).set(free_seats)
     })
 
     // Update local Flights data whenever occupied seats change in XFlights
     if (Flights['@cds.persistence.table']) xflights.on ('Flights.Updated', async msg => {
       const { flight:ID, date, free_seats } = msg.data
       await UPDATE (Flights, { ID, date }) .with ({ free_seats })
-    })    
+    })
   }
 
 
@@ -48,7 +76,7 @@ class TravelService extends cds.ApplicationService {
   generate_primary_keys() {
 
     const { Travels, Bookings } = this.entities
-    
+
     const ensureIncrementalTravelId = async (req) => {
       const [ active, draft ] = await Promise.all([
          SELECT.one (`max(ID) as maxID`) .from (Travels),
@@ -79,7 +107,7 @@ class TravelService extends cds.ApplicationService {
 
     this.on (deductDiscount, async req => {
       let discount = req.data.percent / 100
-      let succeeded = await UPDATE (req.subject) 
+      let succeeded = await UPDATE (req.subject)
         .set `BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
         .set `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
         .where `BookingFee is not null` // only travels with specified booking fee
@@ -98,11 +126,11 @@ class TravelService extends cds.ApplicationService {
 
   /**
    * Recalculate Travels' TotalPrice field, whenever...
-   * 
+   *
    * - its BookingFee is modified,
    * - a nested Booking is deleted or its FlightPrice is modified,
    * - a nested Supplement is deleted or its Price is modified.
-   * 
+   *
    * Implemented via direct SQL UPDATE for efficiency.
    */
   update_totals() {
@@ -122,9 +150,9 @@ class TravelService extends cds.ApplicationService {
 
     async function update_totals (req, next, ...fields) {
       // Exit early if no relevant data changed
-      if (!fields.some (field => field in req.data)) return next() 
+      if (!fields.some (field => field in req.data)) return next()
       // First execute the actual update or delete, so we can recalculate totals in the database afterwards
-      await next() 
+      await next()
       // Run the total price recalculation in the database, using the travel from the request target
       const { ID: TravelID } =
         req.target === Supplements.drafts ? await SELECT.one `up_.Travel.ID as ID` .from (req.subject) :
@@ -142,7 +170,7 @@ class TravelService extends cds.ApplicationService {
   status_flows() {
 
     const { Travels, Bookings } = this.entities
-    const { acceptTravel, rejectTravel } = Travels.actions 
+    const { acceptTravel, rejectTravel } = Travels.actions
     const { Open } = this.StatusCodes
 
     // Prevent adding bookings to non-open travels
@@ -153,7 +181,7 @@ class TravelService extends cds.ApplicationService {
 
     // Prevent accepting or rejecting travels that are locked by existings drafts
     this.before ([ acceptTravel, rejectTravel ], [ Travels, Travels.drafts ], async req => {
-      const draft = await SELECT.one (Travels.drafts, req.params[0]) 
+      const draft = await SELECT.one (Travels.drafts, req.params[0])
         .columns `DraftAdministrativeData.InProcessByUser as owner`
       if (!draft || draft.owner === req.user.id && req.target.isDraft) return //> ok
       else req.reject (423, `The travel is locked by ${draft.owner}.`)
@@ -167,11 +195,11 @@ class TravelService extends cds.ApplicationService {
   data_export() {
 
     const { Travels, TravelsExport } = this.entities
-    const { exportCSV, exportJSON } = this.actions 
+    const { exportCSV, exportJSON } = this.actions
     const { Readable } = require ('stream')
 
     this.on (exportCSV, async req => {
-      let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
+      let query = SELECT.localized (TravelsExport.projection) .from (Travels)
       let stream = Readable.from (async function*() {
         yield Object.keys(query.elements).join(';') + '\n'
         for await (const row of query)
@@ -181,7 +209,7 @@ class TravelService extends cds.ApplicationService {
     })
 
     this.on (exportJSON, async req => {
-      let query = SELECT.localized (TravelsExport.projection) .from (Travels) 
+      let query = SELECT.localized (TravelsExport.projection) .from (Travels)
       let stream = await query.stream()
       return req.reply (stream, { filename: 'Travels.json' })
     })
