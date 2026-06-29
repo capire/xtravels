@@ -7,7 +7,7 @@
     "start": "cds-serve",
     "test": "chest test",
     "jest": "npx jest",
-    "update-travel-dates": "node scripts/update-travel-dates.js"
+    "update-data": "node db/data/update-dates.js"
   },
   "dependencies": {
     "@sap/cds": ">=9.6",

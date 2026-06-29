@@ -33,7 +33,7 @@ const fs = require('fs')
 const path = require('path')
 const { spawnSync } = require('child_process')
 
-const DATA_DIR = path.resolve(__dirname, '..', 'db', 'data')
+const DATA_DIR = path.resolve(__dirname)
 const TRAVELS  = path.join(DATA_DIR, 'sap.capire.travels-Travels.csv')
 const BOOKINGS = path.join(DATA_DIR, 'sap.capire.travels-Bookings.csv')
 const SUPPLEMENTS = path.join(DATA_DIR, 'sap.capire.travels-Bookings.Supplements.csv')
@@ -119,10 +119,10 @@ if (!xflightsDir) {
   process.exit(1)
 }
 console.log(`Found @capire/xflights at: ${xflightsDir}`)
-console.log('Running its update-flights-dates script...')
+console.log('Running its update-data script...')
 console.log('-'.repeat(60))
 
-const result = spawnSync('npm', ['run', 'update-flights-dates'], {
+const result = spawnSync('npm', ['run', 'update-data'], {
   cwd: xflightsDir,
   stdio: 'inherit'
 })
