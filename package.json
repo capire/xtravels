@@ -6,7 +6,8 @@
     "lint": "npx eslint .",
     "start": "cds-serve",
     "test": "chest test",
-    "jest": "npx jest"
+    "jest": "npx jest",
+    "update-travel-dates": "node scripts/update-travel-dates.js"
   },
   "dependencies": {
     "@sap/cds": ">=9.6",
