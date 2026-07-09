@@ -78,13 +78,16 @@ class TravelService extends cds.ApplicationService {
     const { deductDiscount } = Travels.actions
 
     this.on (deductDiscount, async req => {
-      let discount = req.data.percent / 100
-      let succeeded = await UPDATE (req.subject) 
+      const discount = req.data.percent / 100
+      const succeeded = await UPDATE (req.subject)
         .set `BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
         .set `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
         .where `BookingFee is not null` // only travels with specified booking fee
         .where `Status.code = ${Open}` // only open travels => implicit constraints check
       if (!succeeded) return failed (req)
+      // Notify the UI about the change after commit
+      const [{ ID }] = req.params
+      req.on ('succeeded', () => this.emit ('priceChanged', { sideEffectSource: `/Travels(ID=${ID},IsActiveEntity=true)` }))
     })
 
     async function failed (req) { // find out what caused the failure...
@@ -107,6 +110,7 @@ class TravelService extends cds.ApplicationService {
    */
   update_totals() {
 
+    const srv = this
     const { Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
     const UpdateTotals = // Native SQL UPDATE statement, prepared once, and reused subsequently
     `UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
@@ -117,20 +121,23 @@ class TravelService extends cds.ApplicationService {
     this.on ('PATCH',  Travels.drafts,     (..._) => update_totals (..._, 'BookingFee', 'GoGreen'))
     this.on ('PATCH',  Bookings.drafts,    (..._) => update_totals (..._, 'FlightPrice'))
     this.on ('PATCH',  Supplements.drafts, (..._) => update_totals (..._, 'Price'))
-    this.on ('DELETE', Bookings.drafts,    (..._) => update_totals (..._, 'ID'))
-    this.on ('DELETE', Supplements.drafts, (..._) => update_totals (..._, 'ID'))
+    this.on ('DELETE', Bookings.drafts,    (..._) => update_totals (..._, 'Travel_ID'))
+    this.on ('DELETE', Supplements.drafts, (..._) => update_totals (..._, 'up__Travel_ID'))
 
     async function update_totals (req, next, ...fields) {
       // Exit early if no relevant data changed
       if (!fields.some (field => field in req.data)) return next() 
-      // First execute the actual update or delete, so we can recalculate totals in the database afterwards
-      await next() 
-      // Run the total price recalculation in the database, using the travel from the request target
+        // First identify travel, the subject might get deleted
       const { ID: TravelID } =
         req.target === Supplements.drafts ? await SELECT.one `up_.Travel.ID as ID` .from (req.subject) :
         req.target === Bookings.drafts ? await SELECT.one `Travel.ID as ID` .from (req.subject) :
         req.target === Travels.drafts ? req.data : cds.error (`No travel found for ${req.subject}`)
+      // Execute the actual update or delete, so we can recalculate totals in the database afterwards
+      await next() 
+      // Run the total price recalculation in the database, using the travel from the request target
       await cds.run (UpdateTotals, [TravelID])
+      // Notify the UI about the change after commit
+      req.on ('succeeded', () => srv.emit ('priceChanged', { sideEffectSource: `/Travels(ID=${TravelID},IsActiveEntity=false)` }))
     }
   }
 

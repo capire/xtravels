@@ -8,6 +8,7 @@
     "test": "cds test"
   },
   "dependencies": {
+    "@cap-js-community/websocket": ">=1",
     "@sap/cds": "^10",
     "@capire/common": "*",
     "@capire/xflights-data": "*",

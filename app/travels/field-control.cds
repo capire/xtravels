@@ -14,9 +14,9 @@ extend entity TravelStatus with {
 
 
 annotate TravelService.Travels with @(Common : {
-  SideEffects: {
-    SourceProperties: [BookingFee],
-    TargetProperties: ['TotalPrice']
+  SideEffects #priceChanged: {
+    SourceEvents    : ['priceChanged'],
+    TargetProperties: ['TotalPrice', 'BookingFee']
   },
 }){
   BookingFee  @Common.FieldControl  : Status.fieldControl;
@@ -25,14 +25,7 @@ annotate TravelService.Travels with @(Common : {
   Agency      @Common.FieldControl  : Status.fieldControl;
   Customer    @Common.FieldControl  : Status.fieldControl;
 } actions {
-  deductDiscount @(
-    Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],
-  );
-};
-
-annotate TravelService.Travels @Common.SideEffects#ReactonItemCreationOrDeletion : {
-  SourceEntities : [ Bookings ],
-  TargetProperties : [ 'TotalPrice' ]
+  deductDiscount;
 };
 
 annotate TravelService.Bookings with @UI.CreateHidden : (Travel.Status.code != #Open);
