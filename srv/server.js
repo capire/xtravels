@@ -1,1 +1,1 @@
-// process.env.NODE_ENV || require ('./data-federation')
+process.env.NODE_ENV === 'production' || require ('./data-federation')
