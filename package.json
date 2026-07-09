@@ -1,24 +1,22 @@
 {
   "name": "@capire/xtravels",
-  "version": "1.0.0",
-  "description": "CAP SFlight travel service demo",
+  "version": "1.0.1",
+  "description": "CAP XTravels sample application",
   "scripts": {
     "lint": "npx eslint .",
     "start": "cds-serve",
-    "test": "chest test",
-    "jest": "npx jest",
-    "update-data": "node db/data/update-dates.js"
+    "test": "cds test"
   },
   "dependencies": {
-    "@sap/cds": ">=9.6",
     "@cap-js-community/websocket": ">=1",
+    "@sap/cds": "^10",
     "@capire/common": "*",
     "@capire/xflights-data": "*",
     "@capire/s4": "*"
   },
   "devDependencies": {
-    "@cap-js/cds-test": ">=0.4.1",
-    "@cap-js/sqlite": ">=2"
+    "@cap-js/cds-test": "^1",
+    "@cap-js/sqlite": "^3"
   },
   "license": "Apache-2.0"
 }

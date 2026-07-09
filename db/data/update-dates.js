@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 /**
  * update-travel-dates — refresh Travels and Bookings so they line up with
  * the (also-refreshed) flight schedule in @capire/xflights.
@@ -164,8 +165,6 @@ if (!allPast.length || !allFuture.length) {
 const travels = loadCSV(TRAVELS)
 const bookings = loadCSV(BOOKINGS)
 
-const travelsById = new Map(travels.records.map(t => [t.ID, t]))
-
 // Group bookings by Travel_ID for efficient processing
 const bookingsByTravel = new Map()
 for (const b of bookings.records) {
@@ -247,7 +246,6 @@ for (const t of travels.records) {
   // Re-pick each booking
   const flightDates = []
   for (const b of myBookings) {
-    const before = `${b.Flight_ID}|${b.Flight_date}`
     const picked = pickFlight(b.Flight_ID, settledBucket, t.Currency_code)
     if (picked.flight_ID !== b.Flight_ID) reroutedBookings++
     b.Flight_ID  = picked.flight_ID

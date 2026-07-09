@@ -1,9 +1,8 @@
-const PROD = process.env.NODE_ENV === 'production' /* eslint-disable no-console */
 const cds = require ('@sap/cds')
 const feed = []
 
 // Collect all entities to be federated, and prepare replica tables
-PROD || cds.on ('loaded', csn => {
+cds.on ('loaded', csn => {
   for (let e of cds.linked(csn).entities) {
     if (e['@federated']) {
       let srv = remote_srv4(e)
@@ -14,21 +13,21 @@ PROD || cds.on ('loaded', csn => {
     }
   }
 })
-  
+
 // Setup and schedule replications for all collected entities
-PROD || cds.once ('served', () => Promise.all (feed.map (async each => {
+cds.once ('served', () => Promise.all (feed.map (async each => {
   const srv = await cds.connect.to (each.remote)
   srv._once ??=!! srv.on ('replicate', replicate)
-  await srv.schedule ('replicate', each) .every ('10 minutes')
+  await srv.schedule ('replicate', each) .as (`replicate ${each.entity}`) .every ('10 minutes')
 })))
 
 // Event handler for replicating single entities
-async function replicate (req) { 
+async function replicate (req) {
   let { entity } = req.data, remote = this
   let { latest } = await SELECT.one `max(modifiedAt) as latest` .from (entity)
-  let rows = await remote.read (entity) .where `modifiedAt > ${latest||0}` 
+  let rows = await remote.read (entity) .where `modifiedAt > ${latest||0}`
   if (rows.length) await UPSERT (rows) .into (entity); else return
-  console.log ('Replicated', rows.length, 'entries', { for: entity, via: this.kind })
+  console.log ('Replicated', rows.length, 'entries', { for: entity, via: this.kind }) // eslint-disable-line no-console
 }
 
 // Helpers to identify remote services, and check whether they are connected
