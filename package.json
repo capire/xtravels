@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@capire/common": "*",
-    "@capire/xflights-data": "*",
     "@capire/s4": "*",
+    "@capire/xflights-data": "*",
     "@sap/cds": "^10"
   },
   "devDependencies": {
