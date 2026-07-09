@@ -2,10 +2,14 @@ using { sap.capire.travels as our, sap } from '../db/schema';
 using { sap.capire.xflights as x } from '../apis/capire/xflights';
 using { sap.capire.s4 } from '../apis/capire/s4';
 
-@fiori service TravelService {
+@ws @odata service TravelService {
+  // @ws: { currentUser, format: 'pcp', pcp: { sideEffect } }
+  event priceChanged {
+    sideEffectSource: String;
+  }
 
   entity Travels as projection on our.Travels actions {
-    action deductDiscount( percent: Percentage not null ) returns Travels;
+    action deductDiscount( percent: Percentage not null );
     action acceptTravel();
     action rejectTravel();
     action reopenTravel();
