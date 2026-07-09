@@ -8,10 +8,10 @@
     "test": "cds test"
   },
   "dependencies": {
-    "@sap/cds": "^10",
     "@capire/common": "*",
     "@capire/xflights-data": "*",
-    "@capire/s4": "*"
+    "@capire/s4": "*",
+    "@sap/cds": "^10"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^1",
