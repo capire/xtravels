@@ -106,7 +106,7 @@ annotate s4.Customers with @title: '{i18n>Customer}' {
 // ---------------------------------------------------------------------------
 // TODO move the labels to the xflights app
 
-// using sap.capire.flights.data as x;
+// using FlightsService as x;
 
 // annotate x.Airlines with @title: '{i18n>Airline}' {
 //   ID              @title: '{i18n>AirlineID}'  @Common.Text: name;

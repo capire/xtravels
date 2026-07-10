@@ -19,7 +19,7 @@ class TravelService extends cds.ApplicationService {
   async service_integration() {
 
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
-    const xflights = await cds.connect.to ('sap.capire.flights.data')
+    const xflights = await cds.connect.to ('FlightsService')
     const yfligths = cds.outboxed (xflights)
     const { Flights, Travels, Customers } = this.entities
 
