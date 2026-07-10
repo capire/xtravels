@@ -7,7 +7,12 @@
     "start": "cds-serve",
     "test": "cds test"
   },
+  "parked": {
+    "@cap-js/agents": "^0.1.0",
+    "trailing comma": 0
+  },
   "dependencies": {
+    "@cap-js/mcp": "*",
     "@capire/common": "*",
     "@capire/s4": "*",
     "@capire/xflights-data": "*",
