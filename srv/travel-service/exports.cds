@@ -1,4 +1,4 @@
-using { TravelService, sap.capire.travels as db } from './travel-service';
+using { TravelService, sap.capire.travels as db } from './service';
 
 extend service TravelService with {
 
@@ -14,7 +14,7 @@ extend service TravelService with {
   @cds.redirection.target: false  // don't use as redirection target
   entity TravelsExport as projection on db.Travels {
     key ID,
-    // Customer.Name as Customer, 
+    // Customer.Name as Customer,
     Agency.Name as Agency,
     BeginDate,
     EndDate,

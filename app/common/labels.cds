@@ -54,7 +54,7 @@ annotate my.TravelAgencies with @title: '{i18n>TravelAgency}' {
 
 
 
-using { TravelService } from '../../srv/travel-flows';
+using { TravelService } from '../../srv/travel-service/flows';
 
 annotate TravelService.Travels with actions {
   acceptTravel    @title: '{i18n>Accept}';

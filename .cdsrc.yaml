@@ -1,5 +1,6 @@
-"[flow]":
-  folders:
+folders:
+  srvs: srv/*
+  "[flow]":
     flow: xmpls/flow/
 fiori:
   draft_new_action: true

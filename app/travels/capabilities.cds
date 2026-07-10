@@ -1,4 +1,4 @@
-using TravelService from '../../srv/travel-service';
+using TravelService from '../../srv/travel-service/service';
 
 annotate TravelService.Travels with @odata.draft.enabled;
 annotate TravelService.Travels with @Common.SemanticKey: [ID];
