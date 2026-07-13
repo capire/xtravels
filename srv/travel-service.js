@@ -21,8 +21,7 @@ class TravelService extends cds.ApplicationService {
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
     const xflights = await cds.connect.to ('sap.capire.flights.data')
     const yfligths = cds.outboxed (xflights)
-
-    const { Flights, Supplements, Travels, Customers } = this.entities
+    const { Flights, Travels, Customers } = this.entities
     const { Bookings } = cds.entities ('sap.capire.travels')
 
     // Delegate value helpp requests on Customers to S4 Business Partner service
