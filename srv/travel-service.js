@@ -28,18 +28,12 @@ class TravelService extends cds.ApplicationService {
     // Delegate value helpp requests on Customers to S4 Business Partner service
     this.on ('READ', Customers, req =>  s4.run (req.query))
 
-    // REVISIT: generic crud does not handle @cds.persistence.table and hence rejects due to @cds.persistence.skip
-    this.on('READ', [Flights, Supplements], async function(req) {
-      if (req.target['@cds.persistence.table']) return cds.db.run(req.query)
-      return xflights.run(req.query)
-    })
-
     // Inform XFlights about new bookings, so it can update occupied seats
     this.after ('SAVE', Travels, (_, req) => {
       const { Bookings=[] } = req.data
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
-        // REVISIT: transport Travel_ID, Pos to callback via headers -> we need a backpack
+        // Transport Travel_ID, Pos to callback via headers
         return yfligths.emit ('BookingCreated', { flight, date }, { Travel_ID, Pos })
       }))
     })
