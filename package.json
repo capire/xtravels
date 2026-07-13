@@ -8,7 +8,9 @@
     "test": "cds test"
   },
   "parked": {
-    "@cap-js/agents": "^0.1.0",
+    "@cap-js/agents": ">=0.1",
+    "@langchain/core": "^1",
+    "@langchain/mcp-adapters": "^1",
     "trailing comma": 0
   },
   "dependencies": {

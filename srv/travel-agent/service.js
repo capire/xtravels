@@ -1,32 +1,9 @@
 /* eslint-disable no-await-in-loop */
-/**
- * Travel Agent — Deep agent orchestrator for @cap-js/agents.
- *
- * Lives in the same xtravels CAP process as the Fiori UI on :4004.
- *
- * Coordinates:
- *   - Downstream A2A agents (hotel, event) on xhotels :4006
- *   - MCP server (xflights) on :4005 for flight master data + bookings
- *   - Local CAP TravelService for write-back of the confirmed itinerary
- *     via the `createTravel` action defined on TravelAgentService itself.
- *
- * Wiring style (post-@cap-js/agents migration):
- *   - The plugin's auto-build path reads AGENTS.md + skills/ from the slug
- *     directory `srv/travel-agent/` (resolved from the service name) and
- *     constructs a deepagents graph.
- *   - We participate via three event handlers in init():
- *       buildTools         — extend the default CDS-derived tools with
- *                             externally-discovered A2A + MCP tools.
- *       buildContentFilter — return {} to keep the content filter off.
- *       createTravel       — perform the actual deep INSERT into Travels
- *                             and auto-derive the trip period from flight dates.
- *   - HITL on createTravel is declarative: the action is annotated with
- *     `@UI.IsActionCritical` in CDS; the plugin auto-applies `interruptOn`.
- *   - Tool instrumentation (tracing/audit/metrics) is auto-applied by the
- *     plugin's `srv.after("buildTools", instrumentTools)` default handler;
- *     we do not call instrumentTools ourselves.
- */
 const cds = require("@sap/cds");
+
+// @langchain/core is ESM-only; kick off the dynamic import at module load
+// time so init() just awaits the already-resolved promise.
+const langchainToolsP = import("@langchain/core/tools");
 
 const LOG = cds.log("travel-agent");
 
@@ -102,15 +79,18 @@ function createA2ATool(tool, client, agentCard) {
     {
       name,
       description,
-      // FIXME: Replace usage of zod in the lines below
-      schema: z.object({
-        message: z.string().describe("The request to send to this agent"),
-      }),
+      schema: {
+        message: {
+          type: "string",
+          description: "The request to send to this agent",
+        },
+      },
     },
   );
 }
 
-async function discoverTools({ tool }) {
+async function discoverTools() {
+  const { tool } = await langchainToolsP;
   const { ClientFactory } = await import("@a2a-js/sdk/client");
   const { MultiServerMCPClient } = await import("@langchain/mcp-adapters");
   const factory = new ClientFactory();
@@ -147,6 +127,7 @@ async function discoverTools({ tool }) {
       });
       const mcpTools = await mcpClient.getTools();
       for (const mcpTool of mcpTools) {
+        mcpTool.name = `${serverName}_${mcpTool.name}`;
         const tracedInvoke = mcpTool.invoke.bind(mcpTool);
         mcpTool.invoke = async (args, config) => {
           try {
@@ -182,19 +163,13 @@ async function discoverTools({ tool }) {
   return tools;
 }
 
-module.exports = class TravelAgentServiceHandler extends (
-  cds.ApplicationService
-) {
+module.exports = class TravelAgentServiceHandler extends cds.ApplicationService {
   async init() {
-    const { tool } = await import("@langchain/core/tools");
-
     this.on("buildTools", async (req, next) => {
       const tools = await next();
-      tools.push(...(await discoverTools({ tool })));
+      tools.push(...(await discoverTools()));
       return tools;
     });
-
-    this.on("buildContentFilter", () => ({}));
 
     this.on("createTravel", async (req) => {
       const TravelService = await cds.connect.to("TravelService");
@@ -283,13 +258,11 @@ module.exports = class TravelAgentServiceHandler extends (
       }
 
       const ID = (Array.isArray(created) ? created[0] : created)?.ID;
-      return await TravelService.run(
-        SELECT.one
-          .from(Travels, ID)
-          .columns("ID", "Description", "BeginDate", "EndDate"),
-      );
+      return await TravelService .read `ID, Description, BeginDate, EndDate` .from (Travels, ID)
     });
 
     await super.init();
+
+    this.on("buildContentFilter", () => ({}));
   }
 };
