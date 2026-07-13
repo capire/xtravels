@@ -22,7 +22,6 @@ class TravelService extends cds.ApplicationService {
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
     const xflights = await cds.connect.to ('sap.capire.flights.data')
     const yfligths = cds.outboxed (xflights)
-    const messaging = await cds.connect.to ('messaging')
 
     const { Flights, Supplements, Travels, Customers } = this.entities
     const { Bookings } = cds.entities ('sap.capire.travels')
@@ -32,22 +31,12 @@ class TravelService extends cds.ApplicationService {
     // Delegate value helpp requests on Customers to S4 Business Partner service
     this.on ('READ', Customers, req =>  s4.run (req.query))
 
-    // REVISIT: generic crud does not handle @cds.persistence.table and hence rejects due to @cds.persistence.skip
-    this.on('READ', [Flights, Supplements], async function(req) {
-      if (req.target['@cds.persistence.table']) {
-        LOG.info(`Select from local replica for ${req.query._target.name}`)
-        return cds.db.run(req.query)
-      }
-      return xflights.run(req.query)
-    })
-
     // Inform XFlights about new bookings, so it can update occupied seats
     this.after ('SAVE', Travels, (_, req) => {
       const { Bookings=[] } = req.data
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
-        // REVISIT: transport Travel_ID, Pos to callback via headers -> we need a backpack
-        LOG.info(`[${1}] Emit new Booking request for ${Travel_ID}`)
+        // Transport Travel_ID, Pos to callback via headers
         return yfligths.emit ('BookingCreated', { flight, date }, { Travel_ID, Pos })
       }))
     })
@@ -64,16 +53,8 @@ class TravelService extends cds.ApplicationService {
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
     })
 
-    messaging.on('FlightUpdated', async function(event) {
-      const { flight_ID: ID, date } = event.data
-      // read current! free seats (messages can overtake each other -> don't propagate free seats in payload)
-      const free_seats = await xflights.read(Flights, { ID, date }).columns('free_seats')
-      LOG.info(`[${4}] Update available seats for ${ID} to ${free_seats.free_seats}`)
-      await UPDATE(Flights, { ID, date }).set(free_seats)
-    })
-
     // Update local Flights data whenever occupied seats change in XFlights
-    if (Flights['@cds.persistence.table']) xflights.on ('Flights.Updated', async msg => {
+    if (Flights['@cds.persistence.table']) xflights.on ('FlightsUpdated', async msg => {
       const { flight:ID, date, free_seats } = msg.data
       await UPDATE (Flights, { ID, date }) .with ({ free_seats })
     })

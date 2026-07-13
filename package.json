@@ -20,11 +20,7 @@
   },
   "cds": {
     "requires": {
-      "messaging": {
-        "kind": "file-based-messaging",
-        "file": "../msg-box",
-        "inboxed": true
-      },
+      "messaging": true,
       "queue": {
         "maxAttempts": 6
       }
