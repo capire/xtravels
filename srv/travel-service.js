@@ -21,7 +21,6 @@ class TravelService extends cds.ApplicationService {
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
     const xflights = await cds.connect.to ('sap.capire.flights.data')
     const yfligths = cds.outboxed (xflights)
-    const messaging = await cds.connect.to ('messaging')
 
     const { Flights, Supplements, Travels, Customers } = this.entities
     const { Bookings } = cds.entities ('sap.capire.travels')
@@ -55,15 +54,8 @@ class TravelService extends cds.ApplicationService {
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
     })
 
-    messaging.on('FlightUpdated', async function(event) {
-      const { flight_ID: ID, date } = event.data
-      // read current! free seats (messages can overtake each other -> don't propagate free seats in payload)
-      const free_seats = await xflights.read(Flights, { ID, date }).columns('free_seats')
-      await UPDATE(Flights, { ID, date }).set(free_seats)
-    })
-
     // Update local Flights data whenever occupied seats change in XFlights
-    if (Flights['@cds.persistence.table']) xflights.on ('Flights.Updated', async msg => {
+    if (Flights['@cds.persistence.table']) xflights.on ('FlightsUpdated', async msg => {
       const { flight:ID, date, free_seats } = msg.data
       await UPDATE (Flights, { ID, date }) .with ({ free_seats })
     })

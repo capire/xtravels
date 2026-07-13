@@ -19,10 +19,7 @@
   },
   "cds": {
     "requires": {
-      "messaging": {
-        "kind": "file-based-messaging",
-        "inboxed": true
-      }
+      "messaging": true
     }
   },
   "license": "Apache-2.0"
