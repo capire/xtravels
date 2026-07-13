@@ -31,7 +31,8 @@
     },
     "log": {
       "levels": {
-        "odata": "error"
+        "odata": "error",
+        "cds": "debug"
       }
     }
   },

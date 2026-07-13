@@ -1,6 +1,7 @@
 const cds = require ('@sap/cds')
 
 class TravelService extends cds.ApplicationService {
+  LOG
 
   async init() {
     await this.service_integration()
@@ -9,6 +10,7 @@ class TravelService extends cds.ApplicationService {
     this.update_totals()
     this.status_flows()
     this.data_export()
+    LOG = LOG.info()
     return super.init()
   }
 
@@ -34,7 +36,7 @@ class TravelService extends cds.ApplicationService {
     // REVISIT: generic crud does not handle @cds.persistence.table and hence rejects due to @cds.persistence.skip
     this.on('READ', [Flights, Supplements], async function(req) {
       if (req.target['@cds.persistence.table']) {
-        console.log (`Select from local replica for ${req.query._target.name}`)
+        LOG.info(`Select from local replica for ${req.query._target.name}`)
         return cds.db.run(req.query)
       }
       return xflights.run(req.query)
@@ -46,20 +48,20 @@ class TravelService extends cds.ApplicationService {
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
         // REVISIT: transport Travel_ID, Pos to callback via headers -> we need a backpack
-        console.log (`[${1}] Emit new Booking request for ${Travel_ID}`)
+        LOG.info(`[${1}] Emit new Booking request for ${Travel_ID}`)
         return yfligths.emit ('BookingCreated', { flight, date }, { Travel_ID, Pos })
       }))
     })
 
     xflights.after('BookingCreated/#succeeded', async function(_, req) {
       const { Travel_ID, Pos } = req.headers
-      console.log (`[${3}] Booking Succeeded: Update Booking Status for ${Travel_ID} to 'C'`)
+      LOG.info(`[${3}] Booking Succeeded: Update Booking Status for ${Travel_ID} to 'C'`)
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'C' })
     })
 
     xflights.after('BookingCreated/#failed', async function(err, req) {
       const { Travel_ID, Pos } = req.headers
-      console.log (`[${3}] Booking Failed: Update Booking Status for ${Travel_ID} to 'F'`)
+      LOG.info(`[${3}] Booking Failed: Update Booking Status for ${Travel_ID} to 'F'`)
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
     })
 
@@ -67,8 +69,8 @@ class TravelService extends cds.ApplicationService {
       const { flight_ID: ID, date } = event.data
       // read current! free seats (messages can overtake each other -> don't propagate free seats in payload)
       const free_seats = await xflights.read(Flights, { ID, date }).columns('free_seats')
-      console.log (`[${4}] Update available seats for ${ID} to ${free_seats}`)
-      await UPDATE(Flights, { ID, date }).set(free_seats)
+      LOG.info(`[${4}] Update available seats for ${ID} to ${free_seats.free_seats}`)
+      await UPDATE(Flights, { ID, date }).set(free_seats.free_seats)
     })
 
     // Update local Flights data whenever occupied seats change in XFlights
