@@ -1,7 +1,6 @@
 const cds = require ('@sap/cds')
 
 class TravelService extends cds.ApplicationService {
-  LOG
 
   async init() {
     await this.service_integration()
@@ -10,7 +9,6 @@ class TravelService extends cds.ApplicationService {
     this.update_totals()
     this.status_flows()
     this.data_export()
-    LOG = LOG.info()
     return super.init()
   }
 
@@ -19,6 +17,7 @@ class TravelService extends cds.ApplicationService {
    * Integrates with the XFlights service to keep Flights data in sync on both sides.
    */
   async service_integration() {
+    const LOG = cds.log()
 
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
     const xflights = await cds.connect.to ('sap.capire.flights.data')
@@ -70,7 +69,7 @@ class TravelService extends cds.ApplicationService {
       // read current! free seats (messages can overtake each other -> don't propagate free seats in payload)
       const free_seats = await xflights.read(Flights, { ID, date }).columns('free_seats')
       LOG.info(`[${4}] Update available seats for ${ID} to ${free_seats.free_seats}`)
-      await UPDATE(Flights, { ID, date }).set(free_seats.free_seats)
+      await UPDATE(Flights, { ID, date }).set(free_seats)
     })
 
     // Update local Flights data whenever occupied seats change in XFlights
