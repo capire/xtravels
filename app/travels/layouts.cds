@@ -112,6 +112,13 @@ annotate TravelService.Bookings with @UI : {
     { Value : Flight.destination, Label : '{i18n>Destination}', @HTML5.CssDefaults: {width:'19em'}, @Common.FieldControl: #ReadOnly },
     { Value : Flight.airline,     Label : '{i18n>Airline}',     @HTML5.CssDefaults: {width:'11em'}, @Common.FieldControl: #ReadOnly },
     { Value : BookingDate,        Label : '{i18n>BookingDate}' },
+    { Value : Status.code,        Label : '{i18n>Status}',  @UI.Importance : #High,       @HTML5.CssDefaults: {width:'10em'},
+      Criticality : (
+        Status.code == #Confirmed ? 3 :
+        Status.code == #Failed    ? 1 :
+        0
+      ),
+    },
   ],
 
   Facets : [{
@@ -140,6 +147,13 @@ annotate TravelService.Bookings with @UI : {
     { Value : Pos },
     { Value : BookingDate },
     { Value : Travel.Customer.ID },
+    { Value : Status.code, Label : '{i18n>Status}',
+      Criticality : (
+        Status.code == #Confirmed ? 3 :
+        Status.code == #Failed    ? 1 :
+        0
+      ),
+    },
   ]},
 
   FieldGroup #Flight: {Data: [

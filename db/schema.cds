@@ -36,6 +36,14 @@ entity Bookings {
       Status      : Association to BookingStatus default 'O';
 }
 
+entity BookingStatus : sap.common.CodeList {
+  key code : String(1) enum {
+    Open      = 'O';
+    Confirmed = 'C';
+    Failed    = 'F';
+  }
+}
+
 
 entity TravelAgencies {
   key ID           : String(6);
@@ -57,14 +65,6 @@ entity TravelStatus : sap.common.CodeList {
     Blocked  = 'B';
     Accepted = 'A';
     Rejected = 'X';
-  }
-}
-
-entity BookingStatus : sap.common.CodeList {
-  key code : String(1) enum {
-    Open      = 'O';
-    Confirmed = 'C';
-    Failed    = 'F';
   }
 }
 

@@ -3,8 +3,9 @@
   "version": "1.0.1",
   "description": "CAP XTravels sample application",
   "scripts": {
+    "start": "cds watch --port 4004",
+    "reset": "cds deploy && cds watch --port 4004",
     "lint": "npx eslint .",
-    "start": "cds-serve",
     "test": "cds test"
   },
   "dependencies": {
@@ -21,7 +22,16 @@
     "requires": {
       "messaging": {
         "kind": "file-based-messaging",
+        "file": "../msg-box",
         "inboxed": true
+      },
+      "queue": {
+        "maxAttempts": 6
+      }
+    },
+    "log": {
+      "levels": {
+        "odata": "error"
       }
     }
   },
