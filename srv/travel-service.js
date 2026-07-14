@@ -36,6 +36,7 @@ class TravelService extends cds.ApplicationService {
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
         // Transport Travel_ID, Pos to callback via headers
+        LOG.info(`[${1}] Emit BookingCreated for Flight ${flight}`)
         return yfligths.emit ('BookingCreated', { flight, date }, { Travel_ID, Pos })
       }))
     })
@@ -55,6 +56,7 @@ class TravelService extends cds.ApplicationService {
     // Update local Flights data whenever occupied seats change in XFlights
     if (Flights['@cds.persistence.table']) xflights.on ('FlightsUpdated', async msg => {
       const { flight:ID, date, free_seats } = msg.data
+      LOG.info(`[${4}] Update Flight ${ID} free seats to ${free_seats}`)
       await UPDATE (Flights, { ID, date }) .with ({ free_seats })
     })
   }
