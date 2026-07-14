@@ -1,4 +1,4 @@
-using { TravelService.Travels } from './travel-service';
+using { TravelService.Travels } from './service';
 
 annotate Travels with @(restrict: [
   { grant: 'READ', to: 'authenticated-user'},

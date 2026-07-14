@@ -1,4 +1,4 @@
-using { TravelService, sap.capire.travels.TravelStatus } from '../../srv/travel-service';
+using { TravelService, sap.capire.travels.TravelStatus } from '../../srv/travel-service/service';
 //
 // annotations that control the behavior of fields and actions
 //

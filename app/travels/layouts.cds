@@ -1,4 +1,4 @@
-using { TravelService } from '../../srv/travel-service';
+using { TravelService } from '../../srv/travel-service/service';
 
 //
 // annotations that control the Fiori layout
@@ -45,7 +45,7 @@ annotate TravelService.Travels with @UI : {
     { Value : (Status.code), @UI.Importance : #High, @HTML5.CssDefaults: {width:'10em'},
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Blocked ? 2 : 
+        Status.code == #Blocked ? 2 :
         Status.code == #Rejected ? 1 : 0
       ),
     }
@@ -67,7 +67,7 @@ annotate TravelService.Travels with @UI : {
     { Value : Status.code,
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Blocked ? 2 : 
+        Status.code == #Blocked ? 2 :
         Status.code == #Rejected ? 1 : 0
       ),
     },

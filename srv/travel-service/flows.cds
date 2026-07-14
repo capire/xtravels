@@ -1,4 +1,4 @@
-using { TravelService } from './travel-service';
+using { TravelService } from './service';
 
 annotate TravelService.Travels with @flow.status: Status actions {
   deductDiscount  @from: [ #Open ]; // restricted to #Open travels
