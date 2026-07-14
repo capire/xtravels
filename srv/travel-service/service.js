@@ -25,8 +25,6 @@ class TravelService extends cds.ApplicationService {
     const { Flights, Travels, Customers } = this.entities
     const { Bookings } = cds.entities ('sap.capire.travels')
 
-    this.on('READ', 'Outbox', () => cds.db.run(SELECT.from('cds.outbox.Messages'))) 
-
     // Delegate value helpp requests on Customers to S4 Business Partner service
     this.on ('READ', Customers, req =>  s4.run (req.query))
 
