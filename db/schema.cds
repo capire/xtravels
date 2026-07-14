@@ -19,6 +19,16 @@ entity Travels : managed {
   Bookings     : Composition of many Bookings on Bookings.Travel = $self;
 }
 
+entity TravelStatus : sap.common.CodeList {
+  key code : String(1) enum {
+    Open     = 'O';
+    InReview = 'P';
+    Blocked  = 'B';
+    Accepted = 'A';
+    Rejected = 'X';
+  }
+}
+
 
 entity Bookings {
   key Travel      : Association to Travels;
@@ -36,6 +46,14 @@ entity Bookings {
       Status      : Association to BookingStatus default 'O';
 }
 
+entity BookingStatus : sap.common.CodeList {
+  key code : String(1) enum {
+    Open      = 'O';
+    Confirmed = 'C';
+    Failed    = 'F';
+  }
+}
+
 
 entity TravelAgencies {
   key ID           : String(6);
@@ -49,24 +67,6 @@ entity TravelAgencies {
       WebAddress   : String(256);
 };
 
-
-entity TravelStatus : sap.common.CodeList {
-  key code : String(1) enum {
-    Open     = 'O';
-    InReview = 'P';
-    Blocked  = 'B';
-    Accepted = 'A';
-    Rejected = 'X';
-  }
-}
-
-entity BookingStatus : sap.common.CodeList {
-  key code : String(1) enum {
-    Open      = 'O';
-    Confirmed = 'C';
-    Failed    = 'F';
-  }
-}
 
 
 type Price : Decimal(9,4);
