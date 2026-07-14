@@ -1,4 +1,4 @@
-using { sap.capire.hotels as my } from './schema';
+using { sap.capire.hotels as my } from './db/schema';
 
 /**
  * Hotel search and booking service.

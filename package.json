@@ -7,12 +7,6 @@
     "start": "cds-serve",
     "test": "cds test"
   },
-  "parked": {
-    "@cap-js/agents": ">=0.1",
-    "@langchain/core": "^1",
-    "@langchain/mcp-adapters": "^1",
-    "trailing comma": 0
-  },
   "dependencies": {
     "@cap-js/mcp": "*",
     "@capire/common": "*",
@@ -23,6 +17,12 @@
   "devDependencies": {
     "@cap-js/cds-test": "^1",
     "@cap-js/sqlite": "^3"
+  },
+  "cds": {
+    "requires": {
+      "HotelsService": true,
+      "EventService": true
+    }
   },
   "license": "Apache-2.0"
 }

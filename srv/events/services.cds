@@ -1,10 +1,9 @@
-using { sap.capire.events as my } from './schema';
+using { sap.capire.events as my } from './db/schema';
 
 /**
  * Conference and corporate-event lookup and pass-booking service —
  * find events like SAP Sapphire, TechEd, DKOM and book attendee passes.
  */
-@agent
 @mcp service EventService {
 
   entity Events as projection on my.Events;

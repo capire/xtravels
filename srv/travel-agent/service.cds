@@ -6,7 +6,7 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
  * the same process as the xtravels Fiori app, so it can persist confirmed
  * itineraries directly into the local Travels DB via createTravel.
  */
-@agent @mcp service TravelAgentService {
+@mcp service TravelAgentService {
 
   @readonly entity Customers as projection on s4.Customers;
 
@@ -29,17 +29,17 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
      * characters (e.g. "0000000093"). Do NOT pass a person's name; query
      * the Customers entity to find the ID for a given name first.
      */
-    Customer    : String  @mandatory,
+    Customer_ID : String  @mandatory,
 
     /**
      * Booking fee for the whole trip; defaults to 0 if omitted.
      */
-    BookingFee  : Decimal,
+    BookingFee : Decimal,
 
     /**
      * ISO 4217 currency code; defaults to 'EUR' if omitted.
      */
-    Currency    : String,
+    Currency_code : String,
 
     /**
      * Flight bookings to attach to the trip; must be non-empty.
@@ -47,17 +47,17 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
      * `[min(FlightDate) - 1 day, max(FlightDate) + 1 day]`, so just pass the
      * actual flight dates and don't worry about the trip period.
      */
-    Bookings    : many {
+    Bookings : many {
 
       /**
        * Flight ID, e.g. "SW0001".
        */
-      Flight      : String;
+      Flight_ID : String;
 
       /**
        * Date of the flight (YYYY-MM-DD); must fall within the trip period.
        */
-      FlightDate  : Date;
+      Flight_date : Date;
 
       /**
        * Price for this flight in the booking's currency.
@@ -67,12 +67,11 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
       /**
        * ISO 4217 currency code for this flight.
        */
-      Currency    : String;
+      Currency_code : String;
     }
 
   ) returns {
     ID          : Integer;
-    Description : String;
     BeginDate   : Date;
     EndDate     : Date;
   };
