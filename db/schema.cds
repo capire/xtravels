@@ -70,7 +70,6 @@ entity BookingStatus : sap.common.CodeList {
 }
 
 
-
 type Price : Decimal(9,4);
 
 
