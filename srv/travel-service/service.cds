@@ -18,6 +18,7 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
   @readonly entity Customers as projection on s4.Customers;
   @readonly entity Flights as projection on x.Flights;
   @readonly entity Supplements as projection on x.Supplements;
+
 }
 
 // Custom type for percentage values
