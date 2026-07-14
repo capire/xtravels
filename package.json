@@ -3,8 +3,9 @@
   "version": "1.0.1",
   "description": "CAP XTravels sample application",
   "scripts": {
+    "start": "cds watch --port 4004",
+    "reset": "cds deploy && cds watch --port 4004",
     "lint": "npx eslint .",
-    "start": "cds-serve",
     "test": "cds test"
   },
   "dependencies": {
@@ -19,7 +20,16 @@
   },
   "cds": {
     "requires": {
-      "messaging": true
+      "messaging": true,
+      "queue": {
+        "maxAttempts": 6
+      }
+    },
+    "log": {
+      "levels": {
+        "odata": "error",
+        "cds": "debug"
+      }
     }
   },
   "license": "Apache-2.0"

@@ -17,6 +17,7 @@ class TravelService extends cds.ApplicationService {
    * Integrates with the XFlights service to keep Flights data in sync on both sides.
    */
   async service_integration() {
+    const LOG = cds.log()
 
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
     const xflights = await cds.connect.to ('FlightsService')
@@ -33,6 +34,7 @@ class TravelService extends cds.ApplicationService {
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
         // Transport Travel_ID, Pos to callback via headers
+        LOG.info(`[${1}] Emit BookingCreated for Flight ${flight}`)
         return yfligths.emit ('BookingCreated', { flight, date }, { Travel_ID, Pos })
       }))
     })
@@ -40,18 +42,21 @@ class TravelService extends cds.ApplicationService {
     // Set booking status in callback of outboxed BookingCreated event
     xflights.after('BookingCreated/#succeeded', async function(_, req) {
       const { Travel_ID, Pos } = req.headers
+      LOG.info(`[${4}] Booking Succeeded: Update Booking Status for ${Travel_ID} to 'C'`)
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'C' })
     })
     xflights.after('BookingCreated/#failed', async function(err, req) {
       const { Travel_ID, Pos } = req.headers
+      LOG.info(`[${4}] Booking Failed: Update Booking Status for ${Travel_ID} to 'F'`)
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
     })
 
     // Update local Flights data whenever occupied seats change in XFlights
     if (Flights['@cds.persistence.table']) xflights.on ('FlightsUpdated', async function(msg) {
       const { flight:ID, date } = msg.data
-      const free_seats = await this.read(Flights, { ID, date }).columns('free_seats')
-      await UPDATE (Flights, { ID, date }) .with (free_seats)
+      const { free_seats } = await this.read(Flights, { ID, date }).columns('free_seats')
+      LOG.info(`[${5}] Update Flight ${ID} free seats to ${free_seats}`)
+      await UPDATE (Flights, { ID, date }) .with ({ free_seats })
     })
   }
 

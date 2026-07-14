@@ -1,5 +1,6 @@
 const cds = require ('@sap/cds')
 const feed = []
+const LOG = cds.log()
 
 // Collect all entities to be federated, and prepare replica tables
 cds.on ('loaded', csn => {
@@ -18,7 +19,10 @@ cds.on ('loaded', csn => {
 cds.once ('served', () => Promise.all (feed.map (async each => {
   const srv = await cds.connect.to (each.remote)
   srv._once ??=!! srv.on ('replicate', replicate)
-  await srv.schedule ('replicate', each) .as (`replicate ${each.entity}`) .every ('10 minutes')
+  await srv
+    .schedule ('replicate', each) 
+    .as (`replicate ${each.entity}`) 
+    .every ('10 minutes')
 })))
 
 // Event handler for replicating single entities
@@ -27,7 +31,7 @@ async function replicate (req) {
   let { latest } = await SELECT.one `max(modifiedAt) as latest` .from (entity)
   let rows = await remote.read (entity) .where `modifiedAt > ${latest||0}`
   if (rows.length) await UPSERT (rows) .into (entity); else return
-  console.log ('Replicated', rows.length, 'entries', { for: entity, via: this.kind }) // eslint-disable-line no-console
+  LOG.info('Replicated', rows.length, 'entries', { for: entity, via: this.kind }) // eslint-disable-line no-console
 }
 
 // Helpers to identify remote services, and check whether they are connected
