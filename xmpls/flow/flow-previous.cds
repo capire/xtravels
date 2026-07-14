@@ -1,4 +1,4 @@
-using {TravelService} from '../../srv/travel-flows';
+using {TravelService} from '../../srv/travel-service/flows';
 
 // Add actions
 extend TravelService.Travels with actions {
