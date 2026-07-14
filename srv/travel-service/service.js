@@ -39,12 +39,12 @@ class TravelService extends cds.ApplicationService {
       }))
     })
 
+    // Set booking status in callback of outboxed BookingCreated event
     xflights.after('BookingCreated/#succeeded', async function(_, req) {
       const { Travel_ID, Pos } = req.headers
       LOG.info(`[${4}] Booking Succeeded: Update Booking Status for ${Travel_ID} to 'C'`)
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'C' })
     })
-
     xflights.after('BookingCreated/#failed', async function(err, req) {
       const { Travel_ID, Pos } = req.headers
       LOG.info(`[${4}] Booking Failed: Update Booking Status for ${Travel_ID} to 'F'`)
