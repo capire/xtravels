@@ -54,8 +54,9 @@ class TravelService extends cds.ApplicationService {
     })
 
     // Update local Flights data whenever occupied seats change in XFlights
-    if (Flights['@cds.persistence.table']) xflights.on ('FlightsUpdated', async msg => {
-      const { flight:ID, date, free_seats } = msg.data
+    if (Flights['@cds.persistence.table']) xflights.on ('FlightsUpdated', async function(msg) {
+      const { flight:ID, date } = msg.data
+      const { free_seats } = await this.read(Flights, { ID, date }).columns('free_seats')
       LOG.info(`[${4}] Update Flight ${ID} free seats to ${free_seats}`)
       await UPDATE (Flights, { ID, date }) .with ({ free_seats })
     })
