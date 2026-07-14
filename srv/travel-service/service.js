@@ -41,13 +41,13 @@ class TravelService extends cds.ApplicationService {
 
     xflights.after('BookingCreated/#succeeded', async function(_, req) {
       const { Travel_ID, Pos } = req.headers
-      LOG.info(`[${3}] Booking Succeeded: Update Booking Status for ${Travel_ID} to 'C'`)
+      LOG.info(`[${4}] Booking Succeeded: Update Booking Status for ${Travel_ID} to 'C'`)
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'C' })
     })
 
     xflights.after('BookingCreated/#failed', async function(err, req) {
       const { Travel_ID, Pos } = req.headers
-      LOG.info(`[${3}] Booking Failed: Update Booking Status for ${Travel_ID} to 'F'`)
+      LOG.info(`[${4}] Booking Failed: Update Booking Status for ${Travel_ID} to 'F'`)
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
     })
 
@@ -55,7 +55,7 @@ class TravelService extends cds.ApplicationService {
     if (Flights['@cds.persistence.table']) xflights.on ('FlightsUpdated', async function(msg) {
       const { flight:ID, date } = msg.data
       const { free_seats } = await this.read(Flights, { ID, date }).columns('free_seats')
-      LOG.info(`[${4}] Update Flight ${ID} free seats to ${free_seats}`)
+      LOG.info(`[${5}] Update Flight ${ID} free seats to ${free_seats}`)
       await UPDATE (Flights, { ID, date }) .with ({ free_seats })
     })
   }
