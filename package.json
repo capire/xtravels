@@ -8,11 +8,10 @@
     "test": "cds test"
   },
   "dependencies-for-agents": {
-    "@cap-js/agents": "^0.1.0",
-    "@cap-js/ai": "^1.0.1",
     "json ist doof": true
   },
   "dependencies": {
+    "@cap-js/agents": "^0.1.0",
     "@cap-js/mcp": "*",
     "@capire/common": "*",
     "@capire/s4": "*",
@@ -24,32 +23,10 @@
     "@cap-js/sqlite": "^3"
   },
   "cds": {
-    "-agents": {
-      "contentFilter": false,
-      "pool": false
-    },
-    "-requires": {
-      "FlightsService": {
-        "kind": "rest",
-        "credentials": { "url": "http://localhost:4005/mcp/data" }
-      },
-      "HotelsService": {
-        "kind": "rest",
-        "credentials": { "url": "http://localhost:4006/a2a/hotel" }
-      },
-      "EventService": {
-        "kind": "rest",
-        "credentials": { "url": "http://localhost:4006/a2a/event" }
-      },
-      "TravelAgentService": {
-        "mcpServers": [
-          "FlightsService"
-        ],
-        "subAgents": [
-           "HotelsService",
-           "EventService"
-        ]
-      }
+    "requires": {
+      "FlightsService": true,
+      "HotelsService": true,
+      "EventService": true
     }
   },
   "license": "Apache-2.0"
