@@ -4,7 +4,6 @@ using { sap.capire.hotels as my } from './db/schema';
  * Hotel search and booking service.
  * Allows finding hotels by city, price, or star rating and making reservations.
  */
-@agent
 @mcp service HotelsService {
 
   entity Hotels as projection on my.Hotels;
