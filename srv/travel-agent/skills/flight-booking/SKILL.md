@@ -28,6 +28,5 @@ metadata:
 
 ## Notes
 
-- The flights MCP tools are prefixed with `data_` so they don't collide with locally-generated CDS tools — always use the prefixed names.
 - Do not invent airport codes — always verify them by querying the Airports entity.
 - If a query fails with a schema error, re-read the output of `data_describe` and retry with the correct field names.

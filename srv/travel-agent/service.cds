@@ -16,7 +16,7 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
    * Call this AFTER the user has approved a complete plan.
    * Returns the new Travel ID and Description.
    */
-  @UI.IsActionCritical
+  @Common.IsActionCritical
   action createTravel(
 
     /**

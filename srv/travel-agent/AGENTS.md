@@ -49,9 +49,8 @@ These are autonomous agents with their own LLM. Send them a descriptive message 
 
 ### MCP Tools (structured parameters)
 
-These are direct tools from a flight master data service. They are prefixed
-with `data_` so they don't collide with locally-generated CDS tools. Call
-them with the exact parameters they expect.
+These are direct tools from a flight master data service. Call them with the
+exact parameters they expect.
 
 IMPORTANT: For MCP tools, always call `data_describe` first to learn the exact entity schema before constructing `where` filters. The Flights entity uses flattened field names from a joined view — do NOT guess field names.
 
