@@ -1,0 +1,30 @@
+@service = http://localhost:4004/odata/v4/travel
+
+###
+
+GET {{service}}/Flights(ID='GA0322',date='2023-08-05') 
+Authorization: Basic alice:
+
+###
+
+POST {{service}}/Travels
+Authorization: Basic alice:
+Content-Type: application/json
+
+{
+  "Description": "Test Travel",
+  "BeginDate": "2020-01-01",
+  "EndDate": "2030-12-31",
+  "Agency_ID": "070007",
+  "Customer_ID": "000042",
+  "Currency_code": "EUR",
+  "Bookings": [
+    {
+      "Pos": 1,
+      "Flight_ID": "GA0322",
+      "Flight_date": "2023-08-05",
+      "BookingDate": "2022-08-05",
+      "Currency_code": "EUR"
+    }
+  ]
+}

@@ -17,5 +17,10 @@
     "@cap-js/cds-test": "^1",
     "@cap-js/sqlite": "^3"
   },
+  "cds": {
+    "requires": {
+      "messaging": true
+    }
+  },
   "license": "Apache-2.0"
 }
