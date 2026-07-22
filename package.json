@@ -24,20 +24,11 @@
     "@cap-js/sqlite": "^3"
   },
   "cds": {
-    "-agents": {
-      "contentFilter": false,
-      "pool": false
-    },
+    "-note": "this minimal config needs a change in @sap/cds: add 'mcp' and 'agent' in bindings.js#30 or fallback to any unknown kind",
     "requires": {
-      "kinds": {
-        "mcp": {
-          "external": true,
-          "impl": "@sap/cds/srv/remote-service.js"
-        }
-      },
       "FlightsService": true,
-      "HotelsService": "agent",
-      "EventService": "agent"
+      "HotelsService": true,
+      "EventService": true
     }
   },
   "license": "Apache-2.0"
