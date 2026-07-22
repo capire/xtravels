@@ -1,8 +1,8 @@
 const cds = require('@sap/cds')
 
-const { GET, POST, axios, expect } = cds.test(__dirname + '/..', '--with-mocks', '--profile', 'flow')
-axios.defaults.auth = { username: 'alice', password: 'admin' }
-axios.defaults.validateStatus = () => true
+const { GET, POST, defaults, expect } = cds.test(__dirname + '/..', '--with-mocks', '--profile', 'flow')
+defaults.auth = { username: 'alice', password: 'admin' }
+defaults.validateStatus = () => true
 
 describe('Status Transition Flows', () => {
   const READ = async () => {
