@@ -5,6 +5,8 @@ gen
 node_modules
 .env
 .cf
+*.mtar
+dist
 
 # added by cds
 .cdsrc-private.json

@@ -17,5 +17,18 @@
     "@cap-js/cds-test": "^1",
     "@cap-js/sqlite": "^3"
   },
+  "cds": {
+    "requires": {
+      "[production]": {
+        "FlightsService": {
+          "kind": "hcql",
+          "credentials": {
+            "destination": "flights-dest",
+            "path": "/hcql/flights"
+          }
+        }
+      }
+    }
+  },
   "license": "Apache-2.0"
 }
