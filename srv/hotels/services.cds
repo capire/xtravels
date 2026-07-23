@@ -23,3 +23,7 @@ using { sap.capire.hotels as my } from './db/schema';
     bookingId : UUID
   ) returns Bookings;
 }
+
+// Late-cut µ service. Allows us to run the hotels service
+// embedded in xtravels, or as a standalone micro service.
+annotate HotelsService with @cds.external:2;

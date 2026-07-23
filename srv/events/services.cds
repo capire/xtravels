@@ -21,3 +21,7 @@ using { sap.capire.events as my } from './db/schema';
     bookingId : UUID
   ) returns Bookings;
 }
+
+// Late-cut µ service. Allows us to run the events service
+// embedded in xtravels, or as a standalone micro service.
+annotate EventsService with @cds.external:2;
