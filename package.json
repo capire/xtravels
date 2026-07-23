@@ -4,7 +4,7 @@
   "description": "CAP XTravels sample application",
   "scripts": {
     "lint": "npx eslint .",
-    "start": "cds-serve",
+    "start": "cds-serve --with-mocks",
     "test": "cds test"
   },
   "dependencies": {
