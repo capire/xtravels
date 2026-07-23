@@ -7,11 +7,7 @@
     "start": "cds-serve",
     "test": "cds test"
   },
-  "dependencies-for-agents": {
-    "json ist doof": true
-  },
   "dependencies": {
-    "@cap-js/agents": "^0.1.0",
     "@cap-js/mcp": "*",
     "@capire/common": "*",
     "@capire/s4": "*",
