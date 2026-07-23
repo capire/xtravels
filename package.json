@@ -24,10 +24,9 @@
   },
   "cds": {
     "requires": {
-      "FlightsService": "hcql",
-      "FlightsService/2": "mcp",
-      "HotelsService": "mcp",
-      "EventsService": "mcp"
+      "FlightsService": true,
+      "HotelsService": true,
+      "EventsService": true
     }
   },
   "license": "Apache-2.0"
