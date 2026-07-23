@@ -6,6 +6,7 @@ node_modules
 .env
 .cf
 *.mtar
+*.mtaext
 dist
 
 # added by cds

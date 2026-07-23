@@ -5,6 +5,7 @@ description: "CAP XTravels sample application"
 parameters:
   enable-parallel-deployments: true
   deploy_mode: html5-repo
+  s4-api-key: "" # S/4 sandbox APIKey; real value injected at deploy time via .mtaext (never committed)
 build-parameters:
   before-all:
     - builder: custom
@@ -109,6 +110,12 @@ resources:
                 ProxyType: Internet
                 Type: HTTP
                 HTML5.ForwardAuthToken: true
+              - Name: s4-dest
+                URL: https://sandbox.api.sap.com/s4hanacloud
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                URL.headers.APIKey: ${s4-api-key}
 
   - name: xtravels-app-front
     type: org.cloudfoundry.managed-service
