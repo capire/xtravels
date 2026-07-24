@@ -33,6 +33,7 @@ modules:
       - name: xtravels-db
       - name: xtravels-auth
       - name: xtravels-destination
+      - name: xtravels-ai
 
   - name: xtravels-db-deployer
     type: hdb
