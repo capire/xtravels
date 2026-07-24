@@ -12,7 +12,6 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
   }
 
   // Also expose related entities as read-only projections
-  // Super automated AI agency (SAAIA)
   @readonly entity TravelAgencies as projection on our.TravelAgencies;
   @readonly entity Currencies as projection on sap.common.Currencies;
   @readonly entity Countries as projection on sap.common.Countries;
