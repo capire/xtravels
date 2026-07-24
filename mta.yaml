@@ -1,0 +1,124 @@
+_schema-version: 3.3.0
+ID: capire.xtravels
+version: 1.0.1
+description: "CAP XTravels sample application"
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+  s4-api-key: "" # S/4 sandbox APIKey; real value injected at deploy time via .mtaext (never committed)
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production --ws-pack
+modules:
+  - name: xtravels-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+      disk-quota: 1024M
+      memory: 1024M
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: xtravels-db
+      - name: xtravels-auth
+      - name: xtravels-destination
+
+  - name: xtravels-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: xtravels-db
+
+  - name: xtravels-app-deployer
+    type: com.sap.application.content
+    path: gen
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: travel-processor
+          artifacts:
+            - travel-processor.zip
+          target-path: app/
+    requires:
+      - name: xtravels-auth
+      - name: srv-api
+      - name: xtravels-app-front
+        parameters:
+          content-target: true
+    parameters:
+      config:
+        destinations:
+          - name: srv-api
+            url: ~{srv-api/srv-url}
+            forwardAuthToken: true
+          - name: ui5
+            url: https://ui5.sap.com
+
+  - name: travel-processor
+    type: html5
+    path: app/travels
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms: []
+
+resources:
+  - name: xtravels-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  - name: xtravels-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      config:
+        xsappname: xtravels-${org}-${space}
+        tenant-mode: dedicated
+
+  - name: xtravels-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: flights-dest
+                URL: https://cap-sandbox-capire-xflights-srv.cfapps.eu12.hana.ondemand.com
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                HTML5.ForwardAuthToken: true
+              - Name: s4-dest
+                URL: https://sandbox.api.sap.com/s4hanacloud
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                URL.headers.APIKey: ${s4-api-key}
+
+  - name: xtravels-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-plan: developer
