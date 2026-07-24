@@ -6,7 +6,7 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
  * the same process as the xtravels Fiori app, so it can persist confirmed
  * itineraries directly into the local Travels DB via createTravel.
  */
-@mcp service TravelAgentService {
+@agent @mcp service TravelAgentService {
 
   @readonly entity Customers as projection on s4.Customers;
 
