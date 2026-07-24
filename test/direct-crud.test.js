@@ -1,8 +1,8 @@
 const cds = require('@sap/cds')
 const xtravels = cds.utils.path.join(__dirname, '..')
-const { POST, PUT, PATCH, DELETE, GET, expect, axios } = cds.test(xtravels, '--with-mocks')
-axios.defaults.auth = { username: 'alice' }
-axios.defaults.validateStatus = () => true
+const { POST, PUT, PATCH, DELETE, GET, expect, defaults } = cds.test(xtravels, '--with-mocks')
+defaults.auth = { username: 'alice' }
+defaults.validateStatus = () => true
 
 describe('Direct CRUD', () => {
 

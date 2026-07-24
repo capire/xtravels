@@ -23,7 +23,23 @@
     "requires": {
       "FlightsService": true,
       "HotelsService": true,
-      "EventsService": true
+      "EventsService": true,
+      "[production]": {
+        "FlightsService": {
+          "kind": "hcql",
+          "credentials": {
+            "destination": "flights-dest",
+            "path": "/hcql/flights"
+          }
+        },
+        "sap.capire.s4.business-partner": {
+          "kind": "odata-v2",
+          "credentials": {
+            "destination": "s4-dest",
+            "path": "/sap/opu/odata/sap/API_BUSINESS_PARTNER"
+          }
+        }
+      }
     }
   },
   "license": "Apache-2.0"
