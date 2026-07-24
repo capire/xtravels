@@ -20,10 +20,7 @@ builder:
         archiveName: travel-processor
         additionalFiles:
           - xs-app.json
-    - name: ui5-tooling-transpile-task
-      afterTask: replaceVersion
-      # configuration:
-        # debug: true
+        relativePaths: true
 
 server:
   customMiddleware:
@@ -36,9 +33,3 @@ server:
         password: admin # dummy credentials for local testing
     - name: fiori-tools-appreload
       afterMiddleware: compression
-    - name: ui5-tooling-transpile-middleware
-      afterMiddleware: compression
-      configuration:
-        # debug: true
-        excludePatterns:
-          - /Component-preload.js
