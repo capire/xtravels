@@ -22,7 +22,7 @@
     "requires": {
       "FlightsService": true,
       "HotelsService": true,
-      "EventsService": true
+      "EventsService": true,
       "[production]": {
         "FlightsService": {
           "kind": "hcql",
