@@ -122,3 +122,10 @@ resources:
     parameters:
       service: app-front
       service-plan: developer
+
+  - name: xtravels-ai
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: aicore
+      service-plan: standard
+
