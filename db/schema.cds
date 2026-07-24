@@ -17,6 +17,14 @@ entity Travels : managed {
   Agency       : Association to TravelAgencies;
   Customer     : Association to s4.Customers;
   Bookings     : Composition of many Bookings on Bookings.Travel = $self;
+
+  /** Trip purpose — helpful for AI recommendations based on customer profile
+   *  and destination. Fixed-value dropdown in the Fiori UI. */
+  TravelPurpose : Association to TravelPurposes;
+
+  /** Payment method for the trip — recommended by AI based on the customer's
+   *  historic preference. Fixed-value dropdown in the Fiori UI. */
+  PaymentMethod : Association to PaymentMethods;
 }
 
 
@@ -56,6 +64,27 @@ entity TravelStatus : sap.common.CodeList {
     Blocked  = 'B';
     Accepted = 'A';
     Rejected = 'X';
+  }
+}
+
+
+entity TravelPurposes : sap.common.CodeList {
+  key code : String(20) enum {
+    Business;
+    Leisure;
+    Conference;
+    Family;
+    Bleisure;   //> business + leisure combo
+  }
+}
+
+
+entity PaymentMethods : sap.common.CodeList {
+  key code : String(20) enum {
+    CreditCard;
+    Invoice;
+    Wire;
+    CompanyAccount;
   }
 }
 

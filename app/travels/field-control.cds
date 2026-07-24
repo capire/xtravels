@@ -19,11 +19,13 @@ annotate TravelService.Travels with @(Common : {
     TargetProperties: ['TotalPrice']
   },
 }){
-  BookingFee  @Common.FieldControl  : Status.fieldControl;
-  BeginDate   @Common.FieldControl  : Status.fieldControl;
-  EndDate     @Common.FieldControl  : Status.fieldControl;
-  Agency      @Common.FieldControl  : Status.fieldControl;
-  Customer    @Common.FieldControl  : Status.fieldControl;
+  BookingFee    @Common.FieldControl  : Status.fieldControl;
+  BeginDate     @Common.FieldControl  : Status.fieldControl;
+  EndDate       @Common.FieldControl  : Status.fieldControl;
+  Agency        @Common.FieldControl  : Status.fieldControl;
+  Customer      @Common.FieldControl  : Status.fieldControl;
+  TravelPurpose @Common.FieldControl  : Status.fieldControl;
+  PaymentMethod @Common.FieldControl  : Status.fieldControl;
 } actions {
   deductDiscount @(
     Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],

@@ -8,6 +8,7 @@
     "test": "cds test"
   },
   "dependencies": {
+    "@cap-js/mcp": "*",
     "@capire/common": "*",
     "@capire/s4": "*",
     "@capire/xflights-data": "*",
@@ -19,6 +20,9 @@
   },
   "cds": {
     "requires": {
+      "FlightsService": true,
+      "HotelsService": true,
+      "EventsService": true,
       "[production]": {
         "FlightsService": {
           "kind": "hcql",
