@@ -10,6 +10,18 @@ annotate my.Travels with @title: '{i18n>Travel}' {
   Customer    @title: '{i18n>Customer}'      @Common: { Text: Customer.Name, TextArrangement : #TextOnly };
   Agency      @title: '{i18n>Agency}'        @Common: { Text: Agency.Name, TextArrangement : #TextOnly };
   Status      @title: '{i18n>TravelStatus}'  @Common: { Text: Status.name, TextArrangement : #TextOnly };
+  TravelPurpose @title: '{i18n>TravelPurpose}' @Common: { Text: TravelPurpose.name, TextArrangement : #TextOnly };
+  PaymentMethod @title: '{i18n>PaymentMethod}' @Common: { Text: PaymentMethod.name, TextArrangement : #TextOnly };
+}
+
+annotate my.TravelPurposes {
+  code @title: '{i18n>TravelPurpose}'
+    @Common.Text: name
+}
+
+annotate my.PaymentMethods {
+  code @title: '{i18n>PaymentMethod}'
+    @Common.Text: name
 }
 
 annotate my.TravelStatus {

@@ -1,0 +1,61 @@
+name: Cloud Foundry
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        default: Staging
+        type: string
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  deployments: write
+
+env:
+  APP_NAME: xtravels
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - uses: cap-js/cf-setup@v2
+        with:
+          api: ${{ vars.CF_API }}
+          org: ${{ vars.CF_ORG }}
+          space: ${{ vars.CF_SPACE }}
+          username: ${{ vars.CF_USERNAME }}
+          password: ${{ secrets.CF_PASSWORD }}
+      - run: npm set @capire:registry https://npm.pkg.github.com/
+        shell: bash
+      - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
+        shell: bash
+      - run: npm add -D @sap/cds-dk
+      - run: npm add @cap-js/hana @sap/xssec @sap-cloud-sdk/resilience
+      - run: npm install
+      - name: Write MTA extension with S/4 sandbox API key
+        run: |
+          cat > s4.mtaext <<EOF
+          _schema-version: "3.3.0"
+          ID: capire.xtravels.s4
+          extends: capire.xtravels
+          parameters:
+            s4-api-key: "${{ secrets.S4_KEY }}"
+          EOF
+        shell: bash
+      - run: npx cds up --overlay s4.mtaext
+
+      - run: cf logs ${{ env.APP_NAME }}-srv --recent
+        if: always()
+      - run: cf logs ${{ env.APP_NAME }}-db-deployer --recent
+        if: always()
+    environment:
+      name: ${{ inputs.environment || 'Staging' }}
+      url: https://sapcapiretravels-9mnia.eu12.appfront.cloud.sap # temp: hardcoded App Front URL

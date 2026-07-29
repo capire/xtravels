@@ -1,0 +1,5 @@
+code;name;descr
+CreditCard;Credit Card;Paid by credit card
+Invoice;Invoice;Billed by invoice
+Wire;Wire Transfer;Paid via bank wire
+CompanyAccount;Company Account;Charged to the company account

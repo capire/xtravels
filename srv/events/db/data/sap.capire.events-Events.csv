@@ -1,0 +1,6 @@
+ID,name,city,country,venue,startDate,endDate,description,passPrice,availablePasses
+2f9b218e-065d-4e6f-ae1b-74d177de5786,SAP Sapphire 2026,Orlando,USA,Orange County Convention Center,2026-05-19,2026-05-21,"SAP's flagship customer conference covering business AI, cloud ERP, and supply chain innovation",2495.00,800
+4505f22c-817c-4db1-841c-afa9351b93ca,SAP Sapphire 2027,Orlando,USA,Orange County Convention Center,2027-05-18,2027-05-20,"SAP's flagship customer conference covering business AI, cloud ERP, and supply chain innovation",2495.00,1000
+7310e7ab-cd34-4bb5-94f2-2656a7b4928d,SAP TechEd 2026,Berlin,Germany,CityCube Berlin,2026-11-17,2026-11-19,Annual SAP technology event for developers and architects,1495.00,600
+f0a10d70-b46f-4594-b272-3b19e300bcc4,SAP TechEd 2027,Las Vegas,USA,The Venetian,2027-10-26,2027-10-28,Annual SAP technology event for developers and architects,1495.00,600
+cb33524f-5416-4959-bc15-7bd3f70884c9,SAP DKOM 2027,Walldorf,Germany,SAP Headquarters,2027-03-09,2027-03-12,SAP company-wide kickoff meeting for employees,0.00,5000

@@ -3,17 +3,15 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/processor/(.*)$",
-      "target": "/processor/$1",
-      "destination": "sflight-srv",
+      "source": "^/?(odata|hcql|rest)/(.*)$",
+      "target": "/$1/$2",
+      "destination": "srv-api",
       "authenticationType": "xsuaa",
       "csrfProtection": false
     },
     {
-      "source": "^(.*)$",
-      "target": "$1",
-      "service": "html5-apps-repo-rt",
-      "authenticationType": "xsuaa"
+      "source": ".*",
+      "service": "app-front"
     }
   ]
 }

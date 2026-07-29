@@ -24,7 +24,7 @@ class TravelService extends cds.ApplicationService {
     const { Flights, Travels, Customers } = this.entities
     const { Bookings } = cds.entities ('sap.capire.travels')
 
-    // Delegate value helpp requests on Customers to S4 Business Partner service
+    // Delegate value help requests on Customers to S4 Business Partner service
     this.on ('READ', Customers, req =>  s4.run (req.query))
 
     // Inform XFlights about new bookings, so it can update occupied seats

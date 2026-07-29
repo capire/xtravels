@@ -7,6 +7,8 @@ using { sap.capire.travels as our } from '../../db/schema';
 annotate our.Travels {
 
   Status @Common.ValueListWithFixedValues;
+  TravelPurpose @Common.ValueListWithFixedValues;
+  PaymentMethod @Common.ValueListWithFixedValues;
 
   Agency @Common.ValueList: {
     CollectionPath: 'TravelAgencies', 

@@ -1,0 +1,13 @@
+{
+  "_version": "1.49.0",
+  "sap.app": {
+    "id": "xtravels.travels",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "type": "application",
+    "title": "CAP XTravels",
+    "description": "CAP XTravels sample application",
+    "i18n": "i18n/i18n.properties"
+  }
+}

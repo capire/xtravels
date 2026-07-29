@@ -45,7 +45,7 @@ annotate TravelService.Travels with @UI : {
     { Value : (Status.code), @UI.Importance : #High, @HTML5.CssDefaults: {width:'10em'},
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Blocked ? 2 :
+        Status.code == #Blocked ? 2 : 
         Status.code == #Rejected ? 1 : 0
       ),
     }
@@ -63,11 +63,13 @@ annotate TravelService.Travels with @UI : {
   FieldGroup#TravelData : { Data : [
     { Value : (Customer.ID) },
     { Value : (Agency.ID) },
+    { Value : (TravelPurpose.code) },
+    { Value : (PaymentMethod.code) },
     { Value : Description },
     { Value : Status.code,
       Criticality : (
         Status.code == #Accepted ? 3 :
-        Status.code == #Blocked ? 2 :
+        Status.code == #Blocked ? 2 : 
         Status.code == #Rejected ? 1 : 0
       ),
     },
