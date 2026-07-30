@@ -60,10 +60,7 @@ jobs:
       - name: Get Application Frontend URL
         id: appfront
         run: |
-          afctl login \
-            --api "${{ vars.AF_API }}" \
-            --username "${{ vars.CF_USERNAME }}" \
-            --password "${{ secrets.CF_PASSWORD }}"
+          afctl login --api "${{ vars.AF_API }}" --service-key "${{ secrets.APPFRONT_SERVICE_KEY }}"
           url=$(npx afctl list sapcapiretravels --basic | awk '$1 == "URL" { print $2; exit }')
           echo "url=${url:?App Frontend URL not found}" >> "$GITHUB_OUTPUT"
     environment:
