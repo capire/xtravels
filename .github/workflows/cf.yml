@@ -57,10 +57,14 @@ jobs:
         if: always()
       - run: cf logs ${{ env.APP_NAME }}-db-deployer --recent
         if: always()
-      - name: Get Application Frontend URL
+
+      - name: Get App Frontend URL
         id: appfront
+        env:
+          AF_SERVICE_KEY: ${{ secrets.AF_SERVICE_KEY }}
         run: |
-          afctl login --api "${{ vars.AF_API }}" --service-key "${{ secrets.APPFRONT_SERVICE_KEY }}"
+          printf '%s' "$AF_SERVICE_KEY" > "$RUNNER_TEMP/appfront-service-key.json"
+          afctl login --api "https://api.eu12.dt.appfront.cloud.sap?apptid=1e9b5b6e-5203-4350-b171-6d8a150d6510" --service-key "$RUNNER_TEMP/appfront-service-key.json"
           url=$(npx afctl list sapcapiretravels --basic | awk '$1 == "URL" { print $2; exit }')
           echo "url=${url:?App Frontend URL not found}" >> "$GITHUB_OUTPUT"
     environment:
