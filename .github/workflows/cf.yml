@@ -61,7 +61,7 @@ jobs:
       - name: Get App Frontend URL
         id: appfront
         env:
-          AF_SERVICE_KEY: ${{ secrets.AF_SERVICE_KEY }}
+          AF_SERVICE_KEY: ${{ secrets.APPFRONT_SERVICE_KEY }}
         run: |
           printf '%s' "$AF_SERVICE_KEY" > "$RUNNER_TEMP/appfront-service-key.json"
           afctl login --api "https://api.eu12.dt.appfront.cloud.sap?apptid=1e9b5b6e-5203-4350-b171-6d8a150d6510" --service-key "$RUNNER_TEMP/appfront-service-key.json"
