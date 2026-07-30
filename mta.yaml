@@ -105,7 +105,7 @@ resources:
             existing_destinations_policy: update
             destinations:
               - Name: flights-dest
-                URL: https://cap-sandbox-capire-xflights-srv.cfapps.eu12.hana.ondemand.com
+                URL: https://cap-samples-staging-xflights-srv.cfapps.eu12-001.hana.ondemand.com
                 Authentication: NoAuthentication
                 ProxyType: Internet
                 Type: HTTP
