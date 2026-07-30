@@ -128,5 +128,5 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: aicore
-      service-plan: standard
+      service-plan: extended
 
