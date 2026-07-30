@@ -33,7 +33,7 @@ class TravelService extends cds.ApplicationService {
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
         // Transport Travel_ID, Pos to callback via headers
-        return yfligths.emit ('BookingCreated', { flight, date }, { Travel_ID, Pos })
+        return yfligths.send ('BookingCreated', { flight, date }, { Travel_ID, Pos })
       }))
     })
 
