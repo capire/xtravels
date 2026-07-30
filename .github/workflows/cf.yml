@@ -38,7 +38,8 @@ jobs:
       - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
         shell: bash
       - run: npm i -g @sap/cds-dk @sap/appfront-cli
-      - run: npm add @cap-js/hana @sap/xssec @sap-cloud-sdk/resilience
+      - run: cds add xsuaa
+      - run: npm add @cap-js/hana @sap-cloud-sdk/resilience
       - run: npm install
       - name: Write MTA extension with S/4 sandbox API key
         run: |
