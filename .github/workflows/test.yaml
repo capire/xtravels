@@ -20,5 +20,9 @@ jobs:
         with:
           node-version: 24
       - uses: actions/checkout@v7
+      - run: npm set @capire:registry https://npm.pkg.github.com/
+        shell: bash
+      - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
+        shell: bash
       - run: npm install
       - run: npm test
