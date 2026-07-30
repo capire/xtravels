@@ -24,5 +24,6 @@ jobs:
         shell: bash
       - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
         shell: bash
+      - run: npm i -g @sap/cds-dk
       - run: npm install
       - run: npm test
