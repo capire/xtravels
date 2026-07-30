@@ -53,6 +53,11 @@ jobs:
         shell: bash
       - run: cds up --overlay s4.mtaext
 
+      # Deployment done, get logs and app URL
+      - run: cf logs ${{ env.APP_NAME }}-srv --recent
+        if: always()
+      - run: cf logs ${{ env.APP_NAME }}-db-deployer --recent
+        if: always()
       - name: Get Application Frontend URL
         id: appfront
         run: |
