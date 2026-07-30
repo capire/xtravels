@@ -1,6 +1,7 @@
 name: Cloud Foundry
 
 on:
+  pull_request:
   workflow_call:
     inputs:
       environment:
@@ -37,7 +38,7 @@ jobs:
         shell: bash
       - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
         shell: bash
-      - run: npm add -D @sap/cds-dk
+      - run: npm i -g @sap/cds-dk @sap/appfront-cli
       - run: npm add @cap-js/hana @sap/xssec @sap-cloud-sdk/resilience
       - run: npm install
       - name: Write MTA extension with S/4 sandbox API key
@@ -50,12 +51,17 @@ jobs:
             s4-api-key: "${{ secrets.S4_KEY }}"
           EOF
         shell: bash
-      - run: npx cds up --overlay s4.mtaext
+      - run: cds up --overlay s4.mtaext
 
-      - run: cf logs ${{ env.APP_NAME }}-srv --recent
-        if: always()
-      - run: cf logs ${{ env.APP_NAME }}-db-deployer --recent
-        if: always()
+      - name: Get Application Frontend URL
+        id: appfront
+        run: |
+          afctl login \
+            --api "${{ vars.AF_API }}" \
+            --username "${{ vars.CF_USERNAME }}" \
+            --password "${{ secrets.CF_PASSWORD }}"
+          url=$(npx afctl list sapcapiretravels --basic | awk '$1 == "URL" { print $2; exit }')
+          echo "url=${url:?App Frontend URL not found}" >> "$GITHUB_OUTPUT"
     environment:
       name: ${{ inputs.environment || 'Staging' }}
-      url: https://sapcapiretravels-9mnia.eu12.appfront.cloud.sap # temp: hardcoded App Front URL
+      url: ${{ steps.appfront.outputs.url }}
