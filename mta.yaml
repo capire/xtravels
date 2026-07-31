@@ -11,7 +11,7 @@ build-parameters:
     - builder: custom
       commands:
         - npm ci
-        - npx cds build --production --ws-pack
+        - npx cds build --production
 modules:
   - name: xtravels-srv
     type: nodejs
