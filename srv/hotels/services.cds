@@ -1,4 +1,5 @@
 using { sap.capire.hotels as my } from './db/schema';
+namespace sap.capire.hotels;
 
 /**
  * Hotel search and booking service.

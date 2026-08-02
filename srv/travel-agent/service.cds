@@ -1,4 +1,5 @@
 using { sap.capire.s4 } from '../../apis/capire/s4';
+namespace sap.capire.travels;
 
 /**
  * Travel planning agent that coordinates hotel bookings, conference event
