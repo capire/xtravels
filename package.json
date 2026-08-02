@@ -39,6 +39,10 @@
             "path": "/sap/opu/odata/sap/API_BUSINESS_PARTNER"
           }
         }
+      },
+      "llm": {
+        "kind": "anthropic",
+        "model": "claude-opus-latest"
       }
     }
   },
