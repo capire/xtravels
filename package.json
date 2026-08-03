@@ -21,11 +21,11 @@
   },
   "cds": {
     "requires": {
-      "FlightsService": true,
-      "HotelsService": true,
-      "EventsService": true,
+      "sap.capire.flights.FlightsService": true,
+      "sap.capire.hotels.HotelsService": true,
+      "sap.capire.events.EventsService": true,
       "[production]": {
-        "FlightsService": {
+        "sap.capire.flights.FlightsService": {
           "kind": "hcql",
           "credentials": {
             "destination": "flights-dest",

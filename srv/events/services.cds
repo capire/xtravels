@@ -1,4 +1,5 @@
 using { sap.capire.events as my } from './db/schema';
+namespace sap.capire.events;
 
 /**
  * Conference and corporate-event lookup and pass-booking service —
