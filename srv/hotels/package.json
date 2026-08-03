@@ -2,6 +2,7 @@
   "name": "@capire/hotels",
   "version": "1.0.0",
   "dependencies": {
+    "@cap-js/agents": "*",
     "@cap-js/sqlite": "*",
     "@cap-js/mcp": "*"
   }
