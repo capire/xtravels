@@ -11,3 +11,5 @@ dist
 
 # added by cds
 .cdsrc-private.json
+*.log
+*.mta
