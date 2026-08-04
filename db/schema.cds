@@ -41,6 +41,7 @@ entity Bookings {
         Currency : Currency;
       };
       BookingDate : Date default $now;
+      Status      : Association to BookingStatus default 'O';
 }
 
 
@@ -54,7 +55,7 @@ entity TravelAgencies {
       PhoneNumber  : String(30);
       EMailAddress : String(256);
       WebAddress   : String(256);
-};
+}
 
 
 entity TravelStatus : sap.common.CodeList {
@@ -64,6 +65,15 @@ entity TravelStatus : sap.common.CodeList {
     Blocked  = 'B';
     Accepted = 'A';
     Rejected = 'X';
+  }
+}
+
+
+entity BookingStatus : sap.common.CodeList {
+  key code : String(1) enum {
+    Open      = 'O';
+    Confirmed = 'C';
+    Failed    = 'F';
   }
 }
 

@@ -21,6 +21,7 @@
   },
   "cds": {
     "requires": {
+      "messaging": true,
       "sap.capire.flights.FlightsService": true,
       "sap.capire.hotels.HotelsService": true,
       "sap.capire.events.EventsService": true,
