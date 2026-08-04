@@ -39,7 +39,8 @@ jobs:
         shell: bash
       - run: npm i -g @sap/cds-dk @sap/appfront-cli
       - run: npm add @sap-cloud-sdk/http-client@^4 @sap-cloud-sdk/connectivity@^4 @sap-cloud-sdk/resilience@^4
-      - run: cds add hana,xsuaa
+      - run: cds add hana,xsuaa,destination,app-front
+      - run: cds add ai --plan extended
       - run: npm install
       - name: Deploy
         env:
