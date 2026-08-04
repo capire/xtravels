@@ -33,16 +33,16 @@ class TravelService extends cds.ApplicationService {
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
         // Transport Travel_ID, Pos to callback via headers
-        return yfligths.send ('BookingCreated', { flight, date }, { Travel_ID, Pos })
+        return yfligths.send ('ReserveSeats', { flight, date, seats:[1] }, { Travel_ID, Pos })
       }))
     })
 
-    // Set booking status in callback of outboxed BookingCreated event
-    xflights.after('BookingCreated/#succeeded', async function(_, req) {
+    // Set booking status in callback of outboxed ReserveSeats event
+    xflights.after('ReserveSeats/#succeeded', async function(_, req) {
       const { Travel_ID, Pos } = req.headers
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'C' })
     })
-    xflights.after('BookingCreated/#failed', async function(err, req) {
+    xflights.after('ReserveSeats/#failed', async function(err, req) {
       const { Travel_ID, Pos } = req.headers
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
     })
