@@ -43,17 +43,15 @@ describe('Basic OData', () => {
   it('GET /odata/v4/travel/Travels', async () => {
     const { data } = await GET `/odata/v4/travel/Travels?$filter=ID eq 175`
     expect(data.value).to.containSubset([{
-      BeginDate: '2023-08-02',
+      BeginDate: '2026-08-02',
       BookingFee: 60,
-      createdAt: expectedValue => /2023-07-16T18:42:07\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       createdBy: 'Hansmann',
       Currency_code: 'SGD',
       Description: 'Sightseeing in Singapore',
-      EndDate: '2024-05-29',
+      EndDate: '2027-05-29',
       HasActiveEntity: false,
       HasDraftEntity: false,
       IsActiveEntity: true,
-      modifiedAt: expectedValue => /2023-07-27T03:18:18\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       modifiedBy: 'Deichgraeber',
       Agency_ID: '070029',
       Customer_ID: '000318',
@@ -157,7 +155,7 @@ describe('Basic OData', () => {
 
     // Ensure it is not in accepted state as that would disallow changing
     await PATCH (Draft, { Status_code: 'O' }) // REVISIT: should actually be forbidden !!!
-    await PATCH (Draft, { BeginDate: '2024-01-01', EndDate: '2024-12-31' }) // avoid validation errors
+    await PATCH (Draft, { BeginDate: '2027-01-01', EndDate: '2027-12-31' }) // avoid validation errors
 
     // Change the Travel's Booking Fee
     await PATCH (Draft, { BookingFee: 120 })

@@ -1,6 +1,6 @@
 import cds from "@sap/cds"
 
-export default class HotelService extends cds.ApplicationService {
+export default class HotelsService extends cds.ApplicationService {
   async init() {
     const { Hotels, Bookings } = this.entities
 

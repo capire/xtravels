@@ -19,7 +19,7 @@ class TravelService extends cds.ApplicationService {
   async service_integration() {
 
     const s4 = await cds.connect.to ('sap.capire.s4.business-partner')
-    const xflights = await cds.connect.to ('FlightsService')
+    const xflights = await cds.connect.to ('sap.capire.flights.FlightsService')
     const yfligths = cds.outboxed (xflights)
     const { Flights, Travels, Customers } = this.entities
     const { Bookings } = cds.entities ('sap.capire.travels')
@@ -65,8 +65,8 @@ class TravelService extends cds.ApplicationService {
 
     const ensureIncrementalTravelId = async (req) => {
       const [ active, draft ] = await Promise.all([
-         SELECT.one (`max(ID) as maxID`) .from (Travels),
-         SELECT.one (`max(ID) as maxID`) .from (Travels.drafts)
+        SELECT.one (`max(ID) as maxID`) .from (Travels),
+        SELECT.one (`max(ID) as maxID`) .from (Travels.drafts)
       ])
       req.data.ID = Math.max(draft?.maxID, active?.maxID) + 1
     }

@@ -37,8 +37,9 @@ jobs:
         shell: bash
       - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
         shell: bash
-      - run: npm add -D @sap/cds-dk
-      - run: npm add @cap-js/hana @sap/xssec @sap-cloud-sdk/resilience
+      - run: npm i -g @sap/cds-dk @sap/appfront-cli
+      - run: cds add xsuaa
+      - run: npm add @cap-js/hana @sap-cloud-sdk/resilience
       - run: npm install
       - name: Write MTA extension with S/4 sandbox API key
         run: |
@@ -50,12 +51,24 @@ jobs:
             s4-api-key: "${{ secrets.S4_KEY }}"
           EOF
         shell: bash
-      - run: npx cds up --overlay s4.mtaext
+      - run: cds up --overlay s4.mtaext
 
+      # Deployment done, get logs and app URL
       - run: cf logs ${{ env.APP_NAME }}-srv --recent
         if: always()
       - run: cf logs ${{ env.APP_NAME }}-db-deployer --recent
         if: always()
+
+      - name: Get App Frontend URL
+        id: appfront
+        env:
+          AF_SERVICE_KEY: ${{ secrets.APPFRONT_SERVICE_KEY }}
+          AF_API: https://api.eu12.dt.appfront.cloud.sap?apptid=1e9b5b6e-5203-4350-b171-6d8a150d6510
+        run: |
+          printf '%s' "$AF_SERVICE_KEY" > "$RUNNER_TEMP/appfront-service-key.json"
+          afctl login --api "$AF_API" --service-key "$RUNNER_TEMP/appfront-service-key.json"
+          url=$(npx afctl list sapcapiretravels --basic | awk '$1 == "URL" { print $2; exit }')
+          echo "url=${url:?App Frontend URL not found}" >> "$GITHUB_OUTPUT"
     environment:
       name: ${{ inputs.environment || 'Staging' }}
-      url: https://sapcapiretravels-9mnia.eu12.appfront.cloud.sap # temp: hardcoded App Front URL
+      url: ${{ steps.appfront.outputs.url }}
