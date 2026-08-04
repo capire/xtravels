@@ -5,8 +5,8 @@ namespace sap.capire.s4;
 
   BusinessPartner as ID,
   PersonFullName  as Name,
-  FirstName       as FirstName,
-  LastName        as LastName,
+  // FirstName       as FirstName,
+  // LastName        as LastName,
   LastChangeDate  as modifiedAt,
   LastChangeTime  as modifiedAtTime,
 
