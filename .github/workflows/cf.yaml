@@ -45,8 +45,8 @@ jobs:
         env:
           S4_API_KEY: ${{ secrets.S4_KEY }}
         run: |
-          sed "s/\$S4_API_KEY/$S4_API_KEY/" .deploy/staging.mtaext > /tmp/staging.mtaext
-          cds up --overlay /tmp/staging.mtaext
+          sed -i "s/\$S4_API_KEY/$S4_API_KEY/" .deploy/staging.mtaext
+          cds up --overlay .deploy/staging.mtaext
 
       # Deployment done, get logs and app URL
       - run: cf logs ${{ env.APP_NAME }}-srv --recent
