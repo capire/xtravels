@@ -7,6 +7,8 @@ node_modules
 .cf
 *.mtar
 *.mtaext
+!.deploy/*.mtaext
+mta.yaml
 dist
 
 # added by cds
