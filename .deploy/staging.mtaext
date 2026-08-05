@@ -1,0 +1,24 @@
+_schema-version: 3.3.0
+ID: capire.xtravels.staging
+extends: capire.xtravels
+
+resources:
+  - name: xtravels-destination
+    parameters:
+      config:
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: flights-dest
+                URL: https://cap-samples-staging-xflights-srv.cfapps.eu12-001.hana.ondemand.com
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                HTML5.ForwardAuthToken: true
+              - Name: s4-dest
+                URL: https://sandbox.api.sap.com/s4hanacloud
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                URL.headers.APIKey: $S4_API_KEY
