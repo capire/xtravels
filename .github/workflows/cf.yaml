@@ -22,8 +22,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - uses: cap-js/cf-setup@v2
@@ -38,7 +38,7 @@ jobs:
       - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
         shell: bash
       - run: npm i -g @sap/cds-dk @sap/appfront-cli
-      - run: npm add @sap-cloud-sdk/http-client@^4 @sap-cloud-sdk/connectivity@^4 @sap-cloud-sdk/resilience@^4
+      - run: npm add @sap-cloud-sdk/http-client @sap-cloud-sdk/connectivity @sap-cloud-sdk/resilience
       - run: cds add hana,xsuaa,destination,app-front
       - run: cds add ai --plan extended
       - run: npm install
