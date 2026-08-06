@@ -7,6 +7,7 @@ namespace sap.capire.travels;
  * the same process as the xtravels Fiori app, so it can persist confirmed
  * itineraries directly into the local Travels DB via createTravel.
  */
+@agent.connect: 'auto'
 @agent @mcp service TravelAgentService {
 
   @readonly entity Customers as projection on s4.Customers;
