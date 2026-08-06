@@ -43,7 +43,7 @@
       },
       "llm": {
         "kind": "anthropic",
-        "model": "claude-opus-latest"
+        "model": "claude-haiku-latest"
       }
     }
   },
