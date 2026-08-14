@@ -7,7 +7,6 @@ namespace sap.capire.travels;
  * the same process as the xtravels Fiori app, so it can persist confirmed
  * itineraries directly into the local Travels DB via createTravel.
  */
-@agent.connect: 'auto'
 @agent @mcp service TravelAgentService {
 
   @readonly entity Customers as projection on s4.Customers;
@@ -19,7 +18,9 @@ namespace sap.capire.travels;
    * Call this AFTER the user has approved a complete plan.
    * Returns the new Travel ID and calculated BeginDate and EndDate.
    */
-  @agent.hitl action createTravel (
+  @agent.hitl
+  @requires: 'authenticated-user'
+  action createTravel (
 
     /**
      * Free-text trip description, e.g. "Weekend in Paris".
