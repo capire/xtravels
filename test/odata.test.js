@@ -242,9 +242,7 @@ describe('Basic OData', () => {
 
 describe("Basic Drafts", () => {
   it("should be possible to create a new entity in draft state using the proper action", async () => {
-    const response = await POST("/odata/v4/travel/Travels/TravelService.draftNew", {
-      ID: -1 // will be replaced by .before NEW handler
-    });
+    const response = await POST("/odata/v4/travel/Travels/TravelService.draftNew");
     expect(response.data.ID).to.exist;
     expect(response.data.IsActiveEntity).to.equal(false);
     expect(response.status).to.equal(201);
@@ -266,10 +264,7 @@ describe("Basic Drafts", () => {
   });
 
   it('should be possible to create a new entity in draft state using a regular POST request with body containing IsActiveEntity=false', async () => {
-    const response = await POST("/odata/v4/travel/Travels", {
-      ID: -1, // will be replaced by .before NEW handler
-      IsActiveEntity: false,
-    })
+    const response = await POST("/odata/v4/travel/Travels", { IsActiveEntity: false })
     expect(response.data).to.exist;
     expect(response.data.ID).to.exist;
     expect(response.data.IsActiveEntity).to.be.false;

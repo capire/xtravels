@@ -63,21 +63,19 @@ class TravelService extends cds.ApplicationService {
 
     const { Travels, Bookings } = this.entities
 
-    const ensureIncrementalTravelId = async (req) => {
-      const [ active, draft ] = await Promise.all([
-        SELECT.one (`max(ID) as maxID`) .from (Travels),
-        SELECT.one (`max(ID) as maxID`) .from (Travels.drafts)
+    const generateTravelId = async () => {
+      let [active, draft] = await Promise.all([
+        SELECT.one `max(ID) as maxID` .from (Travels),
+        SELECT.one `max(ID) as maxID` .from (Travels.drafts)
       ])
-      req.data.ID = Math.max(draft?.maxID, active?.maxID) + 1
+      return Math.max (draft?.maxID, active?.maxID) + 1
     }
 
-    this.before ('NEW', Travels.drafts, req => ensureIncrementalTravelId(req))
-
-    this.before ('CREATE', Travels, req => !req.data.ID && ensureIncrementalTravelId(req))
-
-    this.before ('NEW', Bookings.drafts, async (req) => { // on NEW as Bookings are per draft, so no concurrency issues
-      let { id } = await SELECT.one `max(Pos) as id` .from (Bookings.drafts) .where (req.data)
-      req.data.Pos = id+1
+    this.before ('CREATE', Travels, async req => req.data.ID ??= await generateTravelId())
+    this.before ('NEW', Travels.drafts, async req => req.data.ID ??= await generateTravelId())
+    this.before ('NEW', Bookings.drafts, async req => { // NEW Bookings are per draft, so no concurrency issues
+      let { maxPos } = await SELECT.one `max(Pos) as maxPos` .from (Bookings.drafts) .where (req.data)
+      req.data.Pos = maxPos+1
     })
   }
 
@@ -122,11 +120,6 @@ class TravelService extends cds.ApplicationService {
   update_totals() {
 
     const { Travels, Bookings, 'Bookings.Supplements': Supplements } = this.entities
-    const UpdateTotals = // Native SQL UPDATE statement, prepared once, and reused subsequently
-    `UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
-      + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
-      + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
-    WHERE ID = ?`
 
     this.on ('PATCH',  Travels.drafts,     (..._) => update_totals (..._, 'BookingFee', 'GoGreen'))
     this.on ('PATCH',  Bookings.drafts,    (..._) => update_totals (..._, 'FlightPrice'))
@@ -144,7 +137,10 @@ class TravelService extends cds.ApplicationService {
         req.target === Supplements.drafts ? await SELECT.one `up_.Travel.ID as ID` .from (req.subject) :
         req.target === Bookings.drafts ? await SELECT.one `Travel.ID as ID` .from (req.subject) :
         req.target === Travels.drafts ? req.data : cds.error (`No travel found for ${req.subject}`)
-      await cds.run (UpdateTotals, [TravelID])
+      await cds.run (`UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
+        + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
+        + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
+      WHERE ID = ?`, [TravelID])
     }
   }
 
