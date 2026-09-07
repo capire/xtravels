@@ -21,6 +21,7 @@
   },
   "cds": {
     "requires": {
+      "llm": "anthropic",
       "messaging": true,
       "sap.capire.flights.FlightsService": true,
       "sap.capire.hotels.HotelsService": true,
@@ -40,10 +41,6 @@
             "path": "/sap/opu/odata/sap/API_BUSINESS_PARTNER"
           }
         }
-      },
-      "llm": {
-        "kind": "anthropic",
-        "model": "claude-haiku-latest"
       }
     }
   },
