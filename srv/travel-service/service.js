@@ -137,10 +137,10 @@ class TravelService extends cds.ApplicationService {
         req.target === Supplements.drafts ? await SELECT.one `up_.Travel.ID as ID` .from (req.subject) :
         req.target === Bookings.drafts ? await SELECT.one `Travel.ID as ID` .from (req.subject) :
         req.target === Travels.drafts ? req.data : cds.error (`No travel found for ${req.subject}`)
-      await cds.run (`UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
+      await cds.run `UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
         + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
         + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
-      WHERE ID = ?`, [TravelID])
+      WHERE ID = ${TravelID}`
     }
   }
 
