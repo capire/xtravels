@@ -36,12 +36,12 @@ so the rest of the plan is built around its dates and city.
    traveller arrives the day before and departs the day after.
 4. Then run the standard parallel search using those dates and city:
    - Hotel agent — `"Find hotels in <city> for <arriveDate>–<departDate>, near <venue>."`
-   - Flights MCP — call `data_describe`, then resolve airport codes via `data_query` on `Airports`, then `data_query` on `Flights` for the dates.
+   - Flights MCP — call `describe`, then resolve airport codes via `query` on `Airports`, then `query` on `Flights` for the dates.
 5. Present concrete options to the user with prices and details.
 6. When the user confirms, book in this order:
    1. Hotel booking (hotel A2A agent)
    2. Event pass (event A2A agent — `bookEventPass`)
-   3. Flight bookings (`data_bookFlight`)
+   3. Flight bookings (`bookFlight`)
    4. `createTravel` (HITL approval) — persists trip header + flight bookings.
 7. Summarise the complete itinerary, including the new Travel ID.
 
@@ -50,8 +50,8 @@ so the rest of the plan is built around its dates and city.
 1. Identify the destination and dates (use reasonable defaults if not specified).
 2. Search in parallel:
    - Call the hotel agent with a natural-language description of what's needed.
-   - Call `data_describe` on the flights MCP, then `data_query` `Airports` for the destination's airport codes.
-3. Once you have airport codes, call `data_query` on `Flights`.
+   - Call `describe` on the flights MCP, then `query` `Airports` for the destination's airport codes.
+3. Once you have airport codes, call `query` on `Flights`.
 4. Present options to the user with prices and details.
-5. When the user decides, book hotel via the A2A agent, flights via `data_bookFlight`, then call `createTravel` (HITL approval).
+5. When the user decides, book hotel via the A2A agent, flights via `bookFlight`, then call `createTravel` (HITL approval).
 6. Summarise the complete itinerary at the end.

@@ -23,7 +23,7 @@ metadata:
 ## Instructions
 
 1. Make sure the trip header is fully specified: `Description`, `Customer` (BusinessPartner ID — query `Customers` if you don't have one; for the demo, Theresia Buchholm is `000001`), and a non-empty `Bookings` array. The travel agency is set server-side to "AI Agency" — do NOT pass an `Agency` field. The trip period is derived from the bookings — do NOT pass `BeginDate` or `EndDate`.
-2. Each booking must include `Flight` (the flight ID, e.g. "SW0001"), `FlightDate` (YYYY-MM-DD), `FlightPrice`, and `Currency`. Use the prices from your earlier `data_query` results — don't invent them. Pay attention to the YEAR of each `FlightDate`; the trip period is computed from these so a wrong year here breaks the booking.
+2. Each booking must include `Flight` (the flight ID, e.g. "SW0001"), `FlightDate` (YYYY-MM-DD), `FlightPrice`, and `Currency`. Use the prices from your earlier `query` results — don't invent them. Pay attention to the YEAR of each `FlightDate`; the trip period is computed from these so a wrong year here breaks the booking.
 3. Before calling the tool, send a short message to the user that summarizes what is about to happen: "I'm about to save the trip to Paris (2026-07-04 → 2026-07-06), customer 000001, total flight cost €450. Approve to persist."
 4. Call `createTravel`. The plugin will pause the task and ask the user to approve or reject. The next user message decides:
    - **approve** → the write happens; the response includes the new Travel ID, Description, BeginDate, EndDate. Confirm to the user with that ID.
