@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "dependencies": {
     "@cap-js/agents": "*",
-    "@cap-js/sqlite": "*",
     "@cap-js/mcp": "*"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "*"
+  },
+  "cds": {
+    "requires": {
+      "llm": "anthropic"
+    }
   }
 }
