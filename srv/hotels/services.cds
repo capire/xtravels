@@ -5,7 +5,7 @@ namespace sap.capire.hotels;
  * Hotel search and booking service.
  * Allows finding hotels by city, price, or star rating and making reservations.
  */
-@mcp service HotelsService {
+@agent @mcp service HotelsService {
 
   entity Hotels as projection on my.Hotels;
   entity Bookings as projection on my.Bookings;
