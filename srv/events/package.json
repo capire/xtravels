@@ -1,6 +1,7 @@
 {
   "name": "@capire/events",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "@cap-js/sqlite": "*",
     "@cap-js/mcp": "*"
