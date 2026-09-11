@@ -4,13 +4,5 @@
   "dependencies": {
     "@cap-js/agents": "*",
     "@cap-js/mcp": "*"
-  },
-  "devDependencies": {
-    "@cap-js/sqlite": "*"
-  },
-  "cds": {
-    "requires": {
-      "llm": "anthropic"
-    }
   }
 }

@@ -21,7 +21,6 @@
   },
   "cds": {
     "requires": {
-      "llm": "anthropic",
       "messaging": true,
       "sap.capire.flights.FlightsService": true,
       "sap.capire.hotels.HotelsService": true,
