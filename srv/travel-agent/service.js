@@ -3,10 +3,7 @@ const cds = require('@sap/cds')
 module.exports = class TravelAgentService extends cds.ApplicationService {
   async init() {
 
-    /**
-     * Connect to the TravelService, which is used to create Travels.
-     */
-    const TravelService = await cds.connect.to ('TravelService')
+    const { Travels } = cds.entities ('sap.capire.travels')
 
     /**
      * Handle the "createTravel" action. It calculates the trip's start and end dates
@@ -16,8 +13,9 @@ module.exports = class TravelAgentService extends cds.ApplicationService {
       let { Bookings} = req.data
       let BeginDate = Bookings?.at(0)?.Flight_date || today()
       let EndDate = Bookings?.at(-1)?.Flight_date || today()
-      let [{ID}] = await TravelService.create ('Travels', {
-        Agency_ID:'070666', BeginDate, EndDate, ...req.data,
+      let {ID} = await SELECT.one `max(ID)+1 as ID`.from(Travels)
+      await INSERT.into (Travels, {
+        ID, Agency_ID:'070666', BeginDate, EndDate, ...req.data,
         Bookings: Bookings.map((b,i) => ({ ...b, Pos:i+1 }))
       })
       return { ID, BeginDate, EndDate }
