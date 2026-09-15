@@ -20,14 +20,14 @@ export default class EventsService extends cds.ApplicationService {
       const event = await SELECT.one.from(Events).where({ ID: eventId })
       if (!event) return req.reject(404, `Event with ID "${eventId}" not found.`)
 
-      if (event.availablePasses < seats) {
+      if (event.availableTickets < seats) {
         return req.reject(
           409,
-          `Sorry, "${event.name}" only has ${event.availablePasses} passes available. You requested ${seats}.`,
+          `Sorry, "${event.name}" only has ${event.availableTickets} passes available. You requested ${seats}.`,
         )
       }
 
-      const totalPrice = Number(event.passPrice) * seats
+      const totalPrice = Number(event.price) * seats
       const [{ID}] = await INSERT.into(Bookings).entries({
         event_ID: event.ID,
         guest,
@@ -35,7 +35,7 @@ export default class EventsService extends cds.ApplicationService {
         status: "confirmed",
         totalPrice,
       })
-      await UPDATE (Events, event.ID) .with ({ availablePasses: { "-=": seats } })
+      await UPDATE (Events, event.ID) .with ({ availableTickets: { "-=": seats } })
 
       return { ID, totalPrice }
     })
@@ -49,7 +49,7 @@ export default class EventsService extends cds.ApplicationService {
       if (!booking) return req.reject(404, `Booking with ID "${bookingId}" not found.`)
       if (booking.status === "cancelled") return req.reject(409, "This booking is already cancelled.")
 
-      await UPDATE (Events, booking.event_ID) .set({ availablePasses: { "+=": booking.seats } })
+      await UPDATE (Events, booking.event_ID) .set({ availableTickets: { "+=": booking.seats } })
       await UPDATE (Bookings, bookingId) .with ({ status: "cancelled" })
     })
 

@@ -26,10 +26,10 @@ entity Events : cuid {
   description     : String(1000);
 
   /** Price per attendee pass in USD */
-  passPrice       : Decimal(10,2);
+  price       : Decimal(10,2);
 
   /** Number of passes still available */
-  availablePasses : Integer;
+  availableTickets : Integer;
 }
 
 /** Event-pass / conference-ticket booking records */
