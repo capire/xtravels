@@ -29,9 +29,9 @@ If the user mentions a conference or corporate event, resolve the event FIRST
 so the rest of the plan is built around its dates and city.
 
 1. Send the event agent a single descriptive sentence, e.g.
-   `"Find SAP Sapphire 2027 in Orlando, and tell me the dates, venue, and pass price."`
+   `"Find SAP Sapphire 2027 in Orlando, and tell me the dates, venue, and price."`
 2. From the event agent's response take `startDate`, `endDate`, `city`, `venue`,
-   and `passPrice`.
+   and `price`.
 3. Build the trip period as `[startDate − 1 day, endDate + 1 day]` so the
    traveller arrives the day before and departs the day after.
 4. Then run the standard parallel search using those dates and city:
