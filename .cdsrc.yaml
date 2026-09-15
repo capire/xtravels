@@ -1,4 +1,5 @@
 folders:
+  srvs: srv/*
   "[flow]":
     flow: xmpls/flow/
 fiori:
