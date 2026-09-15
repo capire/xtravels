@@ -14,34 +14,23 @@ namespace sap.capire.travels;
   /**
    * Persist a confirmed travel itinerary (header + flight bookings) into the
    * XTravels app so the trip shows up in the Fiori UI.
-   * It will also book the flights with XFlights service.
-   * Call this AFTER the user has approved a complete plan.
-   * Returns the new Travel ID and calculated BeginDate and EndDate.
+   * Call this only AFTER the user has approved a complete plan.
+   * Returns the newly created Travel's ID and calculated BeginDate and EndDate.
    */
   @agent.hitl
   @requires: 'authenticated-user'
   action createTravel (
 
     /**
-     * Free-text trip description, e.g. "Weekend in Paris".
-     */
-    Description : String  @mandatory,
-
-    /**
      * Customer ID — SAP Business Partner number. Numeric zero-padded string (e.g. "000430").
      * Query the Customers entity to find the ID for a given customer name.
      */
-    Customer_ID : String(6) @mandatory,
+    Customer_ID : Customers:ID @mandatory,
 
     /**
-     * Booking fee for the whole trip; defaults to 0 if omitted.
+     * Free-text trip description, e.g. "Weekend in Paris".
      */
-    BookingFee : Decimal,
-
-    /**
-     * ISO 4217 currency code; defaults to 'EUR' if omitted.
-     */
-    Currency_code : String,
+    Description : String  @mandatory,
 
     /**
      * Flight bookings to attach to the trip; must be non-empty.

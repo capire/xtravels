@@ -4,7 +4,7 @@ export default class EventsService extends cds.ApplicationService {
   async init() {
     const { Events, Bookings } = this.entities
 
-    this.on("bookEventPass", async (req) => {
+    this.on("bookTicket", async (req) => {
       const { eventId, guest, seats = 1 } = req.data
 
       if (!eventId || !guest) {
@@ -28,39 +28,31 @@ export default class EventsService extends cds.ApplicationService {
       }
 
       const totalPrice = Number(event.passPrice) * seats
-
-      const booking = {
+      const [{ID}] = await INSERT.into(Bookings).entries({
         event_ID: event.ID,
         guest,
         seats,
         status: "confirmed",
         totalPrice,
-      }
+      })
+      await UPDATE (Events, event.ID) .with ({ availablePasses: { "-=": seats } })
 
-      const [result] = await INSERT.into(Bookings).entries(booking)
-      await UPDATE(Events)
-        .set({ availablePasses: { "-=": seats } })
-        .where({ ID: event.ID })
-
-      return SELECT.one.from(Bookings).where({ ID: result.ID })
+      return { ID, totalPrice }
     })
 
-    this.on("cancelEventPass", async (req) => {
+
+    this.on("cancelTicket", async (req) => {
       const { bookingId } = req.data
       if (!bookingId) return req.reject(400, "Please provide a booking ID to cancel.")
 
       const booking = await SELECT.one.from(Bookings).where({ ID: bookingId })
       if (!booking) return req.reject(404, `Booking with ID "${bookingId}" not found.`)
-      if (booking.status === "cancelled")
-        return req.reject(409, "This booking is already cancelled.")
+      if (booking.status === "cancelled") return req.reject(409, "This booking is already cancelled.")
 
-      await UPDATE(Bookings).set({ status: "cancelled" }).where({ ID: bookingId })
-      await UPDATE(Events)
-        .set({ availablePasses: { "+=": booking.seats } })
-        .where({ ID: booking.event_ID })
-
-      return SELECT.one.from(Bookings).where({ ID: bookingId })
+      await UPDATE (Events, booking.event_ID) .set({ availablePasses: { "+=": booking.seats } })
+      await UPDATE (Bookings, bookingId) .with ({ status: "cancelled" })
     })
+
 
     await super.init()
   }
