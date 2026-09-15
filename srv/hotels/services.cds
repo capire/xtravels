@@ -10,19 +10,19 @@ namespace sap.capire.hotels;
   entity Hotels as projection on my.Hotels;
   entity Bookings as projection on my.Bookings;
 
-  /** Book a hotel room for a guest — returns the confirmed booking record */
+  /** Book a hotel room for a guest — returns the confirmed booking's ID and total price */
   action bookHotel(
-    hotelId  : UUID,
+    hotelId  : Hotels:ID,
     guest    : String,
     checkIn  : Date,
     checkOut : Date,
     rooms    : Integer
-  ) returns Bookings;
+  ) returns { ID: Bookings:ID; totalPrice: Decimal };
 
   /** Cancel a hotel booking by booking ID */
   action cancelBooking(
-    bookingId : UUID
-  ) returns Bookings;
+    bookingId : Bookings:ID
+  );
 }
 
 // Late-cut µ service. Allows us to run the hotels service

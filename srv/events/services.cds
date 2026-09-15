@@ -10,17 +10,17 @@ namespace sap.capire.events;
   entity Events as projection on my.Events;
   entity Bookings as projection on my.Bookings;
 
-  /** Book one or more passes for an event — returns the confirmed booking record. */
-  action bookEventPass(
+  /** Book one or more passes for an event — returns the created booking's ID and total price. */
+  action bookTicket(
     eventId : UUID,
     guest   : String,
     seats   : Integer
-  ) returns Bookings;
+  ) returns { ID: Bookings:ID; totalPrice: Decimal };
 
   /** Cancel an event-pass booking by booking ID. */
-  action cancelEventPass(
-    bookingId : UUID
-  ) returns Bookings;
+  action cancelTicket(
+    bookingId : Bookings:ID
+  );
 }
 
 // Late-cut µ service. Allows us to run the events service
