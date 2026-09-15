@@ -22,8 +22,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - uses: cap-js/cf-setup@v2
@@ -38,20 +38,16 @@ jobs:
       - run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.CAPIRE_READ_PACKAGES }}
         shell: bash
       - run: npm i -g @sap/cds-dk @sap/appfront-cli
-      - run: cds add xsuaa
-      - run: npm add @cap-js/hana @sap-cloud-sdk/resilience
+      - run: npm add @sap-cloud-sdk/http-client @sap-cloud-sdk/connectivity @sap-cloud-sdk/resilience
+      - run: cds add hana,xsuaa,destination,app-front
+      - run: cds add ai --plan extended
       - run: npm install
-      - name: Write MTA extension with S/4 sandbox API key
+      - name: Deploy
+        env:
+          S4_API_KEY: ${{ secrets.S4_KEY }}
         run: |
-          cat > s4.mtaext <<EOF
-          _schema-version: "3.3.0"
-          ID: capire.xtravels.s4
-          extends: capire.xtravels
-          parameters:
-            s4-api-key: "${{ secrets.S4_KEY }}"
-          EOF
-        shell: bash
-      - run: cds up --overlay s4.mtaext
+          sed -i "s/\$S4_API_KEY/$S4_API_KEY/" .deploy/staging.mtaext
+          cds up --overlay .deploy/staging.mtaext
 
       # Deployment done, get logs and app URL
       - run: cf logs ${{ env.APP_NAME }}-srv --recent
