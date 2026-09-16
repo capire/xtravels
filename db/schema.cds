@@ -102,12 +102,6 @@ entity PaymentMethods : sap.common.CodeList {
 type Price : Decimal(9,4);
 
 
-
-// Extend Customers to navigate to back to local Travels
-extend s4.Customers with columns {
-  Travels : Association to many Travels on Travels.Customer = $self
-}
-
 // Extend Flights to navigate to back to local Bookings
 extend x.Flights with columns {
   Bookings : Association to many Bookings on Bookings.Flight = $self
