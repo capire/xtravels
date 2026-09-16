@@ -85,7 +85,7 @@ annotate x.Flights with @title: '{i18n>Flight}' {
   departure       @title: '{i18n>DepartureTime}';
   arrival         @title: '{i18n>ArrivalTime}';
   free_seats      @title: '{i18n>MaximumSeats}';
-  airline         @title: '{i18n>Name}';
+  airline         @title: '{i18n>Airline}';
   origin          @title: '{i18n>Origin}';
   destination     @title: '{i18n>Destination}';
 }

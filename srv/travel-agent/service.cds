@@ -9,7 +9,10 @@ namespace sap.capire.travels;
  */
 @mcp service TravelAgentService {
 
-  @readonly entity Customers as projection on s4.Customers;
+  /** Allows to fetch customer IDs by name */
+  @readonly entity Customers as projection on s4.Customers {
+    ID, Name as name
+  }
 
   /**
    * Persist a confirmed travel itinerary (header + flight bookings) into the

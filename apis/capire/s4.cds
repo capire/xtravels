@@ -24,3 +24,6 @@ namespace sap.capire.s4;
   // },
 
 } where BusinessPartnerCategory == '1'; // '1' = Person
+
+// Temporary workaround for minification issue
+annotate Customers with @cds.minify: false;
