@@ -1,5 +1,5 @@
 folders:
-  srvs: srv/*
+  srvs: srv/*  # also loads .cds files from srv/subfolders 
   "[flow]":
     flow: xmpls/flow/
 fiori:
