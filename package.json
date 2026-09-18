@@ -8,6 +8,7 @@
     "test": "cds test"
   },
   "dependencies": {
+    "@cap-js/agents": ">=0.9.2",
     "@cap-js/mcp": "*",
     "@capire/common": "*",
     "@capire/s4": "*",
