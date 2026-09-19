@@ -70,3 +70,8 @@ namespace sap.capire.travels;
     EndDate     : Date;
   };
 }
+
+
+
+// Temporary workaround for @cds.minify:unused-elements issue
+annotate TravelAgentService.Customers with @cds.minify: false;
