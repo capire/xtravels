@@ -1,4 +1,4 @@
-using { FlightsService as external } from '@capire/xflights-data';
+using { sap.capire.flights.FlightsService as external } from '@capire/xflights-data';
 namespace sap.capire.xflights;
 
 /**

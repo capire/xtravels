@@ -16,10 +16,16 @@ module.exports = class TravelAgentService extends cds.ApplicationService {
       let { Bookings} = req.data
       let BeginDate = Bookings?.at(0)?.Flight_date || today()
       let EndDate = Bookings?.at(-1)?.Flight_date || today()
-      let [{ID}] = await TravelService.create ('Travels', {
-        Agency_ID:'070666', BeginDate, EndDate, ...req.data,
-        Bookings: Bookings.map((b,i) => ({ ...b, Pos:i+1 }))
+
+      // Use privileged user to bypass authorization for internal agent-to-service call
+      const user = cds.User.privileged
+      const result = await TravelService.tx({ user }, async tx => {
+        return await tx.create ('Travels', {
+          Agency_ID:'070666', BeginDate, EndDate, ...req.data,
+          Bookings: Bookings.map((b,i) => ({ ...b, Pos:i+1 }))
+        })
       })
+      const ID = result[0]?.ID
       return { ID, BeginDate, EndDate }
     })
 
