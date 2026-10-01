@@ -25,3 +25,6 @@ using { sap.capire.s4 } from '../../apis/capire/s4';
 
 // Custom type for percentage values
 type Percentage : Integer @assert.range: [1,100];
+
+// Also serve the TravelService with HCQL and OData capabilities
+annotate TravelService with @hcql @odata;

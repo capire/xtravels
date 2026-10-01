@@ -5,7 +5,7 @@ namespace sap.capire.events;
  * Conference and corporate-event lookup and pass-booking service —
  * find events like SAP Sapphire, TechEd, DKOM and book attendee passes.
  */
-@agent @mcp service EventsService {
+@agent @mcp @hcql service EventsService {
 
   entity Events as projection on my.Events;
   entity Bookings as projection on my.Bookings;
