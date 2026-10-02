@@ -84,12 +84,12 @@ Which should print something like that:
 
 ```sh
 ...
-[cds] - server listening on { url: 'http://localhost:4004' }
+[cds] - server listening on { url: 'http://localhost:4114' }
 [cds] - server v9.4.0 launched in 444 ms
 [cds] - [ terminate with ^C ]
 ```
 
-`Cmd-click` the http://localhost:4004 link in the terminal to open the app in a browser.
+`Cmd-click` the http://localhost:4114 link in the terminal to open the app in a browser.
 
 
 
