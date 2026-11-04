@@ -99,7 +99,7 @@ entity PaymentMethods : sap.common.CodeList {
 }
 
 
-type Price : Decimal(9,4);
+type Price : Decimal(15,4);
 
 
 // Extend Flights to navigate to back to local Bookings
