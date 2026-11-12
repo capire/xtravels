@@ -133,10 +133,11 @@ class TravelService extends cds.ApplicationService {
       // First execute the actual update or delete, so we can recalculate totals in the database afterwards
       await next()
       // Run the total price recalculation in the database, using the travel from the request target
+      // Tenant models have separate entity objects, so compare their names.
       const { ID: TravelID } =
-        req.target === Supplements.drafts ? await SELECT.one `up_.Travel.ID as ID` .from (req.subject) :
-        req.target === Bookings.drafts ? await SELECT.one `Travel.ID as ID` .from (req.subject) :
-        req.target === Travels.drafts ? req.data : cds.error (`No travel found for ${req.subject}`)
+        req.target.name === Supplements.drafts.name ? await SELECT.one `up_.Travel.ID as ID` .from (req.subject) :
+        req.target.name === Bookings.drafts.name ? await SELECT.one `Travel.ID as ID` .from (req.subject) :
+        req.target.name === Travels.drafts.name ? req.data : cds.error (`No travel found for ${req.target.name}`)
       await cds.run (`UPDATE ${Travels.drafts} as t SET TotalPrice = coalesce (BookingFee,0)
         + ( SELECT coalesce (sum(FlightPrice),0) from ${Bookings.drafts} where Travel_ID = t.ID )
         + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where up__Travel_ID = t.ID )
