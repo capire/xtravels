@@ -2,7 +2,7 @@ import cds from "@sap/cds"
 
 export default class HotelsService extends cds.ApplicationService {
   async init() {
-    const { Hotels, Bookings } = this.entities
+    const { Hotels, Bookings } = cds.entities ("sap.capire.hotels")
 
     this.on("bookHotel", async (req) => {
       const { hotelId, guest, checkIn, checkOut, rooms = 1 } = req.data
@@ -36,7 +36,7 @@ export default class HotelsService extends cds.ApplicationService {
       })
       await UPDATE(Hotels, hotel.ID) .with ({ availableRooms: { "-=": rooms } })
 
-      return { ID, totalPrice }
+      return { ID, totalPrice, currency: hotel.currency_code }
     })
 
 

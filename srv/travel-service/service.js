@@ -33,16 +33,16 @@ class TravelService extends cds.ApplicationService {
       return Promise.all (Bookings.map (booking => {
         let { Flight_ID: flight, Flight_date: date, Travel_ID, Pos } = booking
         // Transport Travel_ID, Pos to callback via headers
-        return yfligths.send ('ReserveSeats', { flight, date, seats:[1] }, { Travel_ID, Pos })
+        return yfligths.send ('reserveSeats', { flight, date, seats:[1] }, { Travel_ID, Pos })
       }))
     })
 
-    // Set booking status in callback of outboxed ReserveSeats event
-    xflights.after('ReserveSeats/#succeeded', async function(_, req) {
+    // Set booking status in callback of outboxed reserveSeats event
+    xflights.after('reserveSeats/#succeeded', async function(_, req) {
       const { Travel_ID, Pos } = req.headers
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'C' })
     })
-    xflights.after('ReserveSeats/#failed', async function(err, req) {
+    xflights.after('reserveSeats/#failed', async function(err, req) {
       const { Travel_ID, Pos } = req.headers
       await UPDATE(Bookings, { Travel_ID, Pos }).set({ Status_code: 'F' })
     })
@@ -71,7 +71,7 @@ class TravelService extends cds.ApplicationService {
       return Math.max (draft?.maxID, active?.maxID) + 1
     }
 
-    this.before ('CREATE', Travels, async req => req.data.ID ??= await generateTravelId())
+    this.before ('CREATE', Travels,    async req => req.data.ID ??= await generateTravelId())
     this.before ('NEW', Travels.drafts, async req => req.data.ID ??= await generateTravelId())
     this.before ('NEW', Bookings.drafts, async req => { // NEW Bookings are per draft, so no concurrency issues
       let { maxPos } = await SELECT.one `max(Pos) as maxPos` .from (Bookings.drafts) .where (req.data)
@@ -100,7 +100,10 @@ class TravelService extends cds.ApplicationService {
     })
 
     async function failed (req) { // find out what caused the failure...
-      let { ID, status, fee } = await SELECT.one `ID, Status.code as status, BookingFee as fee` .from (req.subject) || {}
+      let { ID, status, fee } = await cds.ql`SELECT one ${req.subject} {
+        ID, Status.code as status,
+        BookingFee as fee
+      }` || {}
       if (!ID) throw req.reject (404, `Travel "${ID}" does not exist; may have been deleted meanwhile.`)
       if (!fee) throw req.reject (404, `No discount possible, "${ID}" does not yet have a booking fee added.`)
       if (status !== Open) throw req.reject (409, `Cannot deduct discount from travel "${ID}" as it is not open.`)

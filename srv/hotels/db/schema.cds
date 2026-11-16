@@ -1,6 +1,6 @@
 namespace sap.capire.hotels;
 
-using { cuid, managed } from '@sap/cds/common';
+using { Currency, cuid, managed } from '@sap/cds/common';
 
 /** Hotels available for booking */
 entity Hotels : cuid {
@@ -16,8 +16,9 @@ entity Hotels : cuid {
   /** Star rating (1-5) */
   stars           : Integer;
 
-  /** Price per night in USD */
+  /** Price per night in the hotel's currency */
   pricePerNight   : Decimal(10,2);
+  currency        : Currency;
 
   /** Number of rooms currently available */
   availableRooms  : Integer;

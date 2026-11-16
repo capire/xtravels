@@ -8,7 +8,6 @@ namespace sap.capire.hotels;
 @agent @mcp @hcql service HotelsService {
 
   entity Hotels as projection on my.Hotels;
-  entity Bookings as projection on my.Bookings;
 
   /** Book a hotel room for a guest — returns the confirmed booking's ID and total price */
   action bookHotel(
@@ -17,14 +16,18 @@ namespace sap.capire.hotels;
     checkIn  : Date,
     checkOut : Date,
     rooms    : Integer
-  ) returns { ID: Bookings:ID; totalPrice: Decimal };
+  ) returns {
+    ID: my.Bookings:ID;
+    totalPrice: Decimal;
+    currency: Hotels:currency.code;
+  };
 
   /** Cancel a hotel booking by booking ID */
   action cancelBooking(
-    bookingId : Bookings:ID
+    bookingId : my.Bookings:ID
   );
 }
 
 // Late-cut µ service. Allows us to run the hotels service
 // embedded in xtravels, or as a standalone micro service.
-annotate HotelsService with @cds.external:2;
+// annotate HotelsService with @cds.external:2;
