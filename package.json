@@ -11,7 +11,9 @@
     "@capire/common": "*",
     "@capire/s4": "*",
     "@capire/xflights-data": "*",
-    "@sap/cds": "^10"
+    "@sap/cds": "^10",
+    "@cap-js/agents": "*",
+    "@cap-js/mcp": "*"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^1",
